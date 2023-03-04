@@ -30,6 +30,7 @@ class Ui_Form(object):
 "border-radius: 10px;\n"
 "image: url(:/camera/camera_btn.png);\n"
 "")
+        self.camera.setPixmap(QPixmap("camera.png"))
         self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
         self.label_2 = QtWidgets.QLabel(Form)

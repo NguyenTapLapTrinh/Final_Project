@@ -50,7 +50,7 @@ class Ui_Form(object):
         self.time.setObjectName("time")
         self.helmet = QtWidgets.QLabel(Form)
         self.helmet.setGeometry(QtCore.QRect(570, 300, 81, 61))
-        self.helmet.setStyleSheet("image: url(:/helmet/helmet.png);\n""background: none;")
+        #self.helmet.setStyleSheet("image: url(:/helmet/helmet.png);\n""background: none;")
         self.helmet.setPixmap(QPixmap("helmet.png"))
         self.helmet.setObjectName("helmet")
         self.label_11 = QtWidgets.QLabel(Form)
