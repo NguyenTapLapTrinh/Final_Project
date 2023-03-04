@@ -28,14 +28,13 @@ class Ui_Form(object):
 "font-weight: 600;\n"
 "color: white;\n"
 "border-radius: 10px;\n"
-"image: url(:/camera/camera_btn.png);\n"
+"image: url(./camera.png);\n"
 "")
-        self.camera.setPixmap(QPixmap("camera.png"))
         self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(900, 80, 91, 91))
-        self.label_2.setStyleSheet("image: url(:/helmet/helmet-icon.png);\n""background: none;")
+        #self.label_2.setStyleSheet("image: url(:/helmet/helmet-icon.png);\n""background: none;")
         self.label_2.setPixmap(QPixmap("safety.png"))
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
