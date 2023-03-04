@@ -1,6 +1,6 @@
 import csv
 
-def create_data(stt = "STT",name = "Name", time = "Time", helmet = "Helmet", vest = "Vest", glove = "Glove", note = "Note"):
+def create_data(stt = "STT",name = 'Name', time = "Time", helmet = "Helmet", vest = "Vest", glove = "Glove", note = "Note"):
     data = []
     data.append(stt)
     data.append(name)
@@ -23,6 +23,32 @@ def write_report(file_path, stt, name, time, list_data):
         data_csv = create_data(stt, name, time, helmet, vest, glove, note)
         writer = csv.writer(csv_file)
         writer.writerow(data_csv)
+
+def edit_report(file_path, name, time, list_data):
+    helmet, vest, glove, note = parse_list(list_data)
+    rows = []
+
+    with open(file_path, 'r') as csv_file:
+        reader = csv.reader(csv_file)    
+        # Loop through each row in the CSV file
+        for row in reader:
+            # Check if this is the row we want to edit
+            if row[1] == name:
+                # Modify the row data
+                row[2] = time
+                row[3] = helmet
+                row[4] = vest
+                row[5] = glove
+                row[6] = note
+            
+            # Add the row to the list of updated data
+            rows.append(row)
+
+    with open(file_path, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        for line in rows:
+            writer.writerow(line)   
+
 
 def parse_list(list):
     helmet = "Yes"

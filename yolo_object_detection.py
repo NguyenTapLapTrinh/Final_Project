@@ -147,6 +147,7 @@ while True:
 
     ts.start_sound(string,"Ngô Trung Nguyên ")  
     cv2.imshow("Image", frame)    
+    report.edit_report(file_path,"Ngô Trung Nguyên",time_str,[2])
 
     key = cv2.waitKey(0)
     if key == 27:

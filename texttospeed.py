@@ -8,13 +8,13 @@ def text_to_sound(text, id):
     tts = gTTS(str(id)+ text,tld='com.vn',lang='vi')
     tts.save("sound.mp3")    
     playsound("sound.mp3",True)
-
-
-def start_sound(text, id):
-    thread = threading.Thread(target=text_to_sound, args=(text,id,))
-    thread.start()
     while True:
         try:
             os.remove("sound.mp3")
         except:
             break
+
+
+def start_sound(text, id):
+    thread = threading.Thread(target=text_to_sound, args=(text,id,))
+    thread.start()
