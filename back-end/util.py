@@ -2,6 +2,7 @@ import os
 import pickle
 import face_recognition
 import numpy as np
+import cv2
 
 def recognize(img, db_path):
 
@@ -31,7 +32,9 @@ def recognize(img, db_path):
 
 
 def face_detect(frame):
-    face_locations = face_recognition.face_locations(frame)
+    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+    rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+    face_locations = face_recognition.face_locations(rgb_small_frame)
     face_locations = np.array(face_locations)
-    face_locations.astype(int)
-    return face_locations
+    face_locations = face_locations / 0.25
+    return face_locations.astype(int)

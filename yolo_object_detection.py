@@ -106,8 +106,7 @@ while True:
     image = cv2.putText(frame, fps_disp, (10, 25),
         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
     
-    img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    face_locations = util.face_detect(img)
+    face_locations = util.face_detect(image)
     for face_loc in face_locations:
         y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
         frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
