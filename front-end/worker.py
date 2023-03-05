@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -49,6 +49,12 @@ class Ui_Form(object):
 "")
         self.label_4.setText("")
         self.label_4.setObjectName("label_4")
+        self.left = QtWidgets.QLabel(Form)
+        self.left.setGeometry(QtCore.QRect(0, 0, 161, 551))
+        self.left.setStyleSheet("background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(221, 151, 37, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"")
+        self.left.setText("")
+        self.left.setObjectName("left")
         self.progressBar = QtWidgets.QProgressBar(Form)
         self.progressBar.setGeometry(QtCore.QRect(200, 560, 631, 23))
         self.progressBar.setProperty("value", 0)
@@ -80,7 +86,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Checking worker System"))
+        Form.setWindowIcon(QIcon("Img/Icon/worker.png"))
         self.label_3.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">CHECKING </span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">ATTENDANCE</span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">WIDGET</span></p><p align=\"center\"><span style=\" font-size:9pt;\">Cre: Nguyen-Hieu</span></p></body></html>"))
         self.label_5.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">IMAGES PROCESSING</span></p></body></html>"))
         self.label_6.setText(_translate("Form", "<html><head/><body><p><span style=\" font-weight:600;\">CAPTURE IMAGE</span></p></body></html>"))

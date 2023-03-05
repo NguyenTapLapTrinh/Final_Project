@@ -23,6 +23,7 @@ def write_report(file_path, stt, name, time, list_data):
         data_csv = create_data(stt, name, time, helmet, vest, glove, note)
         writer = csv.writer(csv_file)
         writer.writerow(data_csv)
+    return note
 
 def edit_report(file_path, name, time, list_data):
     helmet, vest, glove, note = parse_list(list_data)
@@ -48,6 +49,8 @@ def edit_report(file_path, name, time, list_data):
         writer = csv.writer(csv_file)
         for line in rows:
             writer.writerow(line)   
+    
+    return note
 
 
 def parse_list(list):
