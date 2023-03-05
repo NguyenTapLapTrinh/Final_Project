@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -43,6 +43,12 @@ class Ui_Form(object):
 "color: white;\n"
 "font-size: 18px;")
         self.label_3.setObjectName("label_3")
+        self.label_left = QtWidgets.QLabel(Form)
+        self.label_left.setGeometry(QtCore.QRect(0, 0, 161, 551))
+        self.label_left.setStyleSheet("background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(221, 151, 37, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"")
+        self.label_left.setText("")
+        self.label_left.setObjectName("label_left")
         self.label_4 = QtWidgets.QLabel(Form)
         self.label_4.setGeometry(QtCore.QRect(870, 0, 161, 551))
         self.label_4.setStyleSheet("background-color: qlineargradient(spread:repeat, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(221, 151, 37, 255), stop:1 rgba(255, 255, 255, 255));\n"
@@ -80,7 +86,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Checking worker System"))
+        Form.setWindowIcon(QIcon("./Image/Icon/worker.png"))
         self.label_3.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">CHECKING </span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">ATTENDANCE</span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">WIDGET</span></p><p align=\"center\"><span style=\" font-size:9pt;\">Cre: Nguyen-Hieu</span></p></body></html>"))
         self.label_5.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">IMAGES PROCESSING</span></p></body></html>"))
         self.label_6.setText(_translate("Form", "<html><head/><body><p><span style=\" font-weight:600;\">CAPTURE IMAGE</span></p></body></html>"))
