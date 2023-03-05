@@ -17,7 +17,7 @@ class Ui_Form(object):
         Form.resize(1024, 600)
         Form.setStyleSheet("")
         self.camera = QtWidgets.QLabel(Form)
-        self.camera.setGeometry(QtCore.QRect(0, 0, 871, 551))
+        self.camera.setGeometry(QtCore.QRect(140, 0, 731, 551))
         self.camera.setStyleSheet("border: 2px solid black;\n"
 "")
         self.camera.setText("")
@@ -70,6 +70,13 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+
+
+    def ImageUpdateShot(self, Image):
+        self.camera.setPixmap(QPixmap.fromImage(Image))
+
+    def ButtonActivation(self,function):
+        self.pushButton.clicked.connect(function)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
