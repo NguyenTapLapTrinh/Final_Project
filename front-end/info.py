@@ -97,7 +97,8 @@ class Ui_Form(object):
         self.label.setObjectName("label")
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
+    def ButtonActivation(self,function):
+        self.pushButton.clicked.connect(function)
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
@@ -109,6 +110,7 @@ class Ui_Form(object):
         self.label_16.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">RESULT:</span></p></body></html>"))
         self.pushButton.setText(_translate("Form", "OK"))
         self.label.setText(_translate("Form", "PHOTO"))
+
 
 
 

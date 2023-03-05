@@ -12,9 +12,9 @@ import util
 import worker
 import camera
 import yolo_detection
+import info
 
 
-file_path = ""
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -27,6 +27,8 @@ months = ["January", "February", "March", "April", "May", "June", "July", "Augus
 yolo = yolo_detection.Yolo(classes)
 yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg")
 
+def closeWidget():
+    widget_2.close()
 
 def button():
     global number
@@ -46,6 +48,7 @@ def button():
                 leng -= 1
 
     ts.start_sound(string,"Ngô Trung Nguyên ")
+    widget_2.show()
 
 
 if os.path.exists("report"):
@@ -64,11 +67,18 @@ FPS = 0
 
 #Show Gui
 app = QtWidgets.QApplication(sys.argv)
-Form = QtWidgets.QWidget()
+widget_1 = QtWidgets.QWidget()
 Form_1 = worker.Ui_Form()
-Form_1.setupUi(Form)
+Form_1.setupUi(widget_1)
 Form_1.ButtonActivation(button)
-Form.show()
+widget_1.show()
+
+widget_2 = QtWidgets.QWidget()
+Form_2 = info.Ui_Form()
+Form_2.setupUi(widget_2)
+Form_2.ButtonActivation(closeWidget)
+
+
 
 while True:
     _, frame = cap.read()
