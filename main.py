@@ -33,12 +33,20 @@ def closeWidget():
 def button():
     global number
     time_now = datetime.datetime.now().time()
+    Form_1.progressBar.setProperty("value", 10)
+    sleep(0.5)
     time_str = time_now.strftime("%H:%M:%S")
+    Form_1.progressBar.setProperty("value", 30)
+    sleep(0.5)
     empty = yolo.objectDetect()
-    report.write_report(file_path,str(number),"Ngô Trung Nguyên",time_str,empty)
+    Form_1.progressBar.setProperty("value", 60)
+    sleep(0.5)
+    note = report.write_report(file_path,str(number),"Ngô Trung Nguyên",time_str,empty)
     number +=1
     string = "có đầy đủ bảo hộ"
     leng = len(empty)
+    Form_1.progressBar.setProperty("value", 80)
+    sleep(0.5)
     if leng > 0:
         string = "Không có "
         for i in empty:
@@ -46,10 +54,25 @@ def button():
             if leng > 1:
                 string += "và "
                 leng -= 1
-
+    Form_1.progressBar.setProperty("value", 100)
+    sleep(0.5)
     ts.start_sound(string,"Ngô Trung Nguyên ")
+    Form_2.updateResult(note)
+    Form_2.setName("Ngô Trung Nguyên")
+    Form_2.setTime(time_str)
+    Form_2.setDate(date_str)
+    Form_2.updateHelmet(0)
+    Form_2.updateVest(0)
+    Form_2.updateGlove(0)
+    for i in empty:
+        if i == 0:
+            Form_2.updateHelmet(1)
+        elif i == 1:
+            Form_2.updateVest(1)
+        elif i == 2:
+            Form_2.updateGlove(1)
     widget_2.show()
-
+    Form_1.progressBar.setProperty("value", 0)
 
 if os.path.exists("report"):
     pass

@@ -30,7 +30,9 @@ class Ui_Form(object):
         self.label_3.setGeometry(QtCore.QRect(410, 20, 261, 31))
         self.label_3.setObjectName("label_3")
         self.name = QtWidgets.QLabel(Form)
-        self.name.setGeometry(QtCore.QRect(100, 506, 321, 41))
+        self.name.setGeometry(QtCore.QRect(100, 504, 321, 41))
+        self.name.setStyleSheet("font-size: 20px;\n"
+"font-weight: 600")
         self.name.setObjectName("name")
         self.label_5 = QtWidgets.QLabel(Form)
         self.label_5.setGeometry(QtCore.QRect(440, 80, 541, 421))
@@ -42,12 +44,17 @@ class Ui_Form(object):
         self.label_6.setObjectName("label_6")
         self.day = QtWidgets.QLabel(Form)
         self.day.setGeometry(QtCore.QRect(540, 90, 211, 31))
+        self.day.setStyleSheet("font-size: 24px;\n"
+"font-weight: 600")
         self.day.setObjectName("day")
         self.label_8 = QtWidgets.QLabel(Form)
         self.label_8.setGeometry(QtCore.QRect(450, 125, 91, 61))
         self.label_8.setObjectName("label_8")
         self.time = QtWidgets.QLabel(Form)
-        self.time.setGeometry(QtCore.QRect(550, 144, 111, 31))
+        self.time.setGeometry(QtCore.QRect(550, 138, 111, 31))
+        self.time.setStyleSheet("\n"
+"font-size: 24px;\n"
+"font-weight: 600;")
         self.time.setObjectName("time")
         self.label_11 = QtWidgets.QLabel(Form)
         self.label_11.setGeometry(QtCore.QRect(450, 230, 521, 261))
@@ -73,6 +80,8 @@ class Ui_Form(object):
         self.label_16.setObjectName("label_16")
         self.label_17 = QtWidgets.QLabel(Form)
         self.label_17.setGeometry(QtCore.QRect(550, 420, 241, 41))
+        self.label_17.setStyleSheet("font-size: 20px;\n"
+"font-weight: 600")
         self.label_17.setObjectName("label_17")
         self.pushButton = QtWidgets.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(650, 520, 171, 61))
@@ -99,10 +108,41 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
     def ButtonActivation(self,function):
         self.pushButton.clicked.connect(function)
+
+    def setName(self,name):
+        self.name.setText(name)
+
+    def setTime(self,time):
+        self.time.setText(time)
+
+    def setDate(self,day):
+        self.day.setText(day)
+
+    def updateHelmet(self,isempty):
+        color = "green"
+        if isempty == 1:
+            color = "red"
+        self.helmet.setStyleSheet("image: url(Img/Icon/helmet.png);\n""background: "+ color+ ";")
+
+    def updateVest(self,isempty):
+        color = "green"
+        if isempty == 1:
+            color = "red"
+        self.vest.setStyleSheet("image: url(Img/Icon/vest.png);\n""background: "+ color+ ";")
+
+    def updateGlove(self,isempty):
+        color = "green"
+        if isempty == 1:
+            color = "red"
+        self.glove.setStyleSheet("image: url(Img/Icon/gloves.png);\n""background: "+ color+ ";")
+
+    def updateResult(self,note):
+        self.label_17.setText(note)
+
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Infomation"))
-        Form.setWindowIcon(QIcon("./Image/Icon/worker.png"))
+        Form.setWindowIcon(QIcon("./Img/Icon/worker.png"))
         self.label_2.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">Name:</span></p></body></html>"))
         self.label_3.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">WORKER INFORMATION</span></p></body></html>"))
         self.label_6.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">DAY IN:</span></p></body></html>"))
