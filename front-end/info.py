@@ -109,13 +109,13 @@ class Ui_Form(object):
     def ButtonActivation(self,function):
         self.pushButton.clicked.connect(function)
 
-    def setName(self,name):
+    def updateName(self,name):
         self.name.setText(name)
 
-    def setTime(self,time):
+    def updateTime(self,time):
         self.time.setText(time)
 
-    def setDate(self,day):
+    def updateDate(self,day):
         self.day.setText(day)
 
     def updateHelmet(self,isempty):
@@ -138,6 +138,9 @@ class Ui_Form(object):
 
     def updateResult(self,note):
         self.label_17.setText(note)
+
+    def updateWorkerPhoto(self,photo):
+        self.photo.setStyleSheet("image: url(Img/worker_img/"+photo+".jpg);\n")
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

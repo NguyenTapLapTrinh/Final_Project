@@ -49,4 +49,6 @@ class Yolo():
                 continue
         
         return empty
-        
+    
+    def getFrame(self):
+        return self.frame

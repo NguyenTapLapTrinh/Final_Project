@@ -28,7 +28,7 @@ def write_report(file_path, stt, name, time, list_data):
 def edit_report(file_path, name, time, list_data):
     helmet, vest, glove, note = parse_list(list_data)
     rows = []
-
+    find = False
     with open(file_path, 'r') as csv_file:
         reader = csv.reader(csv_file)    
         # Loop through each row in the CSV file
@@ -41,16 +41,17 @@ def edit_report(file_path, name, time, list_data):
                 row[4] = vest
                 row[5] = glove
                 row[6] = note
+                find = True
             
             # Add the row to the list of updated data
             rows.append(row)
-
-    with open(file_path, 'w', newline='') as csv_file:
-        writer = csv.writer(csv_file)
-        for line in rows:
-            writer.writerow(line)   
+    if find:
+        with open(file_path, 'w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            for line in rows:
+                writer.writerow(line)   
     
-    return note
+    return find,note
 
 
 def parse_list(list):
@@ -66,14 +67,12 @@ def parse_list(list):
             helmet = "No"
             device -=1
             continue
-        if i == 1:
+        elif i == 1:
             vest = "No"
             device -=1
-            continue
-        if i == 2:
+        elif i == 2:
             glove = "No"
             device -=1
-            continue
 
     if device != 3:
         note = "Not safety"        

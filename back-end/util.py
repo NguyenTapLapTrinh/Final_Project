@@ -18,7 +18,6 @@ def recognize(img, db_path):
     j = 0
     while not match and j < len(db_dir):
         path_ = os.path.join(db_path, db_dir[j])
-
         file = open(path_, 'rb')
         embeddings = pickle.load(file)
 

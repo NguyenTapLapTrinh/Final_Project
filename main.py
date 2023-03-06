@@ -30,40 +30,15 @@ yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg
 def closeWidget():
     widget_2.close()
 
-def button():
-    global number
-    time_now = datetime.datetime.now().time()
-    Form_1.progressBar.setProperty("value", 10)
-    sleep(0.5)
-    time_str = time_now.strftime("%H:%M:%S")
-    Form_1.progressBar.setProperty("value", 30)
-    sleep(0.5)
-    empty = yolo.objectDetect()
-    Form_1.progressBar.setProperty("value", 60)
-    sleep(0.5)
-    note = report.write_report(file_path,str(number),"Ngô Trung Nguyên",time_str,empty)
-    number +=1
-    string = "có đầy đủ bảo hộ"
-    leng = len(empty)
-    Form_1.progressBar.setProperty("value", 80)
-    sleep(0.5)
-    if leng > 0:
-        string = "Không có "
-        for i in empty:
-            string = string + classes_vn[i] + " "
-            if leng > 1:
-                string += "và "
-                leng -= 1
-    Form_1.progressBar.setProperty("value", 100)
-    sleep(0.5)
-    ts.start_sound(string,"Ngô Trung Nguyên ")
+def updateWidget(note,name,time,date,empty):
     Form_2.updateResult(note)
-    Form_2.setName("Ngô Trung Nguyên")
-    Form_2.setTime(time_str)
-    Form_2.setDate(date_str)
+    Form_2.updateName(name)
+    Form_2.updateTime(time)
+    Form_2.updateDate(date)
     Form_2.updateHelmet(0)
     Form_2.updateVest(0)
     Form_2.updateGlove(0)
+    Form_2.updateWorkerPhoto(name)
     for i in empty:
         if i == 0:
             Form_2.updateHelmet(1)
@@ -71,13 +46,40 @@ def button():
             Form_2.updateVest(1)
         elif i == 2:
             Form_2.updateGlove(1)
+
+def button():
+    global number
+    time_now = datetime.datetime.now().time()
+    time_str = time_now.strftime("%H:%M:%S")
+    frame_process = yolo.getFrame()
+    empty = yolo.objectDetect()
+    name = util.recognize(frame_process, './db')
+    find,note = report.edit_report(file_path,name,time_str,empty)
+    if not find: 
+        note = report.write_report(file_path,str(number),name,time_str,empty)
+    number +=1
+    string = "có đầy đủ bảo hộ"
+    leng = len(empty)
+    if leng > 0:
+        string = "Không có "
+        for i in empty:
+            string = string + classes_vn[i] + " "
+            if leng > 1:
+                string += "và "
+                leng -= 1
+    
+    updateWidget(note,name,time_str,date_str,empty)
     widget_2.show()
-    Form_1.progressBar.setProperty("value", 0)
+    ts.start_sound(string,"Ngô Trung Nguyên ")
 
 if os.path.exists("report"):
     pass
 else:
     os.mkdir("report")
+
+db_dir = './db'
+if not os.path.exists(db_dir):
+    os.mkdir(db_dir)
 
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -104,8 +106,10 @@ Form_2.ButtonActivation(closeWidget)
 
 
 while True:
-    _, frame = cap.read()
+    #_, frame = cap.read()
+    frame = cv2.imread("Img/data_test/ST.jpg")
     height, width, channels = frame.shape
+ 
     yolo.setVar(frame,width,height)
 
     fc+=1
@@ -147,11 +151,11 @@ while True:
     video = camera.Video()
     video.ImageUpdate.connect(Form_1.ImageUpdateShot)
     video.process(frame)
-    #report.edit_report(file_path,"Ngô Trung Nguyên",time_str,[2])
+    
 
     key = cv2.waitKey(1)
     if key == 27:
         break
 
-frame.release()
+cap.release()
 cv2.destroyAllWindows()
