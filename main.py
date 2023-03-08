@@ -70,7 +70,7 @@ def button():
     
     updateWidget(note,name,time_str,date_str,empty)
     widget_2.show()
-    ts.start_sound(string,"Ngô Trung Nguyên ")
+    ts.start_sound(string,name+" ")
 
 if os.path.exists("report"):
     pass
@@ -106,8 +106,8 @@ Form_2.ButtonActivation(closeWidget)
 
 
 while True:
-    #_, frame = cap.read()
-    frame = cv2.imread("Img/data_test/ST.jpg")
+    _, frame = cap.read()
+    #frame = cv2.imread("Img/data_test/SonTung.jpg")
     height, width, channels = frame.shape
  
     yolo.setVar(frame,width,height)

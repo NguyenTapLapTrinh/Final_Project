@@ -3,7 +3,7 @@ import time
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect(("localhost", 5000))
 #file_name = input("Enter file name: ")
-file_name = "index.html"
+file_name = "README.md"
 filetosend = open(file_name, "rb")
 client_socket.send(file_name)
 time.sleep(1)
