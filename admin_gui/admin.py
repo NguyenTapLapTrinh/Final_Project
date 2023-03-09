@@ -10,7 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon
-
+import socket
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
