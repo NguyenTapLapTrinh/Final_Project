@@ -11,7 +11,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 import cv2
-
+from PyQt5.QtCore import Qt
 #import images_2
 
 class Ui_Form(object):
@@ -143,8 +143,8 @@ class Ui_Form(object):
         frame = cv2.imread("Img/worker_img/"+photo+".jpg")
         Image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-        Pic = ConvertToQTFormat.scaled(731, 551, Qt.KeepAspectRatio)
-        self.camera.setPixmap(QPixmap.fromImage(Pic))
+        Pic = ConvertToQTFormat.scaled(291, 361)
+        self.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

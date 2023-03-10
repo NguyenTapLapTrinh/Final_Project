@@ -27,7 +27,7 @@ def recognize(img, db_path):
     if match:
         return db_dir[j - 1][:-7]
     else:
-        return 'unknown_person'
+        return 'Unknown_person'
 
 
 def face_detect(frame):

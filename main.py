@@ -1,7 +1,9 @@
 import sys
 sys.path.append("./back-end")
 sys.path.append("./front-end")
+sys.path.append("./admin_gui")
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 import cv2
 from time import *
 import os
@@ -16,7 +18,8 @@ import info
 import threading
 import pickle
 import socket
-
+import subprocess
+import admin
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -56,6 +59,14 @@ def button():
     frame_process = yolo.getFrame()
     empty = yolo.objectDetect()
     name = util.recognize(frame_process, './db')
+    if name == "no_persons_found":
+        dlg = QMessageBox()
+        dlg.setIcon(QMessageBox.Warning)
+        dlg.setText("No person found!   ")
+        dlg.setWindowTitle("            Info          ")
+        dlg.setStandardButtons(QMessageBox.Ok)
+        dlg.exec()
+        return 
     find,note = report.edit_report(file_path,name,time_str,empty)
     if not find: 
         note = report.write_report(file_path,str(number),name,time_str,empty)
@@ -85,7 +96,7 @@ def ThreadServer():
     #server_socket.settimeout(3)
     file_name = client_socket.recv(1024)
     file_name = file_name.decode()
-    file_name = "Img/worker_img/" + file_name 
+    file_name = "Img/worker_img/" + file_name
     filetodown = open(file_name, "wb")
     while True:
         print("Receiving Image....")
@@ -140,8 +151,11 @@ Form_1.ButtonActivation(button)
 widget_1.show()
 
 widget_2 = QtWidgets.QWidget()
+widget_3 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
+Form_3 = admin.Ui_Form()
+Form_3.setupUi(widget_3)
 Form_2.ButtonActivation(closeWidget)
 
 while True:
