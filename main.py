@@ -15,6 +15,8 @@ import yolo_detection
 import info
 import threading
 import pickle
+import socket
+
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -73,47 +75,41 @@ def button():
     ts.start_sound(string,name+" ")
 #Thread
 def ThreadServer():
-    import socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setblocking(0)
-    #server_socket.settimeout(0)
+    #server_socket.setblocking(1)
+    
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind(("localhost", 5000))
     server_socket.listen(1)
-    try:
-        client_socket,a = server_socket.accept()
-    except:
-        server_socket.close()
-    else:
-        file_name = client_socket.recv(1024)
-        file_name = file_name.decode()
-        file_name = "Img/worker_img/" + file_name 
-        filetodown = open(file_name, "wb")
-        while True:
-            print("Receiving Image....")
-            data = client_socket.recv(1024)
-            try:
-                data.decode() 
-            except:
-                filetodown.write(data)
-            else:
-                if data.decode() == "Done":
-                    break    
-            filetodown.close()
-            list_data = []
-            print("Start pickle....")
-        while True:
-            print("Reciving Pickle...")
-            data = client_socket.recv(1024)
-            if len(data.decode()) == 0:
-                break
-            data = float(data.decode())
-            list_data.append(data)
-        print(list_data)
-        with open("db/Nguyen.pickle", "wb") as file:
-            pickle.dump(list_data, file )
-        print("Done Reciving...")
+    client_socket,a = server_socket.accept()
+    #server_socket.settimeout(3)
+    file_name = client_socket.recv(1024)
+    file_name = file_name.decode()
+    file_name = "Img/worker_img/" + file_name 
+    filetodown = open(file_name, "wb")
+    while True:
+        print("Receiving Image....")
+        data = client_socket.recv(1024)
+        print(data)
+        if data == b"Done":
+            break   
+        filetodown.write(data) 
+    filetodown.close()
+    list_data = []
+    print("Start pickle....")
+    while True:
+        print("Receiving Pickle...")
+        data = client_socket.recv(1024)
+        if len(data.decode()) == 0:
+            break
+        data = float(data.decode())
+        list_data.append(data)
+    print(list_data)
+    with open("db/Nguyen.pickle", "wb") as file:
+        pickle.dump(list_data, file )
+    print("Done Reciving...")
     #server_socket.shutdown(2)
+    server_socket.close()
 if os.path.exists("report"):
     pass
 else:
@@ -132,6 +128,9 @@ display_time = 2
 fc = 0
 FPS = 0
 
+thread = threading.Thread(target=ThreadServer)
+thread.start()
+
 #Show Gui
 app = QtWidgets.QApplication(sys.argv)
 widget_1 = QtWidgets.QWidget()
@@ -144,8 +143,6 @@ widget_2 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
 Form_2.ButtonActivation(closeWidget)
-
-
 
 while True:
     _, frame = cap.read()
@@ -194,8 +191,6 @@ while True:
     video.ImageUpdate.connect(Form_1.ImageUpdateShot)
     video.process(frame)
     
-    thread = threading.Thread(target=ThreadServer())
-    thread.start()
     key = cv2.waitKey(1)
     if key == 27:
         break

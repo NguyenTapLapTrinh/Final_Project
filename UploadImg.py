@@ -37,10 +37,12 @@ if __name__ == "__main__":
     while data1:
         print("Sending Image...")
         client_socket.send(data1)
+        time.sleep(0.1)
         data1 = filetosend.read(1024)
     filetosend.close()
     string = "Done"
     client_socket.send(string.encode())
+    time.sleep(0.1)
     for i in embeddings:
         data_string = str(i)
         print(data_string)
