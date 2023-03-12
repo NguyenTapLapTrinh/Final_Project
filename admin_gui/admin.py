@@ -10,16 +10,13 @@
 import sys
 sys.path.append("./back-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtWidgets import QMessageBox,QApplication, QMainWindow, QPushButton
 from PyQt5.QtCore import QCoreApplication
 import os
-import subprocess
-import glob
 import socket
 from tkinter import filedialog
 import face_recognition
-import pickle
 import cv2
 import socket
 import time
@@ -93,7 +90,54 @@ class Ui_Form(object):
         self.file_path=""
     def addImage(self):
         self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
-        self.photo.setStyleSheet("border: 2px solid black;\n""image: url(" + self.file_path + ");")
+        img = cv2.imread(self.file_path)
+        Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
+        Pic = ConvertToQTFormat.scaled(591, 531)
+        self.photo.setPixmap(QPixmap.fromImage(Pic))
+    def TransmitImg(self, input_employ, request):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(("localhost", 5000))
+        if request==0:
+                name_file = input_employ + ".jpg"
+                new_file_path = os.path.join(os.path.dirname(self.file_path), name_file)
+                os.rename(self.file_path, new_file_path)
+                print(new_file_path)
+                frame = cv2.imread(new_file_path)
+                embeddings = face_recognition.face_encodings(frame)[0]
+                #Send string
+                Trans = "Send"
+                client_socket.send(Trans.encode())
+                file_name = new_file_path
+                filetosend = open(file_name, "rb")
+                client_socket.send(file_name.encode())
+                time.sleep(0.01)
+                data1 = filetosend.read(1024)
+                while data1:
+                        client_socket.send(data1)
+                        time.sleep(0.01)
+                        data1 = filetosend.read(1024)
+                filetosend.close()
+                string = "Done"
+                client_socket.send(string.encode())
+                time.sleep(0.01)
+                for i in embeddings:
+                        data_string = str(i)
+                        client_socket.send(data_string.encode())
+                        time.sleep(0.01)
+                print("Done Sending.")
+                self.dlg = QMessageBox()
+                self.dlg.setIcon(QMessageBox.Information)
+                self.dlg.setText("Sucessfully              ")
+                self.dlg.setWindowTitle("Info")
+                self.dlg.setStandardButtons(QMessageBox.Ok)
+                self.dlg.exec()
+        else:
+                Trans = "Remove"
+                client_socket.send(Trans.encode())
+                time.sleep(0.01)
+                client_socket.send(input_employ.encode())
+        client_socket.close()
     def addEmploy(self):
         input_employ = self.input_name.text()
         if input_employ == "" or self.file_path=="":
@@ -105,34 +149,7 @@ class Ui_Form(object):
                 self.dlg.exec()
                 return 
         else:
-                name_file = input_employ + ".jpg"
-                new_file_path = os.path.join(os.path.dirname(self.file_path), name_file)
-                os.rename(self.file_path, new_file_path)
-                frame = cv2.imread(new_file_path)
-                embeddings = face_recognition.face_encodings(frame)[0]
-                client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client_socket.connect(("localhost", 5000))
-                file_name = new_file_path
-                filetosend = open(file_name, "rb")
-                client_socket.send(file_name.encode())
-                time.sleep(1)
-                data1 = filetosend.read(1024)
-                while data1:
-                        print("Sending Image...")
-                        client_socket.send(data1)
-                        time.sleep(0.1)
-                        data1 = filetosend.read(1024)
-                filetosend.close()
-                string = "Done"
-                client_socket.send(string.encode())
-                time.sleep(0.1)
-                for i in embeddings:
-                        data_string = str(i)
-                        print(data_string)
-                        client_socket.send(data_string.encode())
-                        time.sleep(0.1)
-                print("Done Sending.")
-                client_socket.close()
+                self.TransmitImg(input_employ,0)
     def rmEmploy(self):
         input_employ = self.input_name.text()
         if input_employ == "":
@@ -143,33 +160,14 @@ class Ui_Form(object):
                 self.dlg.setStandardButtons(QMessageBox.Ok)
                 self.dlg.exec()
                 return
-        check=0
-        check_path = "Img/worker_img/"
-        files = os.listdir(check_path)
-        for file in files:
-                if file.endswith(".jpg"):
-                        file_name = os.path.splitext(file)[0]
-                        if input_employ == file_name:
-                             check=1
-        if check==1:
-                file_path = "Img/worker_img/" + input_employ +".jpg"
-                pickle_path = "db/" + input_employ +".pickle"
-                os.remove(file_path)
-                os.remove(pickle_path)
-                self.dlg = QMessageBox()
-                self.dlg.setIcon(QMessageBox.Information)
-                self.dlg.setText(input_employ + "has been deleted              ")
-                self.dlg.setWindowTitle("Info")
-                self.dlg.setStandardButtons(QMessageBox.Ok)
-                self.dlg.exec() 
-        else: 
-                self.dlg = QMessageBox()
-                self.dlg.setIcon(QMessageBox.Warning)
-                self.dlg.setText("Not have this employee!              ")
-                self.dlg.setWindowTitle("Info")
-                self.dlg.setStandardButtons(QMessageBox.Ok)
-                self.dlg.exec()
-                return  
+        print(input_employ)
+        self.TransmitImg(input_employ, 1)
+        self.dlg = QMessageBox()
+        self.dlg.setIcon(QMessageBox.Warning)
+        self.dlg.setText("Not have this employee!              ")
+        self.dlg.setWindowTitle("Info")
+        self.dlg.setStandardButtons(QMessageBox.Ok)
+        self.dlg.exec()
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Employee Management"))
@@ -177,7 +175,6 @@ class Ui_Form(object):
         self.add_employ.setText(_translate("Form", "Add Employee"))
         self.add_photo.setText(_translate("Form", "Add Photo"))
         self.label_2.setText(_translate("Form", "Employee Name"))
-        self.label_3.setToolTip(_translate("Form", "<html><head/><body><p><span style=\" font-size:20pt;\">UPDATE </span></p><p><span style=\" font-size:20pt;\">EMPLOYEE INFO</span></p></body></html>"))
         self.label_3.setText(_translate("Form", "EMPLOYEE MANAGEMENT"))
         self.remove_employ.setText(_translate("Form", "Remove Employee"))
         self.close_btn.setText(_translate("Form", "Close"))

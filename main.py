@@ -95,36 +95,46 @@ def ThreadServer():
         server_socket.listen(1)
         client_socket,a = server_socket.accept()
         #server_socket.settimeout(3)
-        file_name = client_socket.recv(1024)
-        file_name = file_name.decode()
-        file_name = os.path.basename(file_name)
-        file_name = "Img/worker_img/" + file_name
-        filetodown = open(file_name, "wb")
-        while True:
-            print("Receiving Image....")
-            data = client_socket.recv(1024)
-            print(data)
-            if data == b"Done":
-                break   
-            filetodown.write(data) 
-        filetodown.close()
-        file_name = os.path.basename(file_name)
-        file_name, file_name_ext = os.path.splitext(file_name)
-        print(file_name)
-        list_data = []
-        print("Start pickle....")
-        while True:
-            print("Receiving Pickle...")
-            data = client_socket.recv(1024)
-            if len(data.decode()) == 0:
-                break
-            data = float(data.decode())
-            list_data.append(data)
-        print(list_data)
-        with open("db/" + file_name +".pickle", "wb") as file:
-            pickle.dump(list_data, file)
-        print("Done Reciving...")
+        request_data = client_socket.recv(1024)
+        request = request_data.decode()
+        print(request)
+        if request == b"Send":
+            file_name = client_socket.recv(1024)
+            file_name = file_name.decode()
+            print(file_name)
+            file_name = os.path.basename(file_name)
+            file_name = "Img/worker_img/" + file_name
+            filetodown = open(file_name, "wb")
+            while True:
+                print("Receiving Image....")
+                data = client_socket.recv(1024)
+                if data == b"Done":
+                    break   
+                filetodown.write(data) 
+            filetodown.close()
+            file_name = os.path.basename(file_name)
+            file_name, file_name_ext = os.path.splitext(file_name)
+            list_data = []
+            print("Start pickle....")
+            while True:
+                print("Receiving Pickle...")
+                data = client_socket.recv(1024)
+                if len(data.decode()) == 0:
+                    break
+                data = float(data.decode())
+                list_data.append(data)
+            print(list_data)
+            with open("db/" + file_name +".pickle", "wb") as file:
+                pickle.dump(list_data, file)
+            print("Done Reciving...")
         #server_socket.shutdown(2)
+        elif request == b"Remove":
+            file_name = client_socket.recv(1024)
+            file_remove = file_name.decode()
+            print(file_name)
+            os.remove("db/" + file_remove + ".pickle")
+            sleep(0.01)
+            os.remove("Img/worker_img/" + file_remove + ".jpg")
         server_socket.close()
 if os.path.exists("report"):
     pass
