@@ -86,41 +86,46 @@ def button():
     ts.start_sound(string,name+" ")
 #Thread
 def ThreadServer():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #server_socket.setblocking(1)
-    
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind(("localhost", 5000))
-    server_socket.listen(1)
-    client_socket,a = server_socket.accept()
-    #server_socket.settimeout(3)
-    file_name = client_socket.recv(1024)
-    file_name = file_name.decode()
-    file_name = "Img/worker_img/" + file_name
-    filetodown = open(file_name, "wb")
     while True:
-        print("Receiving Image....")
-        data = client_socket.recv(1024)
-        print(data)
-        if data == b"Done":
-            break   
-        filetodown.write(data) 
-    filetodown.close()
-    list_data = []
-    print("Start pickle....")
-    while True:
-        print("Receiving Pickle...")
-        data = client_socket.recv(1024)
-        if len(data.decode()) == 0:
-            break
-        data = float(data.decode())
-        list_data.append(data)
-    print(list_data)
-    with open("db/Nguyen.pickle", "wb") as file:
-        pickle.dump(list_data, file )
-    print("Done Reciving...")
-    #server_socket.shutdown(2)
-    server_socket.close()
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #server_socket.setblocking(1)
+        
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind(("localhost", 5000))
+        server_socket.listen(1)
+        client_socket,a = server_socket.accept()
+        #server_socket.settimeout(3)
+        file_name = client_socket.recv(1024)
+        file_name = file_name.decode()
+        file_name = os.path.basename(file_name)
+        file_name = "Img/worker_img/" + file_name
+        filetodown = open(file_name, "wb")
+        while True:
+            print("Receiving Image....")
+            data = client_socket.recv(1024)
+            print(data)
+            if data == b"Done":
+                break   
+            filetodown.write(data) 
+        filetodown.close()
+        file_name = os.path.basename(file_name)
+        file_name, file_name_ext = os.path.splitext(file_name)
+        print(file_name)
+        list_data = []
+        print("Start pickle....")
+        while True:
+            print("Receiving Pickle...")
+            data = client_socket.recv(1024)
+            if len(data.decode()) == 0:
+                break
+            data = float(data.decode())
+            list_data.append(data)
+        print(list_data)
+        with open("db/" + file_name +".pickle", "wb") as file:
+            pickle.dump(list_data, file)
+        print("Done Reciving...")
+        #server_socket.shutdown(2)
+        server_socket.close()
 if os.path.exists("report"):
     pass
 else:

@@ -105,12 +105,14 @@ class Ui_Form(object):
                 self.dlg.exec()
                 return 
         else:
-                name = input_employ+".jpg"
-                frame = cv2.imread(name)
+                name_file = input_employ + ".jpg"
+                new_file_path = os.path.join(os.path.dirname(self.file_path), name_file)
+                os.rename(self.file_path, new_file_path)
+                frame = cv2.imread(new_file_path)
                 embeddings = face_recognition.face_encodings(frame)[0]
                 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 client_socket.connect(("localhost", 5000))
-                file_name = name
+                file_name = new_file_path
                 filetosend = open(file_name, "rb")
                 client_socket.send(file_name.encode())
                 time.sleep(1)
