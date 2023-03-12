@@ -98,13 +98,12 @@ def ThreadServer():
         request_data = client_socket.recv(1024)
         request = request_data.decode()
         print(request)
-        if request == b"Send":
+        if request == "Send":
             file_name = client_socket.recv(1024)
             file_name = file_name.decode()
             print(file_name)
-            file_name = os.path.basename(file_name)
-            file_name = "Img/worker_img/" + file_name
-            filetodown = open(file_name, "wb")
+            file_img = "Img/worker_img/" + file_name
+            filetodown = open(file_img + ".jpg", "wb")
             while True:
                 print("Receiving Image....")
                 data = client_socket.recv(1024)
@@ -112,8 +111,6 @@ def ThreadServer():
                     break   
                 filetodown.write(data) 
             filetodown.close()
-            file_name = os.path.basename(file_name)
-            file_name, file_name_ext = os.path.splitext(file_name)
             list_data = []
             print("Start pickle....")
             while True:
@@ -128,14 +125,20 @@ def ThreadServer():
                 pickle.dump(list_data, file)
             print("Done Reciving...")
         #server_socket.shutdown(2)
-        elif request == b"Remove":
+        elif request == "Remove":
             file_name = client_socket.recv(1024)
             file_remove = file_name.decode()
-            print(file_name)
-            os.remove("db/" + file_remove + ".pickle")
-            sleep(0.01)
-            os.remove("Img/worker_img/" + file_remove + ".jpg")
-        server_socket.close()
+            file_img = "Img/worker_img/" + file_remove
+            print(file_img)
+            existFile = os.path.exists(file_img + ".jpg")
+            if not existFile:
+                client_socket.send(b"False")
+            else:
+                client_socket.send(b"True")
+                os.remove("db/" + file_remove + ".pickle")
+                sleep(0.01)
+                os.remove("Img/worker_img/" + file_remove + ".jpg")
+            server_socket.close()
 if os.path.exists("report"):
     pass
 else:
