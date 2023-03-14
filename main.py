@@ -104,22 +104,19 @@ def ThreadServer():
             print(file_name)
             file_img = "Img/worker_img/" + file_name
             filetodown = open(file_img + ".jpg", "wb")
+            print("Receiving Image....")
             while True:
-                print("Receiving Image....")
                 data = client_socket.recv(1024)
                 if data == b"Done":
                     break   
                 filetodown.write(data) 
             filetodown.close()
             list_data = []
-            print("Start pickle....")
-            while True:
-                print("Receiving Pickle...")
-                data = client_socket.recv(1024)
-                if len(data.decode()) == 0:
-                    break
-                data = float(data.decode())
-                list_data.append(data)
+            print("Receiving Pickle...")
+            data = client_socket.recv(1024)
+            data = data.decode()
+            data = data.split("_")
+            list_data = data
             print(list_data)
             with open("db/" + file_name +".pickle", "wb") as file:
                 pickle.dump(list_data, file)
