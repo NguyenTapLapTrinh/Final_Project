@@ -23,11 +23,11 @@ import cv2
 import socket
 import time
 import msg
+from tkinter import Tk
+from define import *
 
 
 
-Add = 0
-Remove = 1
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -97,17 +97,24 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.file_path=""
+
     def addImage(self):
+        root = Tk()
         self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
+        root.destroy()
+        if self.file_path == "":
+              return
         img = cv2.imread(self.file_path)
         Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
         Pic = ConvertToQTFormat.scaled(591, 531)
         self.photo.setPixmap(QPixmap.fromImage(Pic))
+
     def TransmitImg(self, input_employ, request):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect(("localhost", 5000))
-        if request==0:
+
+        if request == CMD.ADD:
                 frame = cv2.imread(self.file_path)
                 embeddings = face_recognition.face_encodings(frame)[0]
                 #Send string
@@ -134,7 +141,8 @@ class Ui_Form(object):
                 time.sleep(0.01)
                 print("Done Sending.")
                 msg.ShowMsg("Info","Sucessfully")
-        else:
+
+        elif CMD.DEL:
                 Trans = "Remove"
                 client_socket.send(Trans.encode())
                 time.sleep(0.01)
@@ -145,13 +153,15 @@ class Ui_Form(object):
                       return
                 client_socket.send(input_employ.encode())
         client_socket.close()
+
     def addEmploy(self):
         input_employ = self.input_name.text()
         if input_employ == "" or self.file_path=="":
                 msg.ShowMsg("Info","Please check again!")
                 return 
         else:
-                self.TransmitImg(input_employ,Add)
+                input_employ = input_employ.replace(" ","_")
+                self.TransmitImg(input_employ,CMD.ADD)
 
     def rmEmploy(self):
         input_employ = self.input_name.text()
@@ -159,7 +169,7 @@ class Ui_Form(object):
                 msg.ShowMsg("Info","Please check again!")
                 return
         print(input_employ)
-        self.TransmitImg(input_employ, Remove)
+        self.TransmitImg(input_employ, CMD.DEL)
        
 
     def retranslateUi(self, Form):
