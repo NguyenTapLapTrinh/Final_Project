@@ -126,10 +126,12 @@ class Ui_Form(object):
                 string = "Done"
                 client_socket.send(string.encode())
                 time.sleep(0.01)
+                data_string = ""
                 for i in embeddings:
-                        data_string = str(i)
-                        client_socket.send(data_string.encode())
-                        time.sleep(0.01)
+                        data_string = data_string + str(i) + "_"
+
+                client_socket.send(data_string.encode())
+                time.sleep(0.01)
                 print("Done Sending.")
                 msg.ShowMsg("Info","Sucessfully")
         else:
