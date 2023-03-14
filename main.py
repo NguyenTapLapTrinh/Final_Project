@@ -20,6 +20,7 @@ import pickle
 import socket
 import subprocess
 import admin
+import unidecode
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -35,9 +36,11 @@ yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg
 def closeWidget():
     widget_2.close()
 
-def updateWidget(note,name,time,date,empty):
+def updateWidget(note,name,unicode_name,time,date,empty):
+    print(name)
+    print(unicode_name)
     Form_2.updateResult(note)
-    Form_2.updateName(name)
+    Form_2.updateName(unicode_name)
     Form_2.updateTime(time)
     Form_2.updateDate(date)
     Form_2.updateHelmet(0)
@@ -58,7 +61,11 @@ def button():
     time_str = time_now.strftime("%H:%M:%S")
     frame_process = yolo.getFrame()
     empty = yolo.objectDetect()
-    name = util.recognize(frame_process, './db')
+    try:
+        name = util.recognize(frame_process, './db')
+    except:
+        print("False")
+        return
     if name == "no_persons_found":
         dlg = QMessageBox()
         dlg.setIcon(QMessageBox.Warning)
@@ -66,10 +73,20 @@ def button():
         dlg.setWindowTitle("            Info          ")
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
-        return 
-    find,note = report.edit_report(file_path,name,time_str,empty)
+        return
+    full_name = ""
+    with open("db/name.txt", "r") as file:
+        line = file.readlines()
+        test =name+"\n"
+        for i in line:
+            i = i.split("_")
+            if test == i[1]:
+                full_name = i[0]
+                print(name)
+                break
+    find,note = report.edit_report(file_path,full_name,time_str,empty)
     if not find: 
-        note = report.write_report(file_path,str(number),name,time_str,empty)
+        note = report.write_report(file_path,str(number),full_name,time_str,empty)
     number +=1
     string = "có đầy đủ bảo hộ"
     leng = len(empty)
@@ -81,9 +98,9 @@ def button():
                 string += "và "
                 leng -= 1
     
-    updateWidget(note,name,time_str,date_str,empty)
+    updateWidget(note,name,full_name,time_str,date_str,empty)
     widget_2.show()
-    ts.start_sound(string,name+" ")
+    ts.start_sound(string,full_name+" ")    
 #Thread
 def ThreadServer():
     while True:
@@ -101,8 +118,8 @@ def ThreadServer():
         if request == "Send":
             file_name = client_socket.recv(1024)
             file_name = file_name.decode()
-            print(file_name)
-            file_img = "Img/worker_img/" + file_name
+            unidecode_name = unidecode.unidecode(file_name)
+            file_img = "Img/worker_img/" + unidecode_name
             filetodown = open(file_img + ".jpg", "wb")
             print("Receiving Image....")
             while True:
@@ -113,13 +130,18 @@ def ThreadServer():
             filetodown.close()
             list_data = []
             print("Receiving Pickle...")
-            data = client_socket.recv(1024)
+            data = client_socket.recv(4096)
             data = data.decode()
             data = data.split("_")
-            list_data = data
+            data.remove('')
+            for i in data:
+                i = float(i)
+                list_data.append(i)
             print(list_data)
-            with open("db/" + file_name +".pickle", "wb") as file:
+            with open("db/" + unidecode_name +".pickle", "wb") as file:
                 pickle.dump(list_data, file)
+            with open("db/name.txt", "w") as file:
+                file.write(file_name + "_" + unidecode_name +"\n")
             print("Done Reciving...")
         #server_socket.shutdown(2)
         elif request == "Remove":
@@ -144,6 +166,12 @@ else:
 db_dir = './db'
 if not os.path.exists(db_dir):
     os.mkdir(db_dir)
+
+if os.path.exists("./db/name.txt"):
+    pass
+else:
+     with open("db/name.txt", "wb") as file:
+        pass
 
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL

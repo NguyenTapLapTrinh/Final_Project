@@ -25,8 +25,7 @@ import time
 import msg
 from tkinter import Tk
 from define import *
-
-
+import unidecode
 
 
 class Ui_Form(object):
@@ -136,7 +135,7 @@ class Ui_Form(object):
                 data_string = ""
                 for i in embeddings:
                         data_string = data_string + str(i) + "_"
-
+                print(embeddings)
                 client_socket.send(data_string.encode())
                 time.sleep(0.01)
                 print("Done Sending.")
@@ -160,8 +159,8 @@ class Ui_Form(object):
                 msg.ShowMsg("Info","Please check again!")
                 return 
         else:
-                input_employ = input_employ.replace(" ","_")
-                self.TransmitImg(input_employ,CMD.ADD)
+                #input_employ = input_employ.replace(" ","_")
+                self.TransmitImg(input_employ, CMD.ADD)
 
     def rmEmploy(self):
         input_employ = self.input_name.text()

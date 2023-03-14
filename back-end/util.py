@@ -20,7 +20,7 @@ def recognize(img, db_path):
         path_ = os.path.join(db_path, db_dir[j])
         file = open(path_, 'rb')
         embeddings = pickle.load(file)
-
+        print(embeddings)
         match = face_recognition.compare_faces([embeddings], embeddings_unknown)[0]
         j += 1
 
