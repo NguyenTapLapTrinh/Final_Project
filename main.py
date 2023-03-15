@@ -112,45 +112,55 @@ def ThreadServer():
         request = request_data.decode()
         print(request)
         if request == "Send":
-            file_name = client_socket.recv(1024)
-            file_name = file_name.decode()
-            unidecode_name = unidecode.unidecode(file_name)
-            file_img = "Img/worker_img/" + unidecode_name
-            filetodown = open(file_img + ".jpg", "wb")
-            print("Receiving Image....")
-            while True:
-                data = client_socket.recv(1024)
-                if data == b"Done":
-                    break   
-                filetodown.write(data) 
-            filetodown.close()
-            list_data = []
-            print("Receiving Pickle...")
-            data = client_socket.recv(4096)
-            data = data.decode()
-            data = data.split("_")
-            data.remove('')
-            for i in data:
-                i = float(i)
-                list_data.append(i)
-            print(list_data)
-            with open("db/" + unidecode_name +".pickle", "wb") as file:
-                pickle.dump(list_data, file)
-            list_name = []
-            with open("db/name.txt", "rb") as file:
-                list_name = file.readlines()
-            with open("db/name.txt", "wb") as file:
-                unicode_text = file_name + "_" + unidecode_name +"\n"
-                unicode_text = unicode_text.encode()
-                list_name.append(unicode_text)
-                file.writelines(list_name)
-            print("Done Reciving...")
+            check_name = client_socket.recv(1024)
+            check_name = check_name.decode()
+            check_name = unidecode.unidecode(check_name)
+            check_img = "Img/worker_img/" + check_name
+            existFile = os.path.exists(check_img + ".jpg")
+            print(existFile)
+            if existFile:
+                client_socket.send(b"Yes")
+            else:
+                client_socket.send(b"No")
+                file_name = client_socket.recv(1024)
+                file_name = file_name.decode()
+                unidecode_name = unidecode.unidecode(file_name)
+                file_img = "Img/worker_img/" + unidecode_name
+                filetodown = open(file_img + ".jpg", "wb")
+                print("Receiving Image....")
+                while True:
+                    data = client_socket.recv(1024)
+                    if data == b"Done":
+                        break   
+                    filetodown.write(data) 
+                filetodown.close()
+                list_data = []
+                print("Receiving Pickle...")
+                data = client_socket.recv(4096)
+                data = data.decode()
+                data = data.split("_")
+                data.remove('')
+                for i in data:
+                    i = float(i)
+                    list_data.append(i)
+                print(list_data)
+                with open("db/" + unidecode_name +".pickle", "wb") as file:
+                    pickle.dump(list_data, file)
+                list_name = []
+                with open("db/name.txt", "rb") as file:
+                    list_name = file.readlines()
+                with open("db/name.txt", "wb") as file:
+                    unicode_text = file_name + "_" + unidecode_name +"\n"
+                    unicode_text = unicode_text.encode()
+                    list_name.append(unicode_text)
+                    file.writelines(list_name)
+                print("Done Reciving...")
+            
         #server_socket.shutdown(2)
         elif request == "Remove":
             file_name = client_socket.recv(1024)
             file_remove = file_name.decode()
             file_img = "Img/worker_img/" + file_remove
-            print(file_img)
             existFile = os.path.exists(file_img + ".jpg")
             if not existFile:
                 client_socket.send(b"False")

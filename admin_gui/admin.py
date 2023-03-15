@@ -115,30 +115,37 @@ class Ui_Form(object):
         if request == CMD.ADD:
                 frame = cv2.imread(self.file_path)
                 embeddings = face_recognition.face_encodings(frame)[0]
+                filetosend = open(self.file_path, "rb")
                 #Send string
                 Trans = "Send"
                 client_socket.send(Trans.encode())
                 time.sleep(0.01)
-                filetosend = open(self.file_path, "rb")
                 client_socket.send(input_employ.encode())
                 time.sleep(0.01)
-                data1 = filetosend.read(1024)
-                while data1:
-                        client_socket.send(data1)
-                        time.sleep(0.01)
+                fileExist = client_socket.recv(1024)
+                print(fileExist)
+                if fileExist == b"Yes":
+                      msg.ShowMsg("Info","This employee is exitsting!")
+                      return
+                elif fileExist == b"No":
+                        client_socket.send(input_employ.encode())
                         data1 = filetosend.read(1024)
-                filetosend.close()
-                string = "Done"
-                client_socket.send(string.encode())
-                time.sleep(0.01)
-                data_string = ""
-                for i in embeddings:
-                        data_string = data_string + str(i) + "_"
-                print(embeddings)
-                client_socket.send(data_string.encode())
-                time.sleep(0.01)
-                print("Done Sending.")
-                msg.ShowMsg("Info","Sucessfully")
+                        while data1:
+                                client_socket.send(data1)
+                                time.sleep(0.01)
+                                data1 = filetosend.read(1024)
+                        filetosend.close()
+                        string = "Done"
+                        client_socket.send(string.encode())
+                        time.sleep(0.01)
+                        data_string = ""
+                        for i in embeddings:
+                                data_string = data_string + str(i) + "_"
+                        print(embeddings)
+                        client_socket.send(data_string.encode())
+                        time.sleep(0.01)
+                        print("Done Sending.")
+                        msg.ShowMsg("Info","Sucessfully")
 
         elif CMD.DEL:
                 Trans = "Remove"
