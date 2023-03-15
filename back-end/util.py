@@ -31,9 +31,9 @@ def recognize(img, db_path):
 
 
 def face_detect(frame):
-    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+    small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
     rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
     face_locations = face_recognition.face_locations(rgb_small_frame)
     face_locations = np.array(face_locations)
-    face_locations = face_locations / 0.25
+    face_locations = face_locations / 0.5
     return face_locations.astype(int)

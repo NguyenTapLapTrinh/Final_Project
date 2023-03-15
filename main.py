@@ -36,8 +36,6 @@ def closeWidget():
     widget_2.close()
 
 def updateWidget(note,name,unicode_name,time,date,empty):
-    print(name)
-    print(unicode_name)
     Form_2.updateResult(note)
     Form_2.updateName(unicode_name)
     Form_2.updateTime(time)
@@ -74,14 +72,14 @@ def button():
         dlg.exec()
         return
     full_name = ""
-    with open("db/name.txt", "r") as file:
+    with open("db/name.txt", "rb") as file:
         line = file.readlines()
         test =name+"\n"
         for i in line:
+            i = i.decode()
             i = i.split("_")
             if test == i[1]:
                 full_name = i[0]
-                print(name)
                 break
     find,note = report.edit_report(file_path,full_name,time_str,empty)
     if not find: 
@@ -96,7 +94,6 @@ def button():
             if leng > 1:
                 string += "và "
                 leng -= 1
-    
     updateWidget(note,name,full_name,time_str,date_str,empty)
     widget_2.show()
     ts.start_sound(string,full_name+" ")    
@@ -117,7 +114,6 @@ def ThreadServer():
         if request == "Send":
             file_name = client_socket.recv(1024)
             file_name = file_name.decode()
-            print(file_name)
             unidecode_name = unidecode.unidecode(file_name)
             file_img = "Img/worker_img/" + unidecode_name
             filetodown = open(file_img + ".jpg", "wb")
@@ -140,10 +136,14 @@ def ThreadServer():
             print(list_data)
             with open("db/" + unidecode_name +".pickle", "wb") as file:
                 pickle.dump(list_data, file)
+            list_name = []
+            with open("db/name.txt", "rb") as file:
+                list_name = file.readlines()
             with open("db/name.txt", "wb") as file:
-                uncode_text = file_name + "_" + unidecode_name +"\n"
-                uncode_text = uncode_text.encode()
-                file.write(uncode_text)
+                unicode_text = file_name + "_" + unidecode_name +"\n"
+                unicode_text = unicode_text.encode()
+                list_name.append(unicode_text)
+                file.writelines(list_name)
             print("Done Reciving...")
         #server_socket.shutdown(2)
         elif request == "Remove":
