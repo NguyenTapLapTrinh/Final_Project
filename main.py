@@ -18,7 +18,6 @@ import info
 import threading
 import pickle
 import socket
-import subprocess
 import admin
 import unidecode
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
@@ -118,6 +117,7 @@ def ThreadServer():
         if request == "Send":
             file_name = client_socket.recv(1024)
             file_name = file_name.decode()
+            print(file_name)
             unidecode_name = unidecode.unidecode(file_name)
             file_img = "Img/worker_img/" + unidecode_name
             filetodown = open(file_img + ".jpg", "wb")
@@ -140,8 +140,10 @@ def ThreadServer():
             print(list_data)
             with open("db/" + unidecode_name +".pickle", "wb") as file:
                 pickle.dump(list_data, file)
-            with open("db/name.txt", "w") as file:
-                file.write(file_name + "_" + unidecode_name +"\n")
+            with open("db/name.txt", "wb") as file:
+                uncode_text = file_name + "_" + unidecode_name +"\n"
+                uncode_text = uncode_text.encode()
+                file.write(uncode_text)
             print("Done Reciving...")
         #server_socket.shutdown(2)
         elif request == "Remove":

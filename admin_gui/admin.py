@@ -25,7 +25,6 @@ import time
 import msg
 from tkinter import Tk
 from define import *
-import unidecode
 
 
 class Ui_Form(object):
