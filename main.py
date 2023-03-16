@@ -169,7 +169,31 @@ def ThreadServer():
                 os.remove("db/" + file_remove + ".pickle")
                 sleep(0.01)
                 os.remove("Img/worker_img/" + file_remove + ".jpg")
-            server_socket.close()
+        elif request == "EditImage":
+            check_name = client_socket.recv(1024)
+            check_name = check_name.decode()
+            check_name = unidecode.unidecode(check_name)
+            check_img = "Img/worker_img/" + check_name
+            existFile = os.path.exists(check_img + ".jpg")
+            print(existFile)
+            if existFile:
+                client_socket.send(b"Yes")
+                file_name = client_socket.recv(1024)
+                file_name = file_name.decode()
+                unidecode_name = unidecode.unidecode(file_name)
+                file_img = "Img/worker_img/" + unidecode_name
+                filetodown = open(file_img + ".jpg", "wb")
+                print("Receiving Image....")
+                while True:
+                    data = client_socket.recv(1024)
+                    if data == b"Done":
+                        break   
+                    filetodown.write(data) 
+                filetodown.close()
+                print("Done Reciving...")
+            else:
+                client_socket.send(b"No")
+        server_socket.close()
 if os.path.exists("report"):
     pass
 else:

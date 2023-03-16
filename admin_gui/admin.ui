@@ -33,7 +33,7 @@
    <property name="geometry">
     <rect>
      <x>530</x>
-     <y>350</y>
+     <y>360</y>
      <width>271</width>
      <height>41</height>
     </rect>
@@ -46,34 +46,34 @@ color: #fff;
 font-size: 20px;</string>
    </property>
    <property name="text">
-    <string>Add Employee</string>
+    <string>Edit Name</string>
    </property>
   </widget>
   <widget class="QPushButton" name="add_photo">
    <property name="geometry">
     <rect>
      <x>530</x>
-     <y>300</y>
+     <y>310</y>
      <width>271</width>
      <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: #1270e3;
+    <string notr="true">background-color: purple;
 border-radius: 10px;
 border: 1px solid black;
 color: #fff;
 font-size: 20px;</string>
    </property>
    <property name="text">
-    <string>Add Photo</string>
+    <string>Edit Photo</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="input_name">
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>240</y>
+     <y>250</y>
      <width>311</width>
      <height>41</height>
     </rect>
@@ -102,9 +102,9 @@ font-weight: 600;</string>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>150</y>
-     <width>281</width>
+     <x>510</x>
+     <y>140</y>
+     <width>311</width>
      <height>51</height>
     </rect>
    </property>
@@ -116,50 +116,30 @@ font-weight: 600;</string>
 font-weight: 600;</string>
    </property>
    <property name="text">
-    <string>EMPLOYEE MANAGEMENT</string>
+    <string>Update Employee Information</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>580</x>
+     <x>570</x>
      <y>20</y>
      <width>201</width>
      <height>121</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">image: url(:/icon/work.png);</string>
+    <string notr="true">image: url(:/icon/setting-worker.png);</string>
    </property>
    <property name="text">
     <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="remove_employ">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>400</y>
-     <width>271</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: #f230ec;
-border-radius: 10px;
-border: 1px solid black;
-color: #fff;
-font-size: 20px;</string>
-   </property>
-   <property name="text">
-    <string>Remove Employee</string>
    </property>
   </widget>
   <widget class="QPushButton" name="close_btn">
    <property name="geometry">
     <rect>
      <x>530</x>
-     <y>450</y>
+     <y>410</y>
      <width>271</width>
      <height>41</height>
     </rect>
@@ -177,7 +157,7 @@ font-size: 20px;</string>
   </widget>
  </widget>
  <resources>
-  <include location="images.qrc"/>
+  <include location="img.qrc"/>
  </resources>
  <connections/>
 </ui>
