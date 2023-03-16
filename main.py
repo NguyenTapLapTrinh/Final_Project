@@ -20,6 +20,8 @@ import pickle
 import socket
 import admin
 import unidecode
+import text
+import mng
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -71,16 +73,7 @@ def button():
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
         return
-    full_name = ""
-    with open("db/name.txt", "rb") as file:
-        line = file.readlines()
-        test =name+"\n"
-        for i in line:
-            i = i.decode()
-            i = i.split("_")
-            if test == i[1]:
-                full_name = i[0]
-                break
+    full_name = text.findFullName(name)
     find,note = report.edit_report(file_path,full_name,time_str,empty)
     if not find: 
         note = report.write_report(file_path,str(number),full_name,time_str,empty)
@@ -146,14 +139,7 @@ def ThreadServer():
                 print(list_data)
                 with open("db/" + unidecode_name +".pickle", "wb") as file:
                     pickle.dump(list_data, file)
-                list_name = []
-                with open("db/name.txt", "rb") as file:
-                    list_name = file.readlines()
-                with open("db/name.txt", "wb") as file:
-                    unicode_text = file_name + "_" + unidecode_name +"\n"
-                    unicode_text = unicode_text.encode()
-                    list_name.append(unicode_text)
-                    file.writelines(list_name)
+                text.writeLine(file_name,unidecode_name)
                 print("Done Reciving...")
             
         #server_socket.shutdown(2)
@@ -166,6 +152,7 @@ def ThreadServer():
                 client_socket.send(b"False")
             else:
                 client_socket.send(b"True")
+                text.deleteUser(file_remove)
                 os.remove("db/" + file_remove + ".pickle")
                 sleep(0.01)
                 os.remove("Img/worker_img/" + file_remove + ".jpg")
@@ -237,6 +224,7 @@ Form_3 = admin.Ui_Form()
 Form_3.setupUi(widget_3)
 Form_2.ButtonActivation(closeWidget)
 
+text.editUser("Son Tung","Nguyễn Thanh Tùng","Nguyen Thanh Tung")
 while True:
     _, frame = cap.read()
     #frame = cv2.imread("Img/data_test/SonTung.jpg")

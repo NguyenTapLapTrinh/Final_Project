@@ -11,6 +11,7 @@ import enum
 
 import sys
 sys.path.append("./back-end")
+sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtWidgets import QMessageBox,QApplication, QMainWindow, QPushButton
@@ -24,7 +25,7 @@ import socket
 import time
 import msg
 from tkinter import Tk
-from define import *
+import mng
 
 
 class Ui_Form(object):
@@ -109,55 +110,11 @@ class Ui_Form(object):
         self.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def EditInfo(self, input_employ, request):
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(("localhost", 5000))
+        if request == mng.CMD.ADD:
+                mng.sendNewData(self.file_path,input_employ)
 
-        if request == CMD.ADD:
-                frame = cv2.imread(self.file_path)
-                embeddings = face_recognition.face_encodings(frame)[0]
-                filetosend = open(self.file_path, "rb")
-                #Send string
-                Trans = "Send"
-                client_socket.send(Trans.encode())
-                time.sleep(0.01)
-                client_socket.send(input_employ.encode())
-                time.sleep(0.01)
-                fileExist = client_socket.recv(1024)
-                print(fileExist)
-                if fileExist == b"Yes":
-                      msg.ShowMsg("Info","This employee is exitsting!")
-                      return
-                elif fileExist == b"No":
-                        client_socket.send(input_employ.encode())
-                        data1 = filetosend.read(1024)
-                        while data1:
-                                client_socket.send(data1)
-                                time.sleep(0.01)
-                                data1 = filetosend.read(1024)
-                        filetosend.close()
-                        string = "Done"
-                        client_socket.send(string.encode())
-                        time.sleep(0.01)
-                        data_string = ""
-                        for i in embeddings:
-                                data_string = data_string + str(i) + "_"
-                        print(embeddings)
-                        client_socket.send(data_string.encode())
-                        time.sleep(0.01)
-                        print("Done Sending.")
-                        msg.ShowMsg("Info","Sucessfully")
-
-        elif CMD.DEL:
-                Trans = "Remove"
-                client_socket.send(Trans.encode())
-                time.sleep(0.01)
-                client_socket.send(input_employ.encode())
-                fileExist = client_socket.recv(1024)
-                if fileExist == b"False":
-                      msg.ShowMsg("Info","Not have this employee!")
-                      return
-                client_socket.send(input_employ.encode())
-        client_socket.close()
+        elif mng.CMD.DEL:
+                mng.deleteData(input_employ)
 
     def addEmploy(self):
         input_employ = self.input_name.text()
@@ -166,15 +123,14 @@ class Ui_Form(object):
                 return 
         else:
                 #input_employ = input_employ.replace(" ","_")
-                self.TransmitImg(input_employ, CMD.ADD)
+                self.EditInfo(input_employ, mng.CMD.ADD)
 
     def rmEmploy(self):
         input_employ = self.input_name.text()
         if input_employ == "":
                 msg.ShowMsg("Info","Please check again!")
                 return
-        print(input_employ)
-        self.TransmitImg(input_employ, CMD.DEL)
+        self.EditInfo(input_employ, mng.CMD.DEL)
        
 
     def retranslateUi(self, Form):
