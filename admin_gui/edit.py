@@ -11,21 +11,36 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 sys.path.append("./back-end")
+sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtWidgets import QMessageBox,QApplication, QMainWindow, QPushButton
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 import os
 import socket
 from tkinter import filedialog
-import face_recognition
 import cv2
 import socket
 import time
+import mng
 import msg
 from tkinter import Tk
-from define import *
-
+from editline import *
+class Widget_1(QDialog):
+    def __init__(self, parent=None):
+        super(Widget_1, self).__init__(parent)
+        self.ui_1 = Ui_Dialog_1()
+        self.ui_1.setupUi_1(self)
+        self.ui_1.loadbtn.clicked.connect(self.create)
+        self.name = ""
+        self.old_name = ""
+    def create(self):
+        self.name =  self.ui_1.line.text()
+        if self.name == "":
+                msg.ShowMsg("Info","Please check again!")
+        else:
+                mng.editName(self.old_name, self.name)
+                self.close()
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -91,7 +106,11 @@ class Ui_Form(object):
         self.close_btn.setObjectName("close_btn")
         self.add_photo.clicked.connect(self.addImage)
         self.edit_photo.clicked.connect(self.editPhoto)
+        self.edit_name.clicked.connect(self.editName)
+        self.input_employ = ""
         self.file_path = ""
+        self.new_name = ""
+        self.ui_1 = Widget_1()
     def addImage(self):
         root = Tk()
         self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
@@ -104,54 +123,26 @@ class Ui_Form(object):
         Pic = ConvertToQTFormat.scaled(591, 531)
         self.photo.setPixmap(QPixmap.fromImage(Pic))
     def editPhoto(self):
-        input_employ = self.input_name.text()
-        if input_employ == "" or self.file_path=="":
+        self.input_employ = self.input_name.text()
+        if self.input_employ == "" or self.file_path=="":
                 msg.ShowMsg("Info","Please check again!")
                 return 
         else:
                 #input_employ = input_employ.replace(" ","_")
-                self.UpdateInfo(input_employ, CMD.EDITPHOTO)
+                self.UpdateInfo(self.input_employ, mng.CMD.EDITPHOTO)
+    def editName(self):
+        self.input_employ = self.input_name.text()
+        if self.input_employ == "":
+                msg.ShowMsg("Info","Please check again!")
+                return 
+        else:
+                self.ui_1.old_name = self.input_employ
+                self.ui_1.show()
     def UpdateInfo(self, input_employ, request):
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(("localhost", 5000))
-        if request == CMD.EDITPHOTO:
-                filetosend = open(self.file_path, "rb")
-                #Send string
-                Trans = "EditImage"
-                client_socket.send(Trans.encode())
-                time.sleep(0.01)
-                client_socket.send(input_employ.encode())
-                time.sleep(0.01)
-                fileExist = client_socket.recv(1024)
-                print(fileExist)
-                if fileExist == b"No":
-                        msg.ShowMsg("Info","This employee is not existing!")
-                        return
-                elif fileExist == b"Yes":
-                        client_socket.send(input_employ.encode())
-                        data1 = filetosend.read(1024)
-                        while data1:
-                                client_socket.send(data1)
-                                time.sleep(0.01)
-                                data1 = filetosend.read(1024)
-                        filetosend.close()
-                        string = "Done"
-                        client_socket.send(string.encode())
-                        time.sleep(0.01)
-                        print("Done Sending.")
-                        msg.ShowMsg("Info","Sucessfully")
-        elif CMD.EDITNAME:
-              pass
-                # Trans = "Remove"
-                # client_socket.send(Trans.encode())
-                # time.sleep(0.01)
-                # client_socket.send(input_employ.encode())
-                # fileExist = client_socket.recv(1024)
-                # if fileExist == b"False":
-                #         msg.ShowMsg("Info","Not have this employee!")
-                #         return
-                # client_socket.send(input_employ.encode())
-        client_socket.close()
+        if request == mng.CMD.EDITPHOTO:
+                mng.editPhoto(self.file_path, input_employ)
+        # elif request == mng.CMD.EDITNAME:
+        #         mng.editName(input_employ, self.new_name)
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
@@ -161,7 +152,6 @@ class Ui_Form(object):
         self.label_2.setText(_translate("Form", "Employee Name"))
         self.label_3.setText(_translate("Form", "Update Employee Information"))
         self.close_btn.setText(_translate("Form", "Close"))
-
 
 if __name__ == "__main__":
     import sys

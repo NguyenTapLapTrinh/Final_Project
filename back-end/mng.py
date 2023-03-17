@@ -64,3 +64,51 @@ def deleteData(input_employ):
                 return
         client_socket.send(input_employ.encode())
         client_socket.close()
+def editPhoto(file_path, input_employ):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(("localhost", 5000))
+        filetosend = open(file_path, "rb")
+        Trans = "EditImage"
+        client_socket.send(Trans.encode())
+        time.sleep(0.01)
+        client_socket.send(input_employ.encode())
+        time.sleep(0.01)
+        fileExist = client_socket.recv(1024)
+        print(fileExist)
+        if fileExist == b"No":
+                msg.ShowMsg("Info","This employee is not existing!")
+                return
+        elif fileExist == b"Yes":
+                client_socket.send(input_employ.encode())
+                data1 = filetosend.read(1024)
+                while data1:
+                        client_socket.send(data1)
+                        time.sleep(0.01)
+                        data1 = filetosend.read(1024)
+                filetosend.close()
+                string = "Done"
+                client_socket.send(string.encode())
+                time.sleep(0.01)
+                print("Done Sending.")
+                msg.ShowMsg("Info","Sucessfully")
+        client_socket.close()
+def editName(input_employ, new_name):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(("localhost", 5000))
+        Trans = "EditName"
+        client_socket.send(Trans.encode())
+        time.sleep(0.01)
+        client_socket.send(input_employ.encode())
+        time.sleep(0.01)
+        fileExist = client_socket.recv(1024)
+        print(fileExist)
+        if fileExist == b"No":
+                msg.ShowMsg("Info","This employee is not existing!")
+                return
+        elif fileExist == b"Yes":
+                client_socket.send(new_name.encode())
+                time.sleep(0.01)
+                print("Done Sending.")
+                msg.ShowMsg("Info","Sucessfully")
+        client_socket.close()
+        

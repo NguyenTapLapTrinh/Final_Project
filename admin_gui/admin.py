@@ -113,7 +113,7 @@ class Ui_Form(object):
         if request == mng.CMD.ADD:
                 mng.sendNewData(self.file_path,input_employ)
 
-        elif mng.CMD.DEL:
+        elif request == mng.CMD.DEL:
                 mng.deleteData(input_employ)
 
     def addEmploy(self):

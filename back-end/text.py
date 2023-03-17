@@ -1,5 +1,3 @@
-
-
 def writeLine(name,unicode_name):
     with open("db/name.txt", "rb") as file:
         list_name = file.readlines()
@@ -43,11 +41,13 @@ def editUser(name,new_name,unicode_name):
             line = i.decode()
             line = line.split("_")
             line = line[1]
+            print(line)
             if name == line:
                 position = file_list.index(i)
                 file_list.remove(i)
                 new_line = new_name + "_" + unicode_name + "\n"
                 new_line = new_line.encode()
                 file_list.insert(position,new_line)
+                print(new_line)
     with open("db/name.txt", "wb") as file:
         file.writelines(file_list)     
