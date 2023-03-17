@@ -34,20 +34,20 @@ def deleteUser(name):
 
 def editUser(name,new_name,unicode_name):
     file_list = []
-    name += "\n"
     with open("db/name.txt", "rb") as file:
         file_list = file.readlines()
+        print(file_list)
         for i in file_list:
             line = i.decode()
             line = line.split("_")
             line = line[1]
-            print(line)
+            line = line.replace("\n","")
+            line = line.replace("\r","")
             if name == line:
                 position = file_list.index(i)
                 file_list.remove(i)
                 new_line = new_name + "_" + unicode_name + "\n"
                 new_line = new_line.encode()
                 file_list.insert(position,new_line)
-                print(new_line)
     with open("db/name.txt", "wb") as file:
         file.writelines(file_list)     
