@@ -16,7 +16,7 @@ class CMD(enum.Enum):
 
 def sendNewData(file_path,input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(("localhost", 5000))
+        client_socket.connect(("192.168.2.103", 5000))
         frame = cv2.imread(file_path)
         embeddings = face_recognition.face_encodings(frame)[0]
         filetosend = open(file_path, "rb")

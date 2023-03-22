@@ -20,7 +20,6 @@ def recognize(img, db_path):
         path_ = os.path.join(db_path, db_dir[j])
         file = open(path_, 'rb')
         embeddings = pickle.load(file)
-        print(embeddings)
         match = face_recognition.compare_faces([embeddings], embeddings_unknown)[0]
         j += 1
 
@@ -31,9 +30,9 @@ def recognize(img, db_path):
 
 
 def face_detect(frame):
-    small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
     rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
     face_locations = face_recognition.face_locations(rgb_small_frame)
     face_locations = np.array(face_locations)
-    face_locations = face_locations / 0.5
+    face_locations = face_locations / 0.25
     return face_locations.astype(int)

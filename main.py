@@ -4,7 +4,6 @@ sys.path.append("./front-end")
 sys.path.append("./admin_gui")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
-import cv2
 from time import *
 import os
 import datetime
@@ -12,7 +11,6 @@ import report
 import texttospeed as ts
 import util
 import worker
-import camera
 import yolo_detection
 import info
 import threading
@@ -21,7 +19,6 @@ import socket
 import admin
 import unidecode
 import text
-import mng
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
 number = 1
@@ -29,12 +26,11 @@ number = 1
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
-months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
 yolo = yolo_detection.Yolo(classes)
 yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg")
 
 def closeWidget():
+    Form_1.video.block = 0
     widget_2.close()
 
 def updateWidget(note,name,unicode_name,time,date,empty):
@@ -56,12 +52,18 @@ def updateWidget(note,name,unicode_name,time,date,empty):
 
 def button():
     global number
+    Form_1.video.block = 1
+    file_path = Form_1.video.file_path
+    date_str = Form_1.video.date_str
     time_now = datetime.datetime.now().time()
     time_str = time_now.strftime("%H:%M:%S")
-    frame_process = yolo.getFrame()
+    frame = Form_1.video.frame
+    height = Form_1.video.height
+    width = Form_1.video.width
+    yolo.setVar(frame,height,width)
     empty = yolo.objectDetect()
     try:
-        name = util.recognize(frame_process, './db')
+        name = util.recognize(frame, './db')
     except:
         print("False")
         return
@@ -72,6 +74,7 @@ def button():
         dlg.setWindowTitle("            Info          ")
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
+        Form_1.video.block = 0
         return
     full_name = text.findFullName(name)
     find,note = report.edit_report(file_path,full_name,time_str,empty)
@@ -221,16 +224,6 @@ if os.path.exists("./db/name.txt"):
 else:
      with open("db/name.txt", "wb") as file:
         pass
-
-cap = cv2.VideoCapture(0)
-font = cv2.FONT_HERSHEY_COMPLEX_SMALL
-
-#FPS
-start_time = time()
-display_time = 2
-fc = 0
-FPS = 0
-
 thread = threading.Thread(target=ThreadServer)
 thread.start()
 
@@ -249,58 +242,5 @@ Form_2.setupUi(widget_2)
 Form_3 = admin.Ui_Form()
 Form_3.setupUi(widget_3)
 Form_2.ButtonActivation(closeWidget)
+sys.exit(app.exec_())
 
-text.editUser("Son Tung","Nguyễn Thanh Tùng","Nguyen Thanh Tung")
-while True:
-    _, frame = cap.read()
-    #frame = cv2.imread("Img/data_test/SonTung.jpg")
-    height, width, channels = frame.shape
- 
-    yolo.setVar(frame,width,height)
-
-    fc+=1
-    TIME = time() - start_time
-    if (TIME) >= display_time :
-        FPS = fc / (TIME)
-        fc = 0
-        start_time = time()
-
-    fps_disp = "FPS: " + str(FPS)[:3]   
-    date_now = datetime.date.today()
-
-    # Format time as string
-    date_str = date_now.strftime("%B-%d-%Y")
-    date_temp = date_str.split("-")
-    tmp = str(months.index(date_temp[0]) + 1)
-    if len(tmp) < 2:
-        tmp = '0' + tmp
-        
-    date_str = date_str.replace(date_temp[0],tmp)
-    file_path = "report/report_" + date_str+ ".csv"
-
-    # Check if the file exists
-    if os.path.exists(file_path):
-        pass
-    else:
-        number = 1
-        report.create_report(file_path)
-
-    # Add FPS count on frame
-    image = cv2.putText(frame, fps_disp, (10, 25),
-        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-    
-    face_locations = util.face_detect(image)
-    for face_loc in face_locations:
-        y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
-        frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
-
-    video = camera.Video()
-    video.ImageUpdate.connect(Form_1.ImageUpdateShot)
-    video.process(frame)
-    
-    key = cv2.waitKey(1)
-    if key == 27:
-        break
-
-cap.release()
-cv2.destroyAllWindows()
