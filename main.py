@@ -35,13 +35,13 @@ def closeWidget():
 
 def updateWidget(note,name,unicode_name,time,date,empty):
     Form_2.updateResult(note)
-    Form_2.updateName(unicode_name)
+    Form_2.updateName(name)
     Form_2.updateTime(time)
     Form_2.updateDate(date)
     Form_2.updateHelmet(0)
     Form_2.updateVest(0)
     Form_2.updateGlove(0)
-    Form_2.updateWorkerPhoto(name)
+    Form_2.updateWorkerPhoto(unicode_name)
     for i in empty:
         if i == 0:
             Form_2.updateHelmet(1)
@@ -77,7 +77,11 @@ def button():
         Form_1.video.block = 0
         return
     full_name = text.findFullName(name)
-    find,note = report.edit_report(file_path,full_name,time_str,empty)
+    find =0
+    try:
+        find,note = report.edit_report(file_path,full_name,time_str,empty)
+    except:
+        pass
     if not find: 
         note = report.write_report(file_path,str(number),full_name,time_str,empty)
     number +=1
@@ -90,9 +94,10 @@ def button():
             if leng > 1:
                 string += "và "
                 leng -= 1
-    updateWidget(note,name,full_name,time_str,date_str,empty)
+    unicode_name = unidecode.unidecode(full_name)
+    updateWidget(note,name,unicode_name,time_str,date_str,empty)
     widget_2.show()
-    ts.start_sound(string,full_name+" ")    
+    #ts.start_sound(string,full_name+" ")    
 #Thread
 def ThreadServer():
     while True:
@@ -100,7 +105,7 @@ def ThreadServer():
         #server_socket.setblocking(1)
         
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind(("localhost", 5000))
+        server_socket.bind(("192.168.2.103", 5000))
         server_socket.listen(1)
         client_socket,a = server_socket.accept()
         #server_socket.settimeout(3)

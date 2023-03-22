@@ -8,7 +8,8 @@ import util
 import report
 import os
 
-months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+months = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7"
+          , "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"]
 
 class Video(QThread):
     ImageUpdate = pyqtSignal(QImage)
@@ -19,7 +20,7 @@ class Video(QThread):
     file_path = ""
     block = 0
     def run(self):
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture("/dev/video0")
         font = cv2.FONT_HERSHEY_COMPLEX_SMALL
         #FPS
         start_time = time.time()
