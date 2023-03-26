@@ -16,16 +16,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import os
-import socket
 from tkinter import filedialog
 import cv2
-import socket
-import time
-import mng
+import client_mng
 import msg
 from tkinter import Tk
 from editline import *
+
 class Widget_1(QDialog):
     def __init__(self, parent=None):
         super(Widget_1, self).__init__(parent)
@@ -39,7 +36,7 @@ class Widget_1(QDialog):
         if self.name == "":
                 msg.ShowMsg("Info","Please check again!")
         else:
-                mng.editName(self.old_name, self.name)
+                client_mng.editName(self.old_name, self.name)
                 self.close()
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -111,6 +108,7 @@ class Ui_Form(object):
         self.file_path = ""
         self.new_name = ""
         self.ui_1 = Widget_1()
+
     def addImage(self):
         root = Tk()
         self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
@@ -122,6 +120,7 @@ class Ui_Form(object):
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
         Pic = ConvertToQTFormat.scaled(591, 531)
         self.photo.setPixmap(QPixmap.fromImage(Pic))
+
     def editPhoto(self):
         self.input_employ = self.input_name.text()
         if self.input_employ == "" or self.file_path=="":
@@ -129,7 +128,8 @@ class Ui_Form(object):
                 return 
         else:
                 #input_employ = input_employ.replace(" ","_")
-                self.UpdateInfo(self.input_employ, mng.CMD.EDITPHOTO)
+                self.UpdateInfo(self.input_employ, client_mng.CMD.EDITPHOTO)
+                
     def editName(self):
         self.input_employ = self.input_name.text()
         if self.input_employ == "":
@@ -138,11 +138,13 @@ class Ui_Form(object):
         else:
                 self.ui_1.old_name = self.input_employ
                 self.ui_1.show()
+
     def UpdateInfo(self, input_employ, request):
-        if request == mng.CMD.EDITPHOTO:
-                mng.editPhoto(self.file_path, input_employ)
-        # elif request == mng.CMD.EDITNAME:
-        #         mng.editName(input_employ, self.new_name)
+        if request == client_mng.CMD.EDITPHOTO:
+                client_mng.editPhoto(self.file_path, input_employ)
+        elif request == client_mng.CMD.EDITNAME:
+                client_mng.editName(input_employ, self.new_name)
+
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))

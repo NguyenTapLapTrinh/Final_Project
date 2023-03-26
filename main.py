@@ -14,14 +14,12 @@ import worker
 import yolo_detection
 import info
 import threading
-import pickle
 import socket
 import admin
-import unidecode
 import text
+import server_mng
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-number = 1
 
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
@@ -50,8 +48,7 @@ def updateWidget(note,name,unicode_name,time,date,empty):
         elif i == 2:
             Form_2.updateGlove(1)
 
-def button():
-    global number
+def processImage():
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -79,8 +76,7 @@ def button():
     full_name = text.findFullName(name)
     find,note = report.edit_report(file_path,full_name,time_str,empty)
     if not find: 
-        note = report.write_report(file_path,str(number),full_name,time_str,empty)
-    number +=1
+        note = report.write_report(file_path,full_name,time_str,empty)
     string = "có đầy đủ bảo hộ"
     leng = len(empty)
     if leng > 0:
@@ -93,122 +89,29 @@ def button():
     updateWidget(note,name,full_name,time_str,date_str,empty)
     widget_2.show()
     ts.start_sound(string,full_name+" ")    
+
 #Thread
 def ThreadServer():
     while True:
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #server_socket.setblocking(1)
-        
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind(("localhost", 5000))
         server_socket.listen(1)
         client_socket,a = server_socket.accept()
         #server_socket.settimeout(3)
-        request_data = client_socket.recv(1024)
-        request = request_data.decode()
+        message = client_socket.recv(1024)
+        message = message.decode()
+        request = message.split("-")
         print(request)
-        if request == "Send":
-            check_name = client_socket.recv(1024)
-            check_name = check_name.decode()
-            check_name = unidecode.unidecode(check_name)
-            check_img = "Img/worker_img/" + check_name
-            existFile = os.path.exists(check_img + ".jpg")
-            print(existFile)
-            if existFile:
-                client_socket.send(b"Yes")
-            else:
-                client_socket.send(b"No")
-                file_name = client_socket.recv(1024)
-                file_name = file_name.decode()
-                unidecode_name = unidecode.unidecode(file_name)
-                file_img = "Img/worker_img/" + unidecode_name
-                filetodown = open(file_img + ".jpg", "wb")
-                print("Receiving Image....")
-                while True:
-                    data = client_socket.recv(1024)
-                    if data == b"Done":
-                        break   
-                    filetodown.write(data) 
-                filetodown.close()
-                list_data = []
-                print("Receiving Pickle...")
-                data = client_socket.recv(4096)
-                data = data.decode()
-                data = data.split("_")
-                data.remove('')
-                for i in data:
-                    i = float(i)
-                    list_data.append(i)
-                print(list_data)
-                with open("db/" + unidecode_name +".pickle", "wb") as file:
-                    pickle.dump(list_data, file)
-                text.writeLine(file_name,unidecode_name)
-                print("Done Reciving...")
-            
-        #server_socket.shutdown(2)
-        elif request == "Remove":
-            file_name = client_socket.recv(1024)
-            file_remove = file_name.decode()
-            file_img = "Img/worker_img/" + file_remove
-            existFile = os.path.exists(file_img + ".jpg")
-            if not existFile:
-                client_socket.send(b"False")
-            else:
-                client_socket.send(b"True")
-                text.deleteUser(file_remove)
-                os.remove("db/" + file_remove + ".pickle")
-                sleep(0.01)
-                os.remove("Img/worker_img/" + file_remove + ".jpg")
-        elif request == "EditImage":
-            check_name = client_socket.recv(1024)
-            check_name = check_name.decode()
-            check_name = unidecode.unidecode(check_name)
-            check_img = "Img/worker_img/" + check_name
-            existFile = os.path.exists(check_img + ".jpg")
-            print(existFile)
-            if existFile:
-                client_socket.send(b"Yes")
-                file_name = client_socket.recv(1024)
-                file_name = file_name.decode()
-                unidecode_name = unidecode.unidecode(file_name)
-                file_img = "Img/worker_img/" + unidecode_name
-                filetodown = open(file_img + ".jpg", "wb")
-                print("Receiving Image....")
-                while True:
-                    data = client_socket.recv(1024)
-                    if data == b"Done":
-                        break   
-                    filetodown.write(data) 
-                filetodown.close()
-                print("Done Reciving...")
-            else:
-                client_socket.send(b"No")
-        elif request == "EditName":
-            check_name = client_socket.recv(1024)
-            check_name = check_name.decode()
-            check_name = unidecode.unidecode(check_name)
-            check_img = "Img/worker_img/" + check_name
-            existFile = os.path.exists(check_img + ".jpg")
-            print(existFile)
-            if existFile:
-                client_socket.send(b"Yes")
-                new_name = client_socket.recv(1024)
-                new_name = new_name.decode()
-                unidecode_name = unidecode.unidecode(new_name)
-                imgPath = "Img/worker_img/"
-                picklePath = "db/"
-                #Chuyen ten img
-                old_name = check_name + ".jpg"
-                new_img_name = unidecode_name + ".jpg"
-                os.rename(os.path.join(imgPath, old_name), os.path.join(imgPath, new_img_name))
-                #Chuyen ten pickle
-                old_pickle = check_name + ".pickle"
-                new_pickle_name = unidecode_name + ".pickle"
-                os.rename(os.path.join(picklePath, old_pickle), os.path.join(picklePath, new_pickle_name))
-                print(check_name + " " +new_name + " " +unidecode_name)
-                text.editUser(check_name, new_name, unidecode_name)
-            else:
-                client_socket.send(b"No")
+        if request[0] == "Send":
+            server_mng.setData(client_socket,request[1])
+        elif request[0] == "Remove":
+            server_mng.deleteData(client_socket,request[1])
+        elif request[0] == "EditImage":
+            server_mng.editPhoto(client_socket,request[1])
+        elif request[0] == "EditName":
+            server_mng.editName(client_socket,request[1],request[2])
         server_socket.close()
 if os.path.exists("report"):
     pass
@@ -232,7 +135,7 @@ app = QtWidgets.QApplication(sys.argv)
 widget_1 = QtWidgets.QWidget()
 Form_1 = worker.Ui_Form()
 Form_1.setupUi(widget_1)
-Form_1.ButtonActivation(button)
+Form_1.ButtonActivation(processImage)
 widget_1.show()
 
 widget_2 = QtWidgets.QWidget()

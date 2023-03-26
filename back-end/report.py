@@ -1,8 +1,7 @@
 import csv
 
-def create_data(stt = "STT",name = 'Name', time = "Time", helmet = "Helmet", vest = "Vest", glove = "Glove", note = "Note"):
+def create_data(name = 'Name', time = "Time", helmet = "Helmet", vest = "Vest", glove = "Glove", note = "Note"):
     data = []
-    data.append(stt)
     data.append(name)
     data.append(time)
     data.append(helmet)
@@ -17,10 +16,10 @@ def create_report(file_path):
         writer = csv.writer(csv_file)
         writer.writerow(data_csv)
 
-def write_report(file_path, stt, name, time, list_data):
+def write_report(file_path, name, time, list_data):
     helmet, vest, glove, note = parse_list(list_data)
     with open(file_path, 'a', newline='') as csv_file:
-        data_csv = create_data(stt, name, time, helmet, vest, glove, note)
+        data_csv = create_data(name, time, helmet, vest, glove, note)
         writer = csv.writer(csv_file)
         writer.writerow(data_csv)
     return note
