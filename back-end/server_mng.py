@@ -27,10 +27,17 @@ def setData(client_socket,check_name):
             filetodown.write(data) 
         filetodown.close()
         print("Done Reciving...")
-    text.writeLine(full_name,check_name)
+        text.writeLine(full_name,check_name)
+        cmd = "tar -xvf temp/data.tar"
+        os.system(cmd)
+        img_path = 'temp/"{}"'.format(check_name + ".jpg")
+        pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
+        os.system("cp " + img_path + " Img/worker_img")
+        os.system("cp " + pickle_path + " db/")
+        os.system("rm temp/*")
 
 def deleteData(client_socket,file_name):
-    file_remove = file_name.decode()
+    file_remove = file_name
     file_img = "Img/worker_img/" + file_remove
     existFile = os.path.exists(file_img + ".jpg")
     if not existFile:
@@ -42,14 +49,12 @@ def deleteData(client_socket,file_name):
         os.remove("Img/worker_img/" + file_remove + ".jpg")
 
 def editName(client_socket,check_name,new_name):
-    check_name = check_name.decode()
     check_name = unidecode.unidecode(check_name)
     check_img = "Img/worker_img/" + check_name
     existFile = os.path.exists(check_img + ".jpg")
     print(existFile)
     if existFile:
         client_socket.send(b"Yes")
-        new_name = new_name.decode()
         unidecode_name = unidecode.unidecode(new_name)
         imgPath = "Img/worker_img/"
         picklePath = "db/"
@@ -66,7 +71,6 @@ def editName(client_socket,check_name,new_name):
         client_socket.send(b"No")
 
 def editPhoto(client_socket,check_name):
-    check_name = check_name.decode()
     check_name = unidecode.unidecode(check_name)
     check_img = "Img/worker_img/" + check_name
     existFile = os.path.exists(check_img + ".jpg")

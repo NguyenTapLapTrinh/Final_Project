@@ -8,7 +8,7 @@ from time import *
 import os
 import datetime
 import report
-import texttospeed as ts
+#import texttospeed as ts
 import util
 import worker
 import yolo_detection
@@ -96,7 +96,7 @@ def processImage():
     unicode_name = unidecode.unidecode(full_name)
     updateWidget(note,name,unicode_name,time_str,date_str,empty)
     widget_2.show()  
-    ts.start_sound(string,full_name+" ")    
+    #ts.start_sound(string,full_name+" ")    
 
 #Thread
 def ThreadServer():
