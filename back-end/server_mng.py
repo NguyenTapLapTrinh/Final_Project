@@ -5,7 +5,7 @@ import text
 
 BUFFER = 1024
 PORT = 5000
-IPADRESS = "192.168.2.103"
+IPADRESS = "127.0.0.1"
 folder = "temp/"
 
 def setData(client_socket,check_name):

@@ -14,15 +14,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtWidgets import QMessageBox,QApplication, QMainWindow, QPushButton
 from PyQt5.QtCore import QCoreApplication
-from tkinter import filedialog
-import cv2
-import msg
-from tkinter import Tk
-import client_mng
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
+class Ui_Form_1(object):
+    def setupUi_1(self, Form):
         Form.setObjectName("Form")
         Form.resize(838, 534)
         self.photo = QtWidgets.QLabel(Form)
@@ -66,64 +61,16 @@ class Ui_Form(object):
         self.label_4.setStyleSheet("image: url(./Img/Icon/work_management.png);")
         self.label_4.setText("")
         self.label_4.setObjectName("label_4")
-        self.remove_employ = QtWidgets.QPushButton(Form)
-        self.remove_employ.setGeometry(QtCore.QRect(530, 400, 271, 41))
-        self.remove_employ.setStyleSheet("background-color: #f230ec;\n"
-"border-radius: 10px;\n"
-"border: 1px solid black;\n"
-"color: #fff;\n"
-"font-size: 20px;")
-        self.remove_employ.setObjectName("remove_employ")
         self.close_btn = QtWidgets.QPushButton(Form)
-        self.close_btn.setGeometry(QtCore.QRect(530, 450, 271, 41))
+        self.close_btn.setGeometry(QtCore.QRect(530, 400, 271, 41))
         self.close_btn.setStyleSheet("background-color: red;\n"
 "border-radius: 10px;\n"
 "border: 1px solid black;\n"
 "color: #fff;\n"
 "font-size: 20px;")
         self.close_btn.setObjectName("close_btn")
-        self.add_photo.clicked.connect(self.addImage)
-        self.add_employ.clicked.connect(self.addEmploy)
-        self.remove_employ.clicked.connect(self.rmEmploy)
-        self.close_btn.clicked.connect(QCoreApplication.instance().quit)
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        self.file_path=""
-
-    def addImage(self):
-        root = Tk()
-        self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
-        root.destroy()
-        if self.file_path == "":
-              return
-        img = cv2.imread(self.file_path)
-        Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-        Pic = ConvertToQTFormat.scaled(591, 531)
-        self.photo.setPixmap(QPixmap.fromImage(Pic))
-
-    def EditInfo(self, input_employ, request):
-        if request == client_mng.CMD.ADD:
-                client_mng.setData(self.file_path,input_employ)
-
-        elif request == client_mng.CMD.DEL:
-                client_mng.deleteData(input_employ)
-
-    def addEmploy(self):
-        input_employ = self.input_name.text()
-        if input_employ == "" or self.file_path=="":
-                msg.ShowMsg("Info","Please check again!")
-                return 
-        else:
-                #input_employ = input_employ.replace(" ","_")
-                self.EditInfo(input_employ, client_mng.CMD.ADD)
-
-    def rmEmploy(self):
-        input_employ = self.input_name.text()
-        if input_employ == "":
-                msg.ShowMsg("Info","Please check again!")
-                return
-        self.EditInfo(input_employ, client_mng.CMD.DEL)
        
 
     def retranslateUi(self, Form):
@@ -134,17 +81,6 @@ class Ui_Form(object):
         self.add_photo.setText(_translate("Form", "Add Photo"))
         self.label_2.setText(_translate("Form", "Employee Name"))
         self.label_3.setText(_translate("Form", "EMPLOYEE MANAGEMENT"))
-        self.remove_employ.setText(_translate("Form", "Remove Employee"))
         self.close_btn.setText(_translate("Form", "Close"))
 
             
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())

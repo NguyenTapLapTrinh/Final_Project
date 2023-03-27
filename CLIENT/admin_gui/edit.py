@@ -16,30 +16,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from tkinter import filedialog
-import cv2
-import client_mng
-import msg
-from tkinter import Tk
-from editline import *
 
-class Widget_1(QDialog):
-    def __init__(self, parent=None):
-        super(Widget_1, self).__init__(parent)
-        self.ui_1 = Ui_Dialog_1()
-        self.ui_1.setupUi_1(self)
-        self.ui_1.loadbtn.clicked.connect(self.create)
-        self.name = ""
-        self.old_name = ""
-    def create(self):
-        self.name =  self.ui_1.line.text()
-        if self.name == "":
-                msg.ShowMsg("Info","Please check again!")
-        else:
-                client_mng.editName(self.old_name, self.name)
-                self.close()
-class Ui_Form(object):
-    def setupUi(self, Form):
+class Ui_Form_2(object):
+    def setupUi_2(self, Form):
         Form.setObjectName("Form")
         Form.resize(838, 534)
         self.photo = QtWidgets.QLabel(Form)
@@ -101,49 +80,7 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
         self.close_btn.setObjectName("close_btn")
-        self.add_photo.clicked.connect(self.addImage)
-        self.edit_photo.clicked.connect(self.editPhoto)
-        self.edit_name.clicked.connect(self.editName)
-        self.input_employ = ""
-        self.file_path = ""
-        self.new_name = ""
-        self.ui_1 = Widget_1()
 
-    def addImage(self):
-        root = Tk()
-        self.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
-        root.destroy()
-        if self.file_path == "":
-                return
-        img = cv2.imread(self.file_path)
-        Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-        Pic = ConvertToQTFormat.scaled(591, 531)
-        self.photo.setPixmap(QPixmap.fromImage(Pic))
-
-    def editPhoto(self):
-        self.input_employ = self.input_name.text()
-        if self.input_employ == "" or self.file_path=="":
-                msg.ShowMsg("Info","Please check again!")
-                return 
-        else:
-                #input_employ = input_employ.replace(" ","_")
-                self.UpdateInfo(self.input_employ, client_mng.CMD.EDITPHOTO)
-                
-    def editName(self):
-        self.input_employ = self.input_name.text()
-        if self.input_employ == "":
-                msg.ShowMsg("Info","Please check again!")
-                return 
-        else:
-                self.ui_1.old_name = self.input_employ
-                self.ui_1.show()
-
-    def UpdateInfo(self, input_employ, request):
-        if request == client_mng.CMD.EDITPHOTO:
-                client_mng.editPhoto(self.file_path, input_employ)
-        elif request == client_mng.CMD.EDITNAME:
-                client_mng.editName(input_employ, self.new_name)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

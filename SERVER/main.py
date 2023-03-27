@@ -76,7 +76,9 @@ def processImage():
         dlg.exec()
         Form_1.video.block = 0
         return
+    print(name)
     full_name = text.findFullName(name)
+    print(full_name)
     find =0
     try:
         find,note = report.edit_report(file_path,full_name,time_str,empty)
@@ -94,7 +96,7 @@ def processImage():
                 string += "và "
                 leng -= 1
     unicode_name = unidecode.unidecode(full_name)
-    updateWidget(note,name,unicode_name,time_str,date_str,empty)
+    updateWidget(note,full_name,unicode_name,time_str,date_str,empty)
     widget_2.show()  
     #ts.start_sound(string,full_name+" ")    
 
@@ -104,14 +106,13 @@ def ThreadServer():
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #server_socket.setblocking(1)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind(("192.168.2.103", 5000))
+        server_socket.bind(("localhost", 5000))
         server_socket.listen(1)
         client_socket,a = server_socket.accept()
         #server_socket.settimeout(3)
         message = client_socket.recv(1024)
         message = message.decode()
         request = message.split("-")
-        print(request)
         if request[0] == "Send":
             server_mng.setData(client_socket,request[1])
         elif request[0] == "Remove":
@@ -135,6 +136,10 @@ if os.path.exists("./db/name.txt"):
 else:
      with open("db/name.txt", "wb") as file:
         pass
+if os.path.exists("temp"):
+    pass
+else:
+    os.mkdir("temp")
 thread = threading.Thread(target=ThreadServer)
 thread.start()
 
@@ -150,8 +155,6 @@ widget_2 = QtWidgets.QWidget()
 widget_3 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
-Form_3 = admin.Ui_Form()
-Form_3.setupUi(widget_3)
 Form_2.ButtonActivation(closeWidget)
 sys.exit(app.exec_())
 
