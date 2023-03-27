@@ -12,7 +12,7 @@ import msg
 
 BUFFER = 1024
 PORT = 5000
-IPADRESS = "localhost"
+IPADRESS = "192.168.2.103"
 folder = "temp/"
 
 class CMD(enum.Enum):
