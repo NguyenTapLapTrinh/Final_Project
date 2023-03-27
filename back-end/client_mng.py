@@ -47,7 +47,7 @@ def setData(file_path,input_employ):
                 cmd = 'tar -czf temp/data.tar "{}" "{}"'.format(img_path_temp,pickle_path_temp)
                 os.system(cmd)
 
-                filetosend = open("data.tar", "rb")
+                filetosend = open("temp/data.tar", "rb")
                 data1 = filetosend.read(BUFFER)
                 while data1:
                         client_socket.send(data1)
