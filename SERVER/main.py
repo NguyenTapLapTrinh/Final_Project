@@ -15,7 +15,6 @@ import yolo_detection
 import info
 import threading
 import socket
-import admin
 import text
 import server_mng
 import unidecode
