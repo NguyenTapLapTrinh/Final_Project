@@ -1,7 +1,6 @@
 import sys
 sys.path.append("./back-end")
 sys.path.append("./front-end")
-sys.path.append("./admin_gui")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from time import *
@@ -151,7 +150,6 @@ Form_1.ButtonActivation(processImage)
 widget_1.show()
 
 widget_2 = QtWidgets.QWidget()
-widget_3 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
 Form_2.ButtonActivation(closeWidget)
