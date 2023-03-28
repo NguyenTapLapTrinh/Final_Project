@@ -311,6 +311,7 @@ class Ui_Form(object):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
+        
     def DisplayNewestCSV(self):
         client_mng.UpdateCSV()
         self.model = QStandardItemModel()

@@ -3,6 +3,7 @@ import unidecode
 import os
 import text
 from datetime import datetime
+import time
 BUFFER = 1024
 PORT = 5000
 IPADRESS = "127.0.0.1"
@@ -90,29 +91,31 @@ def editPhoto(client_socket,check_name):
         print("Done Reciving...")
     else:
         client_socket.send(b"No")
+
 def sendCSV(client_socket):
-    time = ""
+    time_str = ""
     day = now.day
     month = now.month
     year = now.year
     while True:
         if day < 10:
-            time = str(month) + "-0" + str(day) + "-" + str(year)
+            time_str = str(month) + "-0" + str(day) + "-" + str(year)
         elif month < 10:
-            time = "0" +str(month) + "-" + str(day) + "-" + str(year)
+            time_str = "0" +str(month) + "-" + str(day) + "-" + str(year)
         else:
-            time = "0" +str(month) + "-" + str(day) + "-" + str(year)
-        if not os.path.exists("report/report_" + time + ".csv"):
+            time_str = "0" +str(month) + "-" + str(day) + "-" + str(year)
+        if not os.path.exists("report/report_" + time_str + ".csv"):
             day = day - 1
         else:
-                break
-    filetosend = open("report/report_"+ time + ".csv", "rb")
+                break               
+    filetosend = open("report/report_"+ time_str + ".csv", "rb")
     data1 = filetosend.read(BUFFER)
     while data1:
             client_socket.send(data1)
             time.sleep(0.01)
             data1 = filetosend.read(BUFFER)
     filetosend.close()
+    time.sleep(0.5)
     string = "Done"
     client_socket.send(string.encode())
     client_socket.close()
