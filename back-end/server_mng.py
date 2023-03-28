@@ -2,12 +2,12 @@ import socket
 import unidecode
 import os
 import text
-
+from datetime import datetime
 BUFFER = 1024
 PORT = 5000
 IPADRESS = "127.0.0.1"
 folder = "temp/"
-
+now = datetime.now()
 def setData(client_socket,check_name):
     full_name = check_name
     check_name = unidecode.unidecode(check_name)
@@ -28,13 +28,13 @@ def setData(client_socket,check_name):
         filetodown.close()
         print("Done Reciving...")
         text.writeLine(full_name,check_name)
-        cmd = "tar -xvf temp/data.tar"
-        os.system(cmd)
-        img_path = 'temp/"{}"'.format(check_name + ".jpg")
-        pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
-        os.system("cp " + img_path + " Img/worker_img")
-        os.system("cp " + pickle_path + " db/")
-        os.system("rm temp/*")
+        # cmd = "tar -xvf temp/data.tar"
+        # os.system(cmd)
+        # img_path = 'temp/"{}"'.format(check_name + ".jpg")
+        # pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
+        # os.system("cp " + img_path + " Img/worker_img")
+        # os.system("cp " + pickle_path + " db/")
+        # os.system("rm temp/*")
 
 def deleteData(client_socket,file_name):
     file_remove = file_name
@@ -90,3 +90,29 @@ def editPhoto(client_socket,check_name):
         print("Done Reciving...")
     else:
         client_socket.send(b"No")
+def sendCSV(client_socket):
+    time = ""
+    day = now.day
+    month = now.month
+    year = now.year
+    while True:
+        if day < 10:
+            time = str(month) + "-0" + str(day) + "-" + str(year)
+        elif month < 10:
+            time = "0" +str(month) + "-" + str(day) + "-" + str(year)
+        else:
+            time = "0" +str(month) + "-" + str(day) + "-" + str(year)
+        if not os.path.exists("report/report_" + time + ".csv"):
+            day = day - 1
+        else:
+                break
+    filetosend = open("report/report_"+ time + ".csv", "rb")
+    data1 = filetosend.read(BUFFER)
+    while data1:
+            client_socket.send(data1)
+            time.sleep(0.01)
+            data1 = filetosend.read(BUFFER)
+    filetosend.close()
+    string = "Done"
+    client_socket.send(string.encode())
+    client_socket.close()

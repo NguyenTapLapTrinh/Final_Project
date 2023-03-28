@@ -12,7 +12,7 @@ import sys
 sys.path.append("./back-end")
 sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt, QModelIndex
+from PyQt5.QtCore import Qt, QModelIndex, QTimer
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView
 import csv
@@ -29,6 +29,7 @@ import face_recognition
 import cv2
 import socket
 import time
+import threading
 sys.setrecursionlimit(5000)
 now = datetime.now()
 # edit table
@@ -256,6 +257,9 @@ class Ui_Form(object):
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
         self.ui_3 = Widget_2()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.DisplayNewestCSV)
+        self.timer.start(10000)
         self.load_csv.clicked.connect(self.loadCSV)
         self.add_employ.clicked.connect(self.openAdd)
         self.update_employ.clicked.connect(self.openEdit)
@@ -307,6 +311,29 @@ class Ui_Form(object):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
+    def DisplayNewestCSV(self):
+        client_mng.UpdateCSV()
+        self.model = QStandardItemModel()
+        # Đọc dữ liệu từ file csv và thêm vào model
+        with open('CLIENT/admin_gui/csv_file/now_csv.csv', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            for row_data in reader:
+                row = []
+                for item_data in row_data:
+                    item = QStandardItem(item_data)
+                    row.append(item)
+                self.model.appendRow(row)
+        for i in range(self.model.columnCount()):
+            for j in range(self.model.rowCount()):
+                item = self.model.item(j, i)
+                if item is not None:
+                    font = QFont()
+                    font.setBold(True)
+                    item.setFont(font)
+        self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableView.resizeColumnsToContents()
+        self.tableView.setModel(self.model)
+
     def openAdd(self):
          self.ui_1.show()
     def openEdit(self):

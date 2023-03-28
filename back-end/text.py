@@ -11,12 +11,12 @@ def writeLine(name,unicode_name):
 def findFullName(unicode_name):
     with open("db/name.txt", "rb") as file:
         line = file.readlines()
-        test =unicode_name+"\r\n"
+        test1 = unicode_name+"\n"
+        test2 = unicode_name +"\r\n" 
         for i in line:
             i = i.decode()
             i = i.split("_")
-            print(i)
-            if test == i[1]:
+            if test1 == i[1] or test2 == i[1]:
                 return i[0]
             
 def deleteUser(name):

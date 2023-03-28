@@ -63,7 +63,13 @@ def processImage():
     try:
         name = util.recognize(frame, './db')
     except:
-        print("False")
+        dlg = QMessageBox()
+        dlg.setIcon(QMessageBox.Warning)
+        dlg.setText("No person found!   ")
+        dlg.setWindowTitle("            Info          ")
+        dlg.setStandardButtons(QMessageBox.Ok)
+        dlg.exec()
+        Form_1.video.block = 0
         return
     if name == "no_persons_found":
         dlg = QMessageBox()
@@ -76,6 +82,7 @@ def processImage():
         return
     print(name)
     full_name = text.findFullName(name)
+    print("OK")
     print(full_name)
     find =0
     try:
@@ -119,6 +126,8 @@ def ThreadServer():
             server_mng.editPhoto(client_socket,request[1])
         elif request[0] == "EditName":
             server_mng.editName(client_socket,request[1],request[2])
+        elif request[0] == "UpdateCSV":
+            server_mng.sendCSV(client_socket)
         server_socket.close()
 if os.path.exists("report"):
     pass

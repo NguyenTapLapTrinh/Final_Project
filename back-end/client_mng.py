@@ -57,9 +57,9 @@ def setData(file_path,input_employ):
                 time.sleep(0.5)
                 string = "Done"
                 client_socket.send(string.encode())
-                os.remove(img_path_temp)
-                os.remove(pickle_path_temp)
-                os.remove("temp/data.tar")
+                # os.remove(img_path_temp)
+                # os.remove(pickle_path_temp)
+                # os.remove("temp/data.tar")
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
 
@@ -99,7 +99,7 @@ def editPhoto(file_path, input_employ):
                 time.sleep(0.01)
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
-        
+
 def editName(input_employ, new_name):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((IPADRESS, PORT))
@@ -115,4 +115,18 @@ def editName(input_employ, new_name):
                 print("Done Sending.")
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
-        
+def UpdateCSV():
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((IPADRESS, PORT))
+        Trans = "UpdateCSV"
+        message = Trans + "-"
+        client_socket.send(message.encode())
+        time.sleep(0.01)
+        filetodown = open("CLIENT/admin_gui/csv_file/now_csv.csv", "wb")
+        while True:
+                data = client_socket.recv(BUFFER)
+                if data == b"Done":
+                        break   
+                filetodown.write(data) 
+        filetodown.close()
+        print("Done Reciving...")
