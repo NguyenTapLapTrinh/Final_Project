@@ -127,7 +127,9 @@ def ThreadServer():
         elif request[0] == "EditName":
             server_mng.editName(client_socket,request[1],request[2])
         elif request[0] == "UpdateCSV":
-            server_mng.sendCSV(client_socket)
+            server_mng.sendCSV(client_socket, Form_1.video.file_path)
+        elif request[0] == "LoadCSV":
+            server_mng.sendCurrentCSV(client_socket,request[1]+ "-" +request[2]+ "-" +request[3], Form_1.video.file_path)
         server_socket.close()
 if os.path.exists("report"):
     pass

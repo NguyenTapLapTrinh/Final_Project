@@ -92,23 +92,8 @@ def editPhoto(client_socket,check_name):
     else:
         client_socket.send(b"No")
 
-def sendCSV(client_socket):
-    time_str = ""
-    day = now.day
-    month = now.month
-    year = now.year
-    while True:
-        if day < 10:
-            time_str = str(month) + "-0" + str(day) + "-" + str(year)
-        elif month < 10:
-            time_str = "0" +str(month) + "-" + str(day) + "-" + str(year)
-        else:
-            time_str = "0" +str(month) + "-" + str(day) + "-" + str(year)
-        if not os.path.exists("report/report_" + time_str + ".csv"):
-            day = day - 1
-        else:
-                break               
-    filetosend = open("report/report_"+ time_str + ".csv", "rb")
+def sendCSV(client_socket, file_path):            
+    filetosend = open(file_path, "rb")
     data1 = filetosend.read(BUFFER)
     while data1:
             client_socket.send(data1)
@@ -119,3 +104,26 @@ def sendCSV(client_socket):
     string = "Done"
     client_socket.send(string.encode())
     client_socket.close()
+def sendCurrentCSV(client_socket,time_csv, file_path):
+    existFile = os.path.exists("report/report_"+ time_csv + ".csv")
+    if existFile:
+        msg = "Yes-No"
+        check_file = "report/report_"+ time_csv + ".csv"
+        if file_path != check_file:
+            msg = "Yes-Yes"
+        client_socket.send(msg.encode())
+        time.sleep(0.01)
+        filetosend = open("report/report_"+ time_csv + ".csv", "rb")
+        data1 = filetosend.read(BUFFER)
+        while data1:
+            client_socket.send(data1)
+            time.sleep(0.01)
+            data1 = filetosend.read(BUFFER)
+        filetosend.close()
+        time.sleep(0.5)
+        string = "Done"
+        client_socket.send(string.encode())
+        client_socket.close()
+        print("Done...")
+    else:
+        client_socket.send(b"No")

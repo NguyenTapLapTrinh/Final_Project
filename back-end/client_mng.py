@@ -119,7 +119,7 @@ def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((IPADRESS, PORT))
         Trans = "UpdateCSV"
-        message = Trans + "-"
+        message = Trans + "-" 
         client_socket.send(message.encode())
         time.sleep(0.01)
         filetodown = open("CLIENT/admin_gui/csv_file/now_csv.csv", "wb")
@@ -130,3 +130,29 @@ def UpdateCSV():
                 filetodown.write(data) 
         filetodown.close()
         print("Done Reciving...")
+def receiveCSV(time_csv):
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((IPADRESS, PORT))
+        Trans = "LoadCSV"
+        message = Trans + "-" + time_csv
+        client_socket.send(message.encode())
+        time.sleep(0.01)
+        fileExist = client_socket.recv(BUFFER)
+        fileExist = fileExist.decode()
+        fileExist = fileExist.split("-")
+        time.sleep(0.01)
+        if fileExist[0] == "No":
+                msg.ShowMsg("Warning","This CSV not exits")
+        elif fileExist[0] == "Yes":
+                filetodown = open("CLIENT/admin_gui/csv_file/current_csv.csv", "wb")
+                while True:
+                        data = client_socket.recv(BUFFER)
+                        if data == b"Done":
+                                break   
+                        filetodown.write(data) 
+                filetodown.close()
+                print("Done Reciving...")
+                if fileExist[1] == "Yes":
+                        return 1
+                else: 
+                        return 0
