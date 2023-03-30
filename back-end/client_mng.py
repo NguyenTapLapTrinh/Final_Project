@@ -130,6 +130,21 @@ def UpdateCSV():
                 filetodown.write(data) 
         filetodown.close()
         print("Done Reciving...")
+def RequestEmployee():
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((IPADRESS, PORT))
+        Trans = "ListEmployee"
+        message = Trans + "-" 
+        list_data = ""
+        client_socket.send(message.encode())
+        time.sleep(0.01)
+        list_data = client_socket.recv(1024)
+        list_data = list_data.decode()
+        data_string = list_data.split("-")
+        print(data_string)
+        print("Done Reciving...")
+        client_socket.close()
+        return data_string
 def receiveCSV(time_csv):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect((IPADRESS, PORT))

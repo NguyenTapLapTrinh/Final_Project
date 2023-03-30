@@ -4,6 +4,7 @@ import os
 import text
 from datetime import datetime
 import time
+import pickle
 BUFFER = 1024
 PORT = 5000
 IPADRESS = "127.0.0.1"
@@ -103,6 +104,16 @@ def sendCSV(client_socket, file_path):
     time.sleep(0.5)
     string = "Done"
     client_socket.send(string.encode())
+    client_socket.close()
+def sendEmployee(client_socket):
+    list_employee = ""    
+    with open("db/name.txt", "rb") as file:
+        line = file.readlines()
+        for i in line:
+            i = i.decode()
+            i = i.split("_")
+            list_employee  = list_employee +str(i[0]) + "-"
+    client_socket.send(list_employee.encode())
     client_socket.close()
 def sendCurrentCSV(client_socket,time_csv, file_path):
     existFile = os.path.exists("report/report_"+ time_csv + ".csv")

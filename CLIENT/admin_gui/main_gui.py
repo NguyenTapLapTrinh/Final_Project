@@ -20,6 +20,7 @@ from datetime import datetime
 from admin import *
 from edit import *
 from editline import *
+from list_name import *
 import client_mng
 import msg
 import os
@@ -108,6 +109,22 @@ class Admin_UI(QDialog):
         else:
                 #input_employ = input_employ.replace(" ","_")
                 self.EditInfo(input_employ, client_mng.CMD.ADD)
+class List_UI(QDialog):
+    def __init__(self, parent=None):
+        super(List_UI, self).__init__(parent)
+        self.ui_4 = Ui_Form_4()
+        self.ui_4.setupUi_4(self)
+        self.ui_4.close_btn.clicked.connect(self.load_employee)
+        self.array_employee = []
+    def load_employee(self):
+        num = 1
+        self.ui_4.listWidget.clear()
+        self.array_employee = client_mng.RequestEmployee()
+        for item in self.array_employee:
+            if item == '':
+                 break
+            self.ui_4.listWidget.addItem(str(num) +". " + item)
+            num = num +  1
 class Edit_UI(QDialog):
     def __init__(self, parent=None):
         super(Edit_UI, self).__init__(parent)
@@ -217,8 +234,16 @@ class Ui_Form(object):
         self.label_4.setStyleSheet("background-color: #1feddc;")
         self.label_4.setText("")
         self.label_4.setObjectName("label_4")
+        self.list_employ = QtWidgets.QPushButton(Form)
+        self.list_employ.setGeometry(QtCore.QRect(120, 110, 181, 81))
+        self.list_employ.setStyleSheet("font-size: 16px;\n"
+"font-weight: 500;\n"
+"color: white;\n"
+"background-color: #34ed1f;\n"
+"")
+        self.list_employ.setObjectName("list_employ")
         self.add_employ = QtWidgets.QPushButton(Form)
-        self.add_employ.setGeometry(QtCore.QRect(220, 110, 181, 81))
+        self.add_employ.setGeometry(QtCore.QRect(320, 110, 181, 81))
         self.add_employ.setStyleSheet("font-size: 16px;\n"
 "font-weight: 500;\n"
 "color: white;\n"
@@ -226,7 +251,7 @@ class Ui_Form(object):
 "")
         self.add_employ.setObjectName("add_employ")
         self.update_employ = QtWidgets.QPushButton(Form)
-        self.update_employ.setGeometry(QtCore.QRect(430, 110, 181, 81))
+        self.update_employ.setGeometry(QtCore.QRect(520, 110, 181, 81))
         self.update_employ.setStyleSheet("\n"
 "font-size: 16px;\n"
 "font-weight: 500;\n"
@@ -235,7 +260,7 @@ class Ui_Form(object):
 "")
         self.update_employ.setObjectName("update_employ")
         self.remove_employ = QtWidgets.QPushButton(Form)
-        self.remove_employ.setGeometry(QtCore.QRect(640, 110, 181, 81))
+        self.remove_employ.setGeometry(QtCore.QRect(720, 110, 181, 81))
         self.remove_employ.setStyleSheet("\n"
 "font-size: 16px;\n"
 "font-weight: 500;\n"
@@ -261,21 +286,26 @@ class Ui_Form(object):
         self.label_2.raise_()
         self.label_3.raise_()
         self.add_employ.raise_()
+        self.list_employ.raise_()
         self.update_employ.raise_()
         self.remove_employ.raise_()
         self.close_btn.raise_()
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
         self.ui_3 = Widget_2()
+        self.ui_4 = List_UI()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.DisplayNewestCSV)
         self.timer.start(10000)
+        self.array_employ = []
+        self.list_employ.clicked.connect(self.loadEmploy)
         self.load_csv.clicked.connect(self.loadCSV)
         self.clear_csv.clicked.connect(self.clearCSV)
         self.add_employ.clicked.connect(self.openAdd)
         self.update_employ.clicked.connect(self.openEdit)
         self.remove_employ.clicked.connect(self.openRM)
         self.close_btn.clicked.connect(QCoreApplication.instance().quit)
+        self.client_employee = []
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
@@ -287,10 +317,12 @@ class Ui_Form(object):
         self.clear_csv.setText(_translate("Form", "Clear CSV"))
         self.label_2.setText(_translate("Form", "WORKER MANAGER APPLICATION "))
         self.add_employ.setText(_translate("Form", "ADD EMPLOYEE"))
+        self.list_employ.setText(_translate("Form", "LIST EMPLOYEE"))
         self.update_employ.setText(_translate("Form", "UPDATE EMPLOYEE"))
         self.remove_employ.setText(_translate("Form", "REMOVE EMPLOYEE"))
         self.close_btn.setText(_translate("Form", "X"))
-
+    def loadEmploy(self):
+        self.ui_4.show()
     def loadCSV(self):
         time_str = self.time.text()
         if time_str =="":
