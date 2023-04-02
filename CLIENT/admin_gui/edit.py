@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 import sys
 sys.path.append("./back-end")
 sys.path.append("./front-end")
@@ -84,7 +85,8 @@ class Ui_Form_2(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Employee Edit"))
+        Form.setWindowIcon(QIcon("./Img/Icon/officer.png"))
         self.add_photo.setText(_translate("Form", "Add Photo"))
         self.edit_name.setText(_translate("Form", "Edit Name"))
         self.edit_photo.setText(_translate("Form", "Edit photo"))

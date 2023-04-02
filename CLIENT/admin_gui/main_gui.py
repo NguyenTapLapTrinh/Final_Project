@@ -12,6 +12,7 @@ import sys
 sys.path.append("./back-end")
 sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QModelIndex, QTimer
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView
@@ -114,7 +115,8 @@ class List_UI(QDialog):
         super(List_UI, self).__init__(parent)
         self.ui_4 = Ui_Form_4()
         self.ui_4.setupUi_4(self)
-        self.ui_4.close_btn.clicked.connect(self.load_employee)
+        self.ui_4.load_list.clicked.connect(self.load_employee)
+        self.ui_4.close_btn.clicked.connect(self.close)
         self.array_employee = []
     def load_employee(self):
         num = 1
@@ -311,7 +313,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Employee Manager"))
+        Form.setWindowIcon(QIcon("./Img/Icon/work_management"))
         self.label.setText(_translate("Form", "Enter time:"))
         self.load_csv.setText(_translate("Form", "Load CSV"))
         self.clear_csv.setText(_translate("Form", "Clear CSV"))

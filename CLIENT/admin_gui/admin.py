@@ -75,8 +75,8 @@ class Ui_Form_1(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Employee Management"))
-        Form.setWindowIcon(QIcon("./Img/Icon/officer.png"))
+        Form.setWindowTitle(_translate("Form", "Employee Updating"))
+        Form.setWindowIcon(QIcon("./Img/Icon/icon.png"))
         self.add_employ.setText(_translate("Form", "Add Employee"))
         self.add_photo.setText(_translate("Form", "Add Photo"))
         self.label_2.setText(_translate("Form", "Employee Name"))
