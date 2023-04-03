@@ -76,6 +76,15 @@ class Ui_Form(object):
         self.label_6 = QtWidgets.QLabel(Form)
         self.label_6.setGeometry(QtCore.QRect(900, 460, 121, 20))
         self.label_6.setObjectName("label_6")
+        self.close_btn= QtWidgets.QPushButton(Form)
+        self.close_btn.setGeometry(QtCore.QRect(950, 20, 31, 31))
+        self.close_btn.setStyleSheet("\n"
+"font-size: 16px;\n"
+"font-weight: 500;\n"
+"color: white;\n"
+"background-color: red;\n"
+"")
+        self.close_btn.setObjectName("close_btn")
         self.label_4.raise_()
         self.camera.raise_()
         self.pushButton.raise_()
@@ -84,6 +93,7 @@ class Ui_Form(object):
         self.progressBar.raise_()
         self.label_5.raise_()
         self.label_6.raise_()
+        self.close_btn.raise_()
         self.video.ImageUpdate.connect(self.ImageUpdateShot)
         self.video.start()
         self.retranslateUi(Form)
@@ -95,7 +105,8 @@ class Ui_Form(object):
 
     def ButtonActivation(self,function):
         self.pushButton.clicked.connect(function)
-
+    def ButtonClose(self, function):
+        self.close_btn.clicked.connect(function)
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Checking worker System"))
@@ -103,6 +114,7 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">CHECKING </span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">ATTENDANCE</span></p><p align=\"center\"><span style=\" font-size:10pt; font-weight:600;\">WIDGET</span></p><p align=\"center\"><span style=\" font-size:9pt;\">Cre: Nguyen-Hieu</span></p></body></html>"))
         self.label_5.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">IMAGES PROCESSING</span></p></body></html>"))
         self.label_6.setText(_translate("Form", "<html><head/><body><p><span style=\" font-weight:600;\">CAPTURE IMAGE</span></p></body></html>"))
+        self.close_btn.setText(_translate("Form", "X"))
 
 
 if __name__ == "__main__":

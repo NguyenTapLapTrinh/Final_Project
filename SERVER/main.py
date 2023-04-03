@@ -31,7 +31,9 @@ yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg
 def closeWidget():
     Form_1.video.block = 0
     widget_2.close()
-
+def closeMain():
+    Form_1.video.block = 1
+    widget_1.closeEvent()
 def updateWidget(note,name,unicode_name,time,date,empty):
     Form_2.updateResult(note)
     Form_2.updateName(name)
@@ -160,6 +162,7 @@ widget_1 = QtWidgets.QWidget()
 Form_1 = worker.Ui_Form()
 Form_1.setupUi(widget_1)
 Form_1.ButtonActivation(processImage)
+Form_1.ButtonClose(closeMain)
 widget_1.show()
 
 widget_2 = QtWidgets.QWidget()
