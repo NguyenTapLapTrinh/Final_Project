@@ -13,6 +13,7 @@ import msg
 BUFFER = 1024
 PORT = 5000
 IPADRESS = "127.0.0.1"
+TIMEOUT  = 5
 folder = "temp/"
 
 class CMD(enum.Enum):
@@ -21,15 +22,28 @@ class CMD(enum.Enum):
     EDITPHOTO = 3
     EDITNAME = 4
 
-
-def setData(file_path,input_employ):
+def ReceiveData(client_socket):
+        try:
+                data = client_socket.recv(BUFFER)
+                return data
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
+def setData(file_path, input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
         Trans = "Send"
         message = Trans + "-" + input_employ
         client_socket.send(message.encode())
         time.sleep(0.01)
-        fileExist = client_socket.recv(BUFFER)
+        fileExist = ReceiveData(client_socket)
+        if fileExist == 0:
+                return
         if fileExist == b"Yes":
                 msg.ShowMsg("Info","This employee is exitsting!")
         elif fileExist == b"No":
@@ -62,29 +76,41 @@ def setData(file_path,input_employ):
                 # os.remove("temp/data.tar")
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
-
+        return 1
 def deleteData(input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
         Trans = "Remove"
         input_employ = unidecode.unidecode(input_employ)
         message = Trans + "-" + input_employ
         client_socket.send(message.encode())
-        fileExist = client_socket.recv(BUFFER)
+        fileExist = ReceiveData(fileExist,client_socket)
         if fileExist == b"False":
                 msg.ShowMsg("Info","Not have this employee!")
         else:
             msg.ShowMsg("Info","Sucessfully")    
         client_socket.close()
-
+        return 1
 def editPhoto(file_path, input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
         filetosend = open(file_path, "rb")
         Trans = "EditImage"
         message = Trans + "-" + input_employ
         client_socket.send(message.encode())
-        fileExist = client_socket.recv(BUFFER)
+        fileExist = ReceiveData(client_socket)
+        if fileExist==0:
+                return
         if fileExist == b"No":
                 msg.ShowMsg("Info","This employee is not existing!")
         elif fileExist == b"Yes":
@@ -99,15 +125,22 @@ def editPhoto(file_path, input_employ):
                 time.sleep(0.01)
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
-
+        return 1
 def editName(input_employ, new_name):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
         Trans = "EditName"
         message = Trans + "-" + input_employ + "-" + new_name
         client_socket.send(message.encode())
         time.sleep(0.01)
-        fileExist = client_socket.recv(BUFFER)
+        fileExist = ReceiveData(client_socket)
+        if fileExist == 0:
+                return
         print(fileExist)
         if fileExist == b"No":
                 msg.ShowMsg("Info","This employee is not existing!")
@@ -115,44 +148,66 @@ def editName(input_employ, new_name):
                 print("Done Sending.")
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
+        return 1
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return 0
         Trans = "UpdateCSV"
         message = Trans + "-" 
         client_socket.send(message.encode())
         time.sleep(0.01)
         filetodown = open("CLIENT/admin_gui/csv_file/now_csv.csv", "wb")
         while True:
-                data = client_socket.recv(BUFFER)
+                data = ReceiveData(client_socket)
+                if data == 0:
+                        return
                 if data == b"Done":
                         break   
                 filetodown.write(data) 
         filetodown.close()
         print("Done Reciving...")
+        return 1
 def RequestEmployee():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return -1
         Trans = "ListEmployee"
         message = Trans + "-" 
         list_data = ""
         client_socket.send(message.encode())
         time.sleep(0.01)
-        list_data = client_socket.recv(1024)
+        list_data = ReceiveData(client_socket)
+        if list_data == 0:
+                return
         list_data = list_data.decode()
         data_string = list_data.split("-")
-        print(data_string)
         print("Done Reciving...")
         client_socket.close()
         return data_string
 def receiveCSV(time_csv):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect((IPADRESS, PORT))
+        client_socket.settimeout(TIMEOUT)
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Info","Server not exist")
+                return -1
         Trans = "LoadCSV"
         message = Trans + "-" + time_csv
         client_socket.send(message.encode())
         time.sleep(0.01)
-        fileExist = client_socket.recv(BUFFER)
+        fileExist = ReceiveData(client_socket)
+        if fileExist == 0:
+                return
         fileExist = fileExist.decode()
         fileExist = fileExist.split("-")
         time.sleep(0.01)
@@ -161,7 +216,7 @@ def receiveCSV(time_csv):
         elif fileExist[0] == "Yes":
                 filetodown = open("CLIENT/admin_gui/csv_file/current_csv.csv", "wb")
                 while True:
-                        data = client_socket.recv(BUFFER)
+                        data = ReceiveData(client_socket)
                         if data == b"Done":
                                 break   
                         filetodown.write(data) 

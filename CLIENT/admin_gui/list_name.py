@@ -16,12 +16,6 @@ class Ui_Form_4(object):
     def setupUi_4(self, Form):
         Form.setObjectName("Form")
         Form.resize(559, 555)
-        self.load_list = QtWidgets.QPushButton(Form)
-        self.load_list.setGeometry(QtCore.QRect(290, 500, 111, 41))
-        self.load_list.setStyleSheet("font-size: 18px;\n"
-"background-color: green;\n"
-"color: white;")
-        self.load_list.setObjectName("close_btn")
         self.close_btn = QtWidgets.QPushButton(Form)
         self.close_btn.setGeometry(QtCore.QRect(420, 500, 111, 41))
         self.close_btn.setStyleSheet("font-size: 18px;\n"
@@ -44,7 +38,6 @@ class Ui_Form_4(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Employee List"))
         Form.setWindowIcon(QIcon("./Img/Icon/checklist.png"))
-        self.load_list.setText(_translate("Form", "LOAD"))
         self.close_btn.setText(_translate("Form", "CANCEL"))
         self.label.setText(_translate("Form", "WORKERS LIST"))
 

@@ -109,6 +109,7 @@ def processImage():
 
 #Thread
 def ThreadServer():
+    sleep(2)
     while True:
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         #server_socket.setblocking(1)

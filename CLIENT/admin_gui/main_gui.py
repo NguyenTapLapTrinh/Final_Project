@@ -96,9 +96,8 @@ class Admin_UI(QDialog):
         self.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def EditInfo(self, input_employ, request):
-        if request == client_mng.CMD.ADD:
+        if request == client_mng.CMD.ADD: 
                 client_mng.setData(self.ui_1.file_path,input_employ)
-
         elif request == client_mng.CMD.DEL:
                 client_mng.deleteData(input_employ)
 
@@ -115,13 +114,14 @@ class List_UI(QDialog):
         super(List_UI, self).__init__(parent)
         self.ui_4 = Ui_Form_4()
         self.ui_4.setupUi_4(self)
-        self.ui_4.load_list.clicked.connect(self.load_employee)
         self.ui_4.close_btn.clicked.connect(self.close)
         self.array_employee = []
     def load_employee(self):
         num = 1
-        self.ui_4.listWidget.clear()
+        self.ui_4.listWidget.clear() 
         self.array_employee = client_mng.RequestEmployee()
+        if self.array_employee == -1:
+            return -1
         for item in self.array_employee:
             if item == '':
                  break
@@ -211,15 +211,6 @@ class Ui_Form(object):
 "background-color: purple;\n"
 "")
         self.load_csv.setObjectName("load_csv")
-        self.clear_csv = QtWidgets.QPushButton(Form)
-        self.clear_csv.setGeometry(QtCore.QRect(520, 250, 101, 31))
-        self.clear_csv.setStyleSheet(
-"font-size: 16px;\n"
-"font-weight: 500;\n"
-"color: white;\n"
-"background-color: gray;\n"
-"")
-        self.clear_csv.setObjectName("clear_csv")
         self.label_2 = QtWidgets.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(360, 20, 441, 31))
         self.label_2.setStyleSheet("font: 26px;\n"
@@ -284,7 +275,6 @@ class Ui_Form(object):
         self.time.raise_()
         self.label.raise_()
         self.load_csv.raise_()
-        self.clear_csv.raise_()
         self.label_2.raise_()
         self.label_3.raise_()
         self.add_employ.raise_()
@@ -302,22 +292,19 @@ class Ui_Form(object):
         self.array_employ = []
         self.list_employ.clicked.connect(self.loadEmploy)
         self.load_csv.clicked.connect(self.loadCSV)
-        self.clear_csv.clicked.connect(self.clearCSV)
         self.add_employ.clicked.connect(self.openAdd)
         self.update_employ.clicked.connect(self.openEdit)
         self.remove_employ.clicked.connect(self.openRM)
         self.close_btn.clicked.connect(QCoreApplication.instance().quit)
-        self.client_employee = []
         self.retranslateUi(Form)
+        self.ui_4 = List_UI()
         QtCore.QMetaObject.connectSlotsByName(Form)
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Employee Manager"))
         Form.setWindowIcon(QIcon("./Img/Icon/work_management"))
         self.label.setText(_translate("Form", "Enter time:"))
         self.load_csv.setText(_translate("Form", "Load CSV"))
-        self.clear_csv.setText(_translate("Form", "Clear CSV"))
         self.label_2.setText(_translate("Form", "WORKER MANAGER APPLICATION "))
         self.add_employ.setText(_translate("Form", "ADD EMPLOYEE"))
         self.list_employ.setText(_translate("Form", "LIST EMPLOYEE"))
@@ -325,6 +312,9 @@ class Ui_Form(object):
         self.remove_employ.setText(_translate("Form", "REMOVE EMPLOYEE"))
         self.close_btn.setText(_translate("Form", "X"))
     def loadEmploy(self):
+        check = self.ui_4.load_employee()
+        if check == -1:
+             return
         self.ui_4.show()
     def loadCSV(self):
         time_str = self.time.text()
@@ -333,6 +323,8 @@ class Ui_Form(object):
              return
         print(time_str)
         stop_timer = client_mng.receiveCSV(time_str)
+        if stop_timer == -1:
+            return
         if stop_timer == 1:
             self.timer.stop()
         else:
@@ -360,11 +352,10 @@ class Ui_Form(object):
             self.tableView.resizeColumnsToContents()
             self.tableView.setModel(self.model)
             #os.remove("CLIENT/admin_gui/csv_file/current_csv.csv")
-    def clearCSV(self):
-         self.tableView.setModel(QStandardItemModel())
-         self.timer.start()
     def DisplayNewestCSV(self):
-        client_mng.UpdateCSV()
+        check = client_mng.UpdateCSV()
+        if check == 0:
+             return
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
         with open('CLIENT/admin_gui/csv_file/now_csv.csv', newline='') as csvfile:
