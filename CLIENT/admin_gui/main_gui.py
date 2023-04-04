@@ -232,7 +232,7 @@ class Ui_Form(object):
         self.list_employ.setStyleSheet("font-size: 16px;\n"
 "font-weight: 500;\n"
 "color: white;\n"
-"background-color: #34ed1f;\n"
+"background-color: #20c798;\n"
 "")
         self.list_employ.setObjectName("list_employ")
         self.add_employ = QtWidgets.QPushButton(Form)
@@ -351,7 +351,7 @@ class Ui_Form(object):
             self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self.tableView.resizeColumnsToContents()
             self.tableView.setModel(self.model)
-            #os.remove("CLIENT/admin_gui/csv_file/current_csv.csv")
+            os.remove("CLIENT/admin_gui/csv_file/current_csv.csv")
     def DisplayNewestCSV(self):
         check = client_mng.UpdateCSV()
         if check == 0:
@@ -376,7 +376,7 @@ class Ui_Form(object):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
-
+        os.remove("CLIENT/admin_gui/csv_file/now_csv.csv")
     def openAdd(self):
          self.ui_1.show()
     def openEdit(self):

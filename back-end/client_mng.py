@@ -21,21 +21,24 @@ class CMD(enum.Enum):
     DEL = 2
     EDITPHOTO = 3
     EDITNAME = 4
-
+def checkResponding(client_socket):
+        try:
+                client_socket.connect((IPADRESS, PORT))
+        except socket.error:
+                msg.ShowMsg("Warning","Server not responding")
+                return 0
 def ReceiveData(client_socket):
         try:
                 data = client_socket.recv(BUFFER)
                 return data
         except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+                msg.ShowMsg("Warning","Lost connection with server")
                 return 0
 def setData(file_path, input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return 0
         Trans = "Send"
         message = Trans + "-" + input_employ
@@ -80,10 +83,8 @@ def setData(file_path, input_employ):
 def deleteData(input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return 0
         Trans = "Remove"
         input_employ = unidecode.unidecode(input_employ)
@@ -99,10 +100,8 @@ def deleteData(input_employ):
 def editPhoto(file_path, input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return 0
         filetosend = open(file_path, "rb")
         Trans = "EditImage"
@@ -129,10 +128,8 @@ def editPhoto(file_path, input_employ):
 def editName(input_employ, new_name):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return 0
         Trans = "EditName"
         message = Trans + "-" + input_employ + "-" + new_name
@@ -152,10 +149,8 @@ def editName(input_employ, new_name):
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return 0
         Trans = "UpdateCSV"
         message = Trans + "-" 
@@ -175,10 +170,8 @@ def UpdateCSV():
 def RequestEmployee():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return -1
         Trans = "ListEmployee"
         message = Trans + "-" 
@@ -196,10 +189,8 @@ def RequestEmployee():
 def receiveCSV(time_csv):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
-        try:
-                client_socket.connect((IPADRESS, PORT))
-        except socket.error:
-                msg.ShowMsg("Info","Server not exist")
+        check = checkResponding(client_socket)
+        if check==0:
                 return -1
         Trans = "LoadCSV"
         message = Trans + "-" + time_csv
