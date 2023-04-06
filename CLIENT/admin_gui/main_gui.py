@@ -287,6 +287,7 @@ class Ui_Form(object):
         self.ui_3 = Widget_2()
         self.ui_4 = List_UI()
         self.timer = QtCore.QTimer()
+        self.lock = 0
         self.timer.timeout.connect(self.DisplayNewestCSV)
         self.timer.start(10000)
         self.array_employ = []
@@ -353,6 +354,7 @@ class Ui_Form(object):
             self.tableView.setModel(self.model)
             os.remove("CLIENT/admin_gui/csv_file/current_csv.csv")
     def DisplayNewestCSV(self):
+        self.lock = 1
         check = client_mng.UpdateCSV()
         if check == 0:
              return
@@ -377,13 +379,22 @@ class Ui_Form(object):
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
         os.remove("CLIENT/admin_gui/csv_file/now_csv.csv")
+        self.lock = 0
     def openAdd(self):
-         self.ui_1.show()
+        if self.lock == 1:
+              msg.ShowMsg("Warning","Server is busy, try again!")
+              return
+        self.ui_1.show()
     def openEdit(self):
-         self.ui_2.show()
+        if self.lock == 1:
+              msg.ShowMsg("Warning","Server is busy, try again!")
+              return
+        self.ui_2.show()
     def openRM(self):
-         self.ui_3.show()
-        
+        if self.lock == 1:
+              msg.ShowMsg("Warning","Server is busy, try again!")
+              return
+        self.ui_3.show()
 
 if __name__ == "__main__":
     import sys
