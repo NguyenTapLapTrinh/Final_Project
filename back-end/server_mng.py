@@ -30,13 +30,21 @@ def setData(client_socket,check_name):
         filetodown.close()
         print("Done Reciving...")
         text.writeLine(full_name,check_name)
-        # cmd = "tar -xvf temp/data.tar"
-        # os.system(cmd)
+        #cmd = "tar -xvf temp/data.tar"
+        cmd = "tar -xvzf temp/data.tar"
+        os.system(cmd)
+        # Linux
         # img_path = 'temp/"{}"'.format(check_name + ".jpg")
         # pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
-        # os.system("cp " + img_path + " Img/worker_img")
-        # os.system("cp " + pickle_path + " db/")
-        # os.system("rm temp/*")
+        #Window
+        # img_path = '\'.\\temp\\{}\''.format(check_name + ".jpg")
+        # pickle_path = './temp/"{}"'.format(check_name + ".pickle")
+        # print(img_path)
+        # os.system("copy " + img_path + " Img\worker_img")
+        # time.sleep(0.5)
+        # os.system("copy " + pickle_path + " db/")
+        # time.sleep(0.5)
+        # os.system("del temp/*")
 
 def deleteData(client_socket,file_name):
     file_remove = file_name

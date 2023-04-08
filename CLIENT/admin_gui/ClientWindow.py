@@ -352,7 +352,7 @@ class Ui_Form(object):
         self.label_9.raise_()
         self.label_10.raise_()
         self.label_11.raise_()
-        current_date = now.strftime("%d-%m-%Y") 
+        self.current_date = now.strftime("%d-%m-%Y")
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
         self.ui_3 = Widget_2()
@@ -364,7 +364,7 @@ class Ui_Form(object):
         self.timer.start(10000)
         self.array_employ = []
         self.ui_4 = List_UI()
-        self.timeCSV.setText(current_date)
+        self.timeCSV.setText(self.current_date)
         self.closeBtn.clicked.connect(QCoreApplication.instance().quit)
         self.listEmploy.clicked.connect(self.loadEmploy)
         self.loadCSV.clicked.connect(self.load_CSV)
@@ -375,7 +375,8 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Worker Manager"))
+        Form.setWindowIcon(QIcon("./Img/Icon/icon.png"))
         self.label.setText(_translate("Form", "Change Time:"))
         self.loadCSV.setText(_translate("Form", "LOAD"))
         self.closeBtn.setText(_translate("Form", "EXIT"))
@@ -393,6 +394,19 @@ class Ui_Form(object):
     def load_CSV(self):
         time_str = self.timeEdit.text()
         time_array = time_str.split("-")
+        print(time_array)
+        current_date = now.strftime("%d-%m-%Y")
+        current_time_array = current_date.split("-")
+        print(current_time_array)
+        if int(time_array[2]) > int(current_time_array[2]):
+             msg.ShowMsg("Warning","Not suitable time!")
+             return
+        elif int(time_array[1]) > int(current_time_array[1]):
+             msg.ShowMsg("Warning","Not suitable time!")
+             return 
+        elif int(time_array[1]) == int(current_time_array[1]) and int(time_array[0]) > int(current_time_array[0]):
+             msg.ShowMsg("Warning","Not suitable time!")
+             return 
         if time_str =="":
              msg.ShowMsg("Info","Please check again!")
              return
