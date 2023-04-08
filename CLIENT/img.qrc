@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="calendar">
+    <file>schedule.png</file>
+  </qresource>
+  <qresource prefix="icon">
+    <file>setting.png</file>
+    <file>checklist.png</file>
+    <file>add.png</file>
+    <file>helmet-icon.png</file>
+  </qresource>
+</RCC>
