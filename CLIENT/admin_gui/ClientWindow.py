@@ -357,7 +357,6 @@ class Ui_Form(object):
         self.ui_2 = Edit_UI()
         self.ui_3 = Widget_2()
         self.ui_4 = List_UI()
-        self.ui_4 = List_UI()
         self.timer = QtCore.QTimer()
         self.lock = 0
         self.timer.timeout.connect(self.DisplayNewestCSV)
