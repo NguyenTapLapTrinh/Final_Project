@@ -22,6 +22,12 @@ class Ui_Form_4(object):
 "background-color: #34ed1f;\n"
 "color: white;")
         self.close_btn.setObjectName("close_btn")
+        self.rm_btn = QtWidgets.QPushButton(Form)
+        self.rm_btn.setGeometry(QtCore.QRect(300, 500, 111, 41))
+        self.rm_btn.setStyleSheet("font-size: 18px;\n"
+"background-color: red;\n"
+"color: white;")
+        self.rm_btn.setObjectName("rm_btn")
         self.listWidget = QtWidgets.QListWidget(Form)
         self.listWidget.setGeometry(QtCore.QRect(10, 50, 541, 431))
         self.listWidget.setStyleSheet("border: 1px solid black;")
@@ -39,5 +45,6 @@ class Ui_Form_4(object):
         Form.setWindowTitle(_translate("Form", "Employee List"))
         Form.setWindowIcon(QIcon("./Img/Icon/checklist.png"))
         self.close_btn.setText(_translate("Form", "OK"))
+        self.rm_btn.setText(_translate("Form", "REMOVE"))
         self.label.setText(_translate("Form", "WORKERS LIST"))
 

@@ -84,8 +84,8 @@ def processImage():
         return
     print(name)
     full_name = text.findFullName(name)
-    print("OK")
     print(full_name)
+    print("OK")
     find =0
     try:
         find,note = report.edit_report(file_path,full_name,time_str,empty)

@@ -11,8 +11,8 @@ def writeLine(name,unicode_name):
 def findFullName(unicode_name):
     with open("db/name.txt", "rb") as file:
         line = file.readlines()
-        test1 = unicode_name+"\n"
-        test2 = unicode_name +"\r\n" 
+        test1 = unicode_name +"\n"
+        test2 = unicode_name +"\r\n"
         for i in line:
             i = i.decode()
             i = i.split("_")

@@ -90,7 +90,7 @@ def deleteData(input_employ):
         input_employ = unidecode.unidecode(input_employ)
         message = Trans + "-" + input_employ
         client_socket.send(message.encode())
-        fileExist = ReceiveData(fileExist,client_socket)
+        fileExist = ReceiveData(client_socket)
         if fileExist == b"False":
                 msg.ShowMsg("Info","Not have this employee!")
         else:

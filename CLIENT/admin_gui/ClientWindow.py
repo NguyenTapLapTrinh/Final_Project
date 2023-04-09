@@ -61,23 +61,7 @@ class Widget_1(QDialog):
                 msg.ShowMsg("Info","Please check again!")
         else:
                 client_mng.editName(self.old_name, self.name)
-                self.close()
-class Widget_2(QDialog):
-    def __init__(self, parent=None):
-        super(Widget_2, self).__init__(parent)
-        self.edit = Ui_Dialog_1()
-        self.edit.setupUi_3(self)
-        self.edit.loadbtn.clicked.connect(self.create)
-        self.name = ""
-        self.old_name = ""
-    def create(self):
-        self.name =  self.edit.line.text()
-        self.edit.line.clear()
-        if self.name == "":
-                msg.ShowMsg("Info","Please check again!")
-        else:
-                client_mng.deleteData(self.name)
-                self.close()                    
+                self.close()                 
 class Admin_UI(QDialog):
     def __init__(self, parent=None):
         super(Admin_UI, self).__init__(parent)
@@ -117,18 +101,37 @@ class List_UI(QDialog):
         self.ui_4 = Ui_Form_4()
         self.ui_4.setupUi_4(self)
         self.ui_4.close_btn.clicked.connect(self.close)
+        self.ui_4.rm_btn.clicked.connect(self.removeEmploy)
         self.array_employee = []
     def load_employee(self):
-        num = 1
         self.ui_4.listWidget.clear() 
         self.array_employee = client_mng.RequestEmployee()
         if self.array_employee == -1:
             return -1
         for item in self.array_employee:
+            font = QFont()
+            font.setPointSize(12)
+            font.setBold(True)
             if item == '':
                  break
-            self.ui_4.listWidget.addItem(str(num) +". " + item)
-            num = num +  1
+            item = QListWidgetItem(str(item))
+            item.setFont(font)
+            self.ui_4.listWidget.addItem(item)
+    def removeEmploy(self):
+         current_row = self.ui_4.listWidget.currentRow()
+         nameDelete = self.ui_4.listWidget.item(current_row).text()
+         if current_row>0:
+            body = "Are you sure to remove "+ nameDelete
+            choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
+            if choose ==1:
+                check = client_mng.deleteData(nameDelete)
+            else:
+                 return
+         else: 
+            return
+         if check == 0:
+            return
+         self.load_employee()
 class Edit_UI(QDialog):
     def __init__(self, parent=None):
         super(Edit_UI, self).__init__(parent)
@@ -355,7 +358,6 @@ class Ui_Form(object):
         self.current_date = now.strftime("%d-%m-%Y")
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
-        self.ui_3 = Widget_2()
         self.ui_4 = List_UI()
         self.timer = QtCore.QTimer()
         self.lock = 0
