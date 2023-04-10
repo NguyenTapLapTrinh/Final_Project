@@ -38,6 +38,7 @@ now = datetime.now()
 import image_main
 import datetime
 now = datetime.datetime.now()
+timer = QtCore.QTimer()
 class CenteredHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
         super().__init__(orientation, parent)
@@ -82,11 +83,13 @@ class Admin_UI(QDialog):
         self.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def EditInfo(self, input_employ, request):
+        global timer
+        timer.stop()
         if request == client_mng.CMD.ADD: 
                 client_mng.setData(self.ui_1.file_path,input_employ)
         elif request == client_mng.CMD.DEL:
                 client_mng.deleteData(input_employ)
-
+        timer.start()
     def addEmploy(self):
         input_employ = self.ui_1.input_name.text()
         if input_employ == "" or self.ui_1.file_path=="":
@@ -104,6 +107,8 @@ class List_UI(QDialog):
         self.ui_4.rm_btn.clicked.connect(self.removeEmploy)
         self.array_employee = []
     def load_employee(self):
+        global timer
+        timer.stop()
         self.ui_4.listWidget.clear() 
         self.array_employee = client_mng.RequestEmployee()
         if self.array_employee == -1:
@@ -117,14 +122,18 @@ class List_UI(QDialog):
             item = QListWidgetItem(str(item))
             item.setFont(font)
             self.ui_4.listWidget.addItem(item)
+        timer.start()
     def removeEmploy(self):
+         global timer
          current_row = self.ui_4.listWidget.currentRow()
          nameDelete = self.ui_4.listWidget.item(current_row).text()
-         if current_row>0:
+         if current_row>=0:
             body = "Are you sure to remove "+ nameDelete
             choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
             if choose ==1:
+                timer.stop()
                 check = client_mng.deleteData(nameDelete)
+                timer.start()
             else:
                  return
          else: 
@@ -172,9 +181,13 @@ class Edit_UI(QDialog):
                 self.ui_2.edit.old_name = self.ui_2.input_employ
                 self.ui_2.edit.show()
     def UpdateInfo(self, input_employ, request):
+        global timer
         if request == client_mng.CMD.EDITPHOTO:
+                timer.stop()
                 client_mng.editPhoto(self.ui_2.file_path, input_employ)
+                timer.start()
 class Ui_Form(object):
+    global timer
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1022, 703)
@@ -359,10 +372,10 @@ class Ui_Form(object):
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
         self.ui_4 = List_UI()
-        self.timer = QtCore.QTimer()
         self.lock = 0
-        self.timer.timeout.connect(self.DisplayNewestCSV)
-        self.timer.start(10000)
+        self.DisplayNewestCSV()
+        timer.timeout.connect(self.DisplayNewestCSV)
+        timer.start(10000)
         self.array_employ = []
         self.ui_4 = List_UI()
         self.timeCSV.setText(self.current_date)
@@ -388,6 +401,7 @@ class Ui_Form(object):
         self.label_10.setText(_translate("Form", "ADD EMPLOYEE"))
         self.label_11.setText(_translate("Form", "SETTING"))
     def loadEmploy(self):
+        timer.stop()
         check = self.ui_4.load_employee()
         if check == -1:
              return
@@ -415,10 +429,10 @@ class Ui_Form(object):
         if stop_timer == -1:
             return
         if stop_timer == 1:
-            self.timer.stop()
+            timer.stop()
         else:
-            self.timer.stop()
-            self.timer.start()
+            timer.stop()
+            timer.start()
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
         if os.path.exists("CLIENT/admin_gui/csv_file/current_csv.csv"):
@@ -449,7 +463,7 @@ class Ui_Form(object):
              return
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
-        with open('CLIENT/admin_gui/csv_file/now_csv.csv', newline='') as csvfile:
+        with open('CLIENT/admin_gui/csv_file/now_csv.csv', newline='', encoding='utf8') as csvfile:
             reader = csv.reader(csvfile)
             for row_data in reader:
                 row = []

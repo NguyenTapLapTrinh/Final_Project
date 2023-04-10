@@ -183,7 +183,7 @@ def RequestEmployee():
                 return
         list_data = list_data.decode()
         data_string = list_data.split("-")
-        print("Done Reciving...")
+        print("Done Reciving Employee...")
         client_socket.close()
         return data_string
 def receiveCSV(time_csv):
