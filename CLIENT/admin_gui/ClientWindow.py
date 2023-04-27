@@ -343,7 +343,7 @@ class Ui_Form(object):
 "font-weight: 500;")
         self.label_10.setObjectName("label_10")
         self.label_11 = QtWidgets.QLabel(Form)
-        self.label_11.setGeometry(QtCore.QRect(920, 520, 91, 20))
+        self.label_11.setGeometry(QtCore.QRect(890, 520, 100, 20))
         self.label_11.setStyleSheet("color: white;\n"
 "font-size: 14px;\n"
 "font-weight: 500;\n"
@@ -399,7 +399,7 @@ class Ui_Form(object):
         self.label_8.setText(_translate("Form", "MENU"))
         self.label_9.setText(_translate("Form", "LIST EMPLOYEE"))
         self.label_10.setText(_translate("Form", "ADD EMPLOYEE"))
-        self.label_11.setText(_translate("Form", "SETTING"))
+        self.label_11.setText(_translate("Form", "UPDATE INFO"))
     def loadEmploy(self):
         timer.stop()
         check = self.ui_4.load_employee()
@@ -437,7 +437,7 @@ class Ui_Form(object):
         # Đọc dữ liệu từ file csv và thêm vào model
         if os.path.exists("CLIENT/admin_gui/csv_file/current_csv.csv"):
             self.timeCSV.setText(self.timeEdit.text())    
-            with open("CLIENT/admin_gui/csv_file/current_csv.csv", newline='') as csvfile:
+            with open("CLIENT/admin_gui/csv_file/current_csv.csv", encoding= 'utf8',newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 for row_data in reader:
                     row = []

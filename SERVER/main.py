@@ -17,7 +17,7 @@ import socket
 import text
 import server_mng
 import unidecode
-
+import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
@@ -26,7 +26,7 @@ with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
 yolo = yolo_detection.Yolo(classes)
-yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg")
+yolo.loadWeight("weight/yolov4_training_last_ct.weights","weight/yolov4_testing_ct.cfg")
 
 def closeWidget():
     Form_1.video.block = 0
@@ -52,6 +52,7 @@ def updateWidget(note,name,unicode_name,time,date,empty):
             Form_2.updateGlove(1)
 
 def processImage():
+    Form_1.startAnimation()
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -72,8 +73,10 @@ def processImage():
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
         Form_1.video.block = 0
+        Form_1.stopAnimation()
         return
     if name == "no_persons_found":
+        print("2")
         dlg = QMessageBox()
         dlg.setIcon(QMessageBox.Warning)
         dlg.setText("No person found!   ")
@@ -81,11 +84,9 @@ def processImage():
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
         Form_1.video.block = 0
+        Form_1.stopAnimation()
         return
-    print(name)
     full_name = text.findFullName(name)
-    print(full_name)
-    print("OK")
     find =0
     try:
         find,note = report.edit_report(file_path,full_name,time_str,empty)
@@ -104,6 +105,7 @@ def processImage():
                 leng -= 1
     unicode_name = unidecode.unidecode(full_name)
     updateWidget(note,full_name,unicode_name,time_str,date_str,empty)
+    Form_1.stopAnimation()
     widget_2.show()  
     #ts.start_sound(string,full_name+" ")    
 
