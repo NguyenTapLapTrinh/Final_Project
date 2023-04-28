@@ -44,12 +44,10 @@ def edit_report(file_path, name, time, list_data):
             
             # Add the row to the list of updated data
             rows.append(row)
-            print(rows)
     if find:
         with open(file_path, 'w', newline='', encoding='utf8') as csv_file:
             writer = csv.writer(csv_file)
             for line in rows:
-                print(line)
                 writer.writerow(line)   
     
     return find,note

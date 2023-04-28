@@ -89,12 +89,7 @@ class Ui_Form(object):
 "background-color: red;\n"
 "")
         self.close_btn.setObjectName("close_btn")
-        self.loading = QtWidgets.QLabel(Form)
-        self.movie = QMovie("Img/loading/loading.gif")
-        self.loading.setMovie(self.movie)
         # Căn chỉnh QLabel vào giữa QWidget
-        self.loading.setGeometry(410, 130, 200, 200)
-        self.loading.setObjectName("")
         self.label_4.raise_()
         self.camera.raise_()
         self.pushButton.raise_()
@@ -104,20 +99,10 @@ class Ui_Form(object):
         self.label_5.raise_()
         self.label_6.raise_()
         self.close_btn.raise_()
-        self.loading.raise_()
         self.video.ImageUpdate.connect(self.ImageUpdateShot)
-        self.movie.start()
-        self.loading.hide()
         self.video.start()
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-    def startAnimation(self):
-        # Bắt đầu phát QMovie
-        self.loading.show()
-        print("pass")
-    def stopAnimation(self):
-        # Dừng phát QMovie
-        self.loading.hide()
     def ImageUpdateShot(self, Image):
         self.camera.setPixmap(QPixmap.fromImage(Image))
     def ButtonActivation(self,function):

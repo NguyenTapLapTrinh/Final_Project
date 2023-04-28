@@ -3,6 +3,10 @@ sys.path.append("./back-end")
 sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QTimer, Qt, QEventLoop
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QCoreApplication
+from PyQt5.QtGui import QMovie, QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from time import *
 import os
 import datetime
@@ -11,6 +15,7 @@ import report
 import util
 import worker
 import yolo_detection
+import process
 import info
 import threading
 import socket
@@ -26,7 +31,7 @@ with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
 yolo = yolo_detection.Yolo(classes)
-yolo.loadWeight("weight/yolov4_training_last_ct.weights","weight/yolov4_testing_ct.cfg")
+yolo.loadWeight("weight/yolov4_training_last_ct.weights","weight/yolov4_testing.cfg")
 
 def closeWidget():
     Form_1.video.block = 0
@@ -50,10 +55,11 @@ def updateWidget(note,name,unicode_name,time,date,empty):
             Form_2.updateVest(1)
         elif i == 2:
             Form_2.updateGlove(1)
-
+timer = QtCore.QTimer()
 def processImage():
-    Form_1.startAnimation()
     Form_1.video.block = 1
+    Form_1.video.change = 1
+    Form_1.video.init = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
     time_now = datetime.datetime.now().time()
@@ -65,6 +71,7 @@ def processImage():
     empty = yolo.objectDetect()
     try:
         name = util.recognize(frame, './db')
+        
     except:
         dlg = QMessageBox()
         dlg.setIcon(QMessageBox.Warning)
@@ -72,19 +79,20 @@ def processImage():
         dlg.setWindowTitle("            Info          ")
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
+        Form_1.video.init = 1
+        Form_1.video.change = 0
         Form_1.video.block = 0
-        Form_1.stopAnimation()
         return
     if name == "no_persons_found":
-        print("2")
         dlg = QMessageBox()
         dlg.setIcon(QMessageBox.Warning)
         dlg.setText("No person found!   ")
         dlg.setWindowTitle("            Info          ")
         dlg.setStandardButtons(QMessageBox.Ok)
         dlg.exec()
+        Form_1.video.init = 1
+        Form_1.video.change = 0
         Form_1.video.block = 0
-        Form_1.stopAnimation()
         return
     full_name = text.findFullName(name)
     find =0
@@ -105,7 +113,9 @@ def processImage():
                 leng -= 1
     unicode_name = unidecode.unidecode(full_name)
     updateWidget(note,full_name,unicode_name,time_str,date_str,empty)
-    Form_1.stopAnimation()
+    Form_1.video.block = 0
+    Form_1.video.init = 1
+    Form_1.video.change = 0
     widget_2.show()  
     #ts.start_sound(string,full_name+" ")    
 
@@ -172,5 +182,12 @@ widget_2 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
 Form_2.ButtonActivation(closeWidget)
+
+widget_3 = QtWidgets.QWidget()
+Form_3 = process.Ui_Form()
+Form_3.setupUi(widget_3)
 sys.exit(app.exec_())
+
+
+
 
