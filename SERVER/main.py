@@ -22,6 +22,7 @@ import socket
 import text
 import server_mng
 import unidecode
+import msg
 import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
@@ -55,7 +56,6 @@ def updateWidget(note,name,unicode_name,time,date,empty):
             Form_2.updateVest(1)
         elif i == 2:
             Form_2.updateGlove(1)
-timer = QtCore.QTimer()
 def processImage():
     Form_1.video.block = 1
     Form_1.video.change = 1
@@ -73,23 +73,13 @@ def processImage():
         name = util.recognize(frame, './db')
         
     except:
-        dlg = QMessageBox()
-        dlg.setIcon(QMessageBox.Warning)
-        dlg.setText("No person found!   ")
-        dlg.setWindowTitle("            Info          ")
-        dlg.setStandardButtons(QMessageBox.Ok)
-        dlg.exec()
+        msg.ShowMsg("Warning","No person found!")
         Form_1.video.init = 1
         Form_1.video.change = 0
         Form_1.video.block = 0
         return
     if name == "no_persons_found":
-        dlg = QMessageBox()
-        dlg.setIcon(QMessageBox.Warning)
-        dlg.setText("No person found!   ")
-        dlg.setWindowTitle("            Info          ")
-        dlg.setStandardButtons(QMessageBox.Ok)
-        dlg.exec()
+        msg.ShowMsg("Warning","No person found!")
         Form_1.video.init = 1
         Form_1.video.change = 0
         Form_1.video.block = 0
