@@ -13,7 +13,7 @@ import subprocess
 
 BUFFER = 1024
 PORT = 5000
-IPADRESS = "0.0.0.0"
+IPADRESS = "192.168.43.249"
 TIMEOUT  = 5
 folder = "temp/"
 
@@ -31,7 +31,6 @@ def get_ip_address():
             return ip[1]
     return None
 
-ip_address = get_ip_address()
 class CMD(enum.Enum):
     ADD = 1
     DEL = 2

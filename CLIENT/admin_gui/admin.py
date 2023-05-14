@@ -79,7 +79,7 @@ class Ui_Form_1(object):
         Form.setWindowIcon(QIcon("./Img/Icon/icon.png"))
         self.add_employ.setText(_translate("Form", "Add Employee"))
         self.add_photo.setText(_translate("Form", "Add Photo"))
-        self.label_2.setText(_translate("Form", "Employee Name"))
+        self.label_2.setText(_translate("Form", "Employee Name_ID"))
         self.label_3.setText(_translate("Form", "EMPLOYEE MANAGEMENT"))
         self.close_btn.setText(_translate("Form", "Close"))
 

@@ -39,7 +39,7 @@ def closeWidget():
     widget_2.close()
 def closeMain():
     Form_1.video.block = 1
-    widget_1.closeEvent()
+    os.system('kill -9 python3.8')
 def updateWidget(note,name,unicode_name,time,date,empty):
     Form_2.updateResult(note)
     Form_2.updateName(name)
@@ -58,8 +58,6 @@ def updateWidget(note,name,unicode_name,time,date,empty):
             Form_2.updateGlove(1)
 def processImage():
     Form_1.video.block = 1
-    Form_1.video.change = 1
-    Form_1.video.init = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
     time_now = datetime.datetime.now().time()
@@ -74,14 +72,10 @@ def processImage():
         
     except:
         msg.ShowMsg("Warning","No person found!")
-        Form_1.video.init = 1
-        Form_1.video.change = 0
         Form_1.video.block = 0
         return
     if name == "no_persons_found":
         msg.ShowMsg("Warning","No person found!")
-        Form_1.video.init = 1
-        Form_1.video.change = 0
         Form_1.video.block = 0
         return
     full_name = text.findFullName(name)
@@ -104,8 +98,6 @@ def processImage():
     unicode_name = unidecode.unidecode(full_name)
     updateWidget(note,full_name,unicode_name,time_str,date_str,empty)
     Form_1.video.block = 0
-    Form_1.video.init = 1
-    Form_1.video.change = 0
     widget_2.show()  
     #ts.start_sound(string,full_name+" ")    
 
