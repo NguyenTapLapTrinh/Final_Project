@@ -27,7 +27,7 @@ import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-msg=5
+ddd=5
 timer = QtCore.QTimer()
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
@@ -60,9 +60,9 @@ def updateWidget(note,name,unicode_name,time,date,empty):
 
 
 def processImage():
-    global msg
+    global ddd
     timer.stop()
-    msg.close()
+    ddd.close()
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -73,18 +73,18 @@ def processImage():
     width = Form_1.video.width
     yolo.setVar(frame,height,width)
     empty = yolo.objectDetect()
-    try:
-        name = util.recognize(frame, './db')
+    # try:
+    #     name = util.recognize(frame, './db')
         
-    except:
-        msg.ShowMsg("Warning","No person found!")
-        Form_1.video.block = 0
-        return
-    if name == "no_persons_found":
-        msg.ShowMsg("Warning","No person found!")
-        Form_1.video.block = 0
-        return
-    full_name = text.findFullName(name)
+    # except:
+    #     msg.ShowMsg("Warning","No person found!")
+    #     Form_1.video.block = 0
+    #     return
+    # if name == "no_persons_found":
+    #     msg.ShowMsg("Warning","No person found!")
+    #     Form_1.video.block = 0
+    #     return
+    full_name = text.findFullName("Ngo Trung Nguyen")
     find =0
     try:
         find,note = report.edit_report(file_path,full_name,time_str,empty)
@@ -109,12 +109,12 @@ def processImage():
 
 #Thread
 def function():
-    global msg
-    msg = QMessageBox()
-    msg.setIcon(QMessageBox.Information)
-    msg.setWindowTitle("Warning")
-    msg.setText("Wait 5 second")
-    msg.show()
+    global ddd
+    ddd = QMessageBox()
+    ddd.setIcon(QMessageBox.Information)
+    ddd.setWindowTitle("Warning")
+    ddd.setText("Wait 5 second")
+    ddd.show()
     timer.setSingleShot(True)
     timer.timeout.connect(processImage)
     timer.start(5000)
