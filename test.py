@@ -1,19 +1,19 @@
-import socket
+import subprocess
 
 def get_ip_address():
-    # Tạo một socket để kết nối với một địa chỉ IP không tồn tại
-    # Điều này giúp lấy địa chỉ IP cục bộ của máy tính
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.connect(("10.255.255.255", 1))
+    # Execute the 'arp -a' command to get the ARP cache entries
+    cmd = 'arp -a | findstr "40-1c-83-80-e1-ca" '
+    returned_output = subprocess.check_output((cmd),shell=True,stderr=subprocess.STDOUT).decode()
+    lines = returned_output.strip().split("\n")
+    for line in lines:
+        if "40-1c-83-80-e1-ca" in line.lower():
+            parse=str(returned_output).split(' ',1)
+            ip=parse[1].split(' ')
+            return ip[1]
+    return None
 
-    # Lấy địa chỉ IP được gán cho socket
-    ip_address = sock.getsockname()[0]
-
-    # Đóng socket
-    sock.close()
-
-    return ip_address
-
-# Gọi hàm để lấy địa chỉ IP và in ra màn hình
-ip = get_ip_address()
-print(type(ip))
+ip_address = get_ip_address()
+if ip_address:
+    print(ip_address)
+else:
+    print("MAC", )

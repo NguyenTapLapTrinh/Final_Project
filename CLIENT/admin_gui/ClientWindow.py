@@ -501,6 +501,21 @@ class Ui_Form(object):
 
 if __name__ == "__main__":
     import sys
+    Fail = 1
+    number = 0
+    while(Fail):
+        result = client_mng.get_ip_address()
+        if result == None:
+            number += 1
+            if number > 3:
+                msg.ShowMsg("Warning","Server not found")
+                exit(0)
+            msg.ShowMsg("Warning",f"Server not found, try again!\nTry reconnect {number} attempt!")
+        else:
+            Fail = 0
+             
+             
+    
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
