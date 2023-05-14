@@ -27,7 +27,7 @@ import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-dlg=5
+msg=5
 timer = QtCore.QTimer()
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
@@ -40,7 +40,7 @@ def closeWidget():
     widget_2.close()
 def closeMain():
     Form_1.video.block = 1
-    os.system('kill -9 python3.8')
+    os.system('killall -9 python3.8')
 def updateWidget(note,name,unicode_name,time,date,empty):
     Form_2.updateResult(note)
     Form_2.updateName(name)
@@ -60,8 +60,9 @@ def updateWidget(note,name,unicode_name,time,date,empty):
 
 
 def processImage():
-    global dlg
-    dlg.close()
+    global msg
+    timer.stop()
+    msg.close()
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -108,12 +109,12 @@ def processImage():
 
 #Thread
 def function():
-    global dlg
-    dlg = QMessageBox()
-    dlg.setIcon(QMessageBox.Information)
-    dlg.setWindowTitle("Warning")
-    dlg.setText("Wait 5 second")
-    dlg.show()
+    global msg
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setWindowTitle("Warning")
+    msg.setText("Wait 5 second")
+    msg.show()
     timer.setSingleShot(True)
     timer.timeout.connect(processImage)
     timer.start(5000)
