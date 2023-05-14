@@ -1,58 +1,19 @@
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-import time
+import socket
 
-class MyWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
+def get_ip_address():
+    # Tạo một socket để kết nối với một địa chỉ IP không tồn tại
+    # Điều này giúp lấy địa chỉ IP cục bộ của máy tính
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.connect(("10.255.255.255", 1))
 
-    def initUI(self):
-        self.setGeometry(300, 300, 250, 150)
-        self.setWindowTitle('GIF Example')
+    # Lấy địa chỉ IP được gán cho socket
+    ip_address = sock.getsockname()[0]
 
-        self.label = QLabel(self)
-        self.movie = QMovie("Img/loading/loading.gif")
-        self.label.setMovie(self.movie)
+    # Đóng socket
+    sock.close()
 
-        # tạo một nút để kích hoạt hàm
-        self.button = QPushButton('Run Function', self)
-        self.button.move(50, 100)
-        self.button.clicked.connect(self.runFunction)
+    return ip_address
 
-        self.show()
-
-    def runFunction(self):
-        # tạo một thread riêng để chạy gif
-        self.thread = QThread()
-        self.worker = Worker()
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.thread.start()
-
-        # thực hiện các công việc trong hàm
-        time.sleep(5)
-
-        # kết thúc thread và dừng gif
-        self.worker.stop()
-        self.thread.quit()
-        self.thread.wait()
-        self.label.setPixmap(QPixmap())
-
-class Worker(QObject):
-    finished = pyqtSignal()
-    def __init__(self):
-        super().__init__()
-        self.is_running = True
-
-    def run(self):
-        self.movie = QMovie("loading.gif")
-        self.movie.start()
-        while self.is_running:
-            self.label.setMovie(self.movie)
-        self.movie.stop()
-        self.finished.emit()
-
-    def stop(self):
-        self.is_running = False
+# Gọi hàm để lấy địa chỉ IP và in ra màn hình
+ip = get_ip_address()
+print(type(ip))
