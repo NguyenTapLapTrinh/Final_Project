@@ -27,7 +27,8 @@ import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-
+dlg=5
+timer = QtCore.QTimer()
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
@@ -56,7 +57,11 @@ def updateWidget(note,name,unicode_name,time,date,empty):
             Form_2.updateVest(1)
         elif i == 2:
             Form_2.updateGlove(1)
+
+
 def processImage():
+    global dlg
+    dlg.close()
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -102,6 +107,16 @@ def processImage():
     #ts.start_sound(string,full_name+" ")    
 
 #Thread
+def function():
+    global dlg
+    dlg = QMessageBox()
+    dlg.setIcon(QMessageBox.Information)
+    dlg.setWindowTitle("Warning")
+    dlg.setText("Wait 5 second")
+    dlg.show()
+    timer.setSingleShot(True)
+    timer.timeout.connect(processImage)
+    timer.start(5000)
 
 def get_ip_address():
     # Tạo một socket để kết nối với một địa chỉ IP không tồn tại
@@ -174,7 +189,7 @@ app = QtWidgets.QApplication(sys.argv)
 widget_1 = QtWidgets.QWidget()
 Form_1 = worker.Ui_Form()
 Form_1.setupUi(widget_1)
-Form_1.ButtonActivation(processImage)
+Form_1.ButtonActivation(function)
 Form_1.ButtonClose(closeMain)
 widget_1.show()
 
