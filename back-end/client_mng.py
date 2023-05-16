@@ -171,7 +171,7 @@ def UpdateCSV():
         message = Trans + "-" 
         client_socket.send(message.encode())
         time.sleep(0.01)
-        filetodown = open("CLIENT/admin_gui/csv_file/now_csv.csv", "wb")
+        filetodown = open("CLIENT/csv_file/now_csv.csv", "wb")
         while True:
                 data = ReceiveData(client_socket)
                 if data == 0:

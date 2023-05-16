@@ -456,7 +456,7 @@ class Ui_Form(object):
             self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self.tableView.resizeColumnsToContents()
             self.tableView.setModel(self.model)
-            os.remove("CLIENT/admin_gui/csv_file/current_csv.csv")
+            os.remove("CLIENT/csv_file/current_csv.csv")
     def DisplayNewestCSV(self):
         self.lock = 1
         check = client_mng.UpdateCSV()
@@ -464,7 +464,7 @@ class Ui_Form(object):
              return
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
-        with open('CLIENT/admin_gui/csv_file/now_csv.csv', newline='', encoding='utf8') as csvfile:
+        with open('CLIENT/csv_file/now_csv.csv', newline='', encoding='utf8') as csvfile:
             reader = csv.reader(csvfile)
             for row_data in reader:
                 row = []
@@ -482,7 +482,7 @@ class Ui_Form(object):
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
-        os.remove("CLIENT/admin_gui/csv_file/now_csv.csv")
+        os.remove("CLIENT/csv_file/now_csv.csv")
         self.lock = 0
     def openAdd(self):
         if self.lock == 1:
