@@ -13,7 +13,7 @@ import subprocess
 
 BUFFER = 1024
 PORT = 5000
-IPADRESS = "192.168.43.249"
+IPADRESS = "192.168.1.202"
 TIMEOUT  = 5
 folder = "temp/"
 

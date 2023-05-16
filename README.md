@@ -1,2 +1,10 @@
 # Final_Project
-version 1.4
+
+Thư viện cần cài đặt: 
+- OpenCV
+- Face_Recognition
+- unidecode
+- pyqt5
+- tkinter
+Chạy trên Python 3.10.7
+Make By Ngo Trung Nguyen - Nguyen Trung Hieu

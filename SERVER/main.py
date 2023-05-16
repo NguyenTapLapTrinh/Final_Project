@@ -15,7 +15,6 @@ import report
 import util
 import worker
 import yolo_detection
-import process
 import info
 import threading
 import socket
@@ -33,7 +32,7 @@ with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
 yolo = yolo_detection.Yolo(classes)
-yolo.loadWeight("weight/yolov4_training_last_ct.weights","weight/yolov4_testing.cfg")
+yolo.loadWeight("weight/yolov4_training_best.weights","weight/yolov4_testing.cfg")
 
 def closeWidget():
     Form_1.video.block = 0
@@ -198,10 +197,6 @@ widget_2 = QtWidgets.QWidget()
 Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
 Form_2.ButtonActivation(closeWidget)
-
-widget_3 = QtWidgets.QWidget()
-Form_3 = process.Ui_Form()
-Form_3.setupUi(widget_3)
 sys.exit(app.exec_())
 
 
