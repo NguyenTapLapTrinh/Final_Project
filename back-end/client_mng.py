@@ -221,7 +221,7 @@ def receiveCSV(time_csv):
                 msg.ShowMsg("Warning","This CSV not exits")
                 return 1
         elif fileExist[0] == "Yes":
-                filetodown = open("CLIENT/admin_gui/csv_file/current_csv.csv", "wb")
+                filetodown = open("CLIENT/csv_file/current_csv.csv", "wb")
                 while True:
                         data = ReceiveData(client_socket)
                         if data == b"Done":

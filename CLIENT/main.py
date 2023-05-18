@@ -436,9 +436,9 @@ class Ui_Form(object):
             timer.start()
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
-        if os.path.exists("CLIENT/admin_gui/csv_file/current_csv.csv"):
+        if os.path.exists("CLIENT/csv_file/current_csv.csv"):
             self.timeCSV.setText(self.timeEdit.text())    
-            with open("CLIENT/admin_gui/csv_file/current_csv.csv", encoding= 'utf8',newline='') as csvfile:
+            with open("CLIENT/csv_file/current_csv.csv", encoding= 'utf-8',newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 for row_data in reader:
                     row = []
