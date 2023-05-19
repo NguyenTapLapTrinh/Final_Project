@@ -14,7 +14,7 @@ import subprocess
 BUFFER = 1024
 PORT = 5000
 IPADRESS = "192.168.1.202"
-TIMEOUT  = 5
+TIMEOUT  = 1
 folder = "temp/"
 
 def get_ip_address():
@@ -50,6 +50,13 @@ def ReceiveData(client_socket):
                 msg.ShowMsg("Warning","Lost connection with server")
                 return 0
 def setData(file_path, input_employ):
+        frame = cv2.imread(file_path)
+        try:
+                embeddings = face_recognition.face_encodings(frame)[0]
+        except:
+                msg.ShowMsg("Info","Person not found!") 
+                return
+
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
         check = checkResponding(client_socket)
@@ -65,13 +72,10 @@ def setData(file_path, input_employ):
         if fileExist == b"Yes":
                 msg.ShowMsg("Info","This employee is exitsting!")
         elif fileExist == b"No":
-                frame = cv2.imread(file_path)
-
                 unidecode_name = unidecode.unidecode(input_employ)
                 img_path_temp = folder + unidecode_name + ".jpg" 
                 cv2.imwrite(img_path_temp,frame)
 
-                embeddings = face_recognition.face_encodings(frame)[0]
                 pickle_path_temp = folder + unidecode_name +".pickle"
 
                 with open(pickle_path_temp, "wb") as file:

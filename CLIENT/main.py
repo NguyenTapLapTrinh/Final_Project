@@ -79,7 +79,7 @@ class Admin_UI(QDialog):
         img = cv2.imread(self.ui_1.file_path)
         Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-        Pic = ConvertToQTFormat.scaled(591, 531)
+        Pic = ConvertToQTFormat.scaled(491, 531)
         self.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def EditInfo(self, input_employ, request):
@@ -162,7 +162,7 @@ class Edit_UI(QDialog):
         img = cv2.imread(self.ui_2.file_path)
         Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
-        Pic = ConvertToQTFormat.scaled(591, 531)
+        Pic = ConvertToQTFormat.scaled(491, 531)
         self.ui_2.photo.setPixmap(QPixmap.fromImage(Pic))
     def editPhoto(self):
         self.ui_2.input_employ = self.ui_2.input_name.text()
@@ -488,11 +488,23 @@ class Ui_Form(object):
         if self.lock == 1:
               msg.ShowMsg("Warning","Server is busy, try again!")
               return
+        img = cv2.imread("./Img/Icon/Unknown_person.jpg")
+        Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888 )
+        Pic = ConvertToQTFormat.scaled(600, 720)
+        self.ui_1.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
+        self.ui_1.ui_1.input_name.setText("")
         self.ui_1.show()
     def openEdit(self):
         if self.lock == 1:
               msg.ShowMsg("Warning","Server is busy, try again!")
               return
+        img = cv2.imread("./Img/Icon/Unknown_person.jpg")
+        Image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
+        Pic = ConvertToQTFormat.scaled(600, 720)
+        self.ui_2.ui_2.photo.setPixmap(QPixmap.fromImage(Pic))
+        self.ui_2.ui_2.input_name.setText("")
         self.ui_2.show()
 #     def openRM(self):
 #         if self.lock == 1:
@@ -502,6 +514,10 @@ class Ui_Form(object):
 
 if __name__ == "__main__":
     import sys
+    if os.path.exists("CLIENT/csv_file"):
+        pass
+    else:
+        os.mkdir("CLIENT/csv_file")
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()

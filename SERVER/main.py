@@ -198,7 +198,3 @@ Form_2 = info.Ui_Form()
 Form_2.setupUi(widget_2)
 Form_2.ButtonActivation(closeWidget)
 sys.exit(app.exec_())
-
-
-
-
