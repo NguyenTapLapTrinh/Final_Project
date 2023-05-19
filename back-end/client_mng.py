@@ -116,7 +116,15 @@ def deleteData(input_employ):
             msg.ShowMsg("Info","Sucessfully")    
         client_socket.close()
         return 1
+
 def editPhoto(file_path, input_employ):
+        frame = cv2.imread(file_path)
+        try:
+                face_recognition.face_encodings(frame)[0]
+        except:
+                msg.ShowMsg("Info","Person not found!") 
+                return
+
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
         check = checkResponding(client_socket)
@@ -144,6 +152,7 @@ def editPhoto(file_path, input_employ):
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
         return 1
+
 def editName(input_employ, new_name):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
@@ -165,6 +174,7 @@ def editName(input_employ, new_name):
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
         return 1
+
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
@@ -186,6 +196,7 @@ def UpdateCSV():
         filetodown.close()
         print("Done Reciving...")
         return 1
+
 def RequestEmployee():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
@@ -205,6 +216,7 @@ def RequestEmployee():
         print("Done Reciving Employee...")
         client_socket.close()
         return data_string
+
 def receiveCSV(time_csv):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(TIMEOUT)
