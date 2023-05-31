@@ -15,7 +15,7 @@ sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QModelIndex, QTimer
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont, QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView
 import csv
 from datetime import datetime
@@ -126,8 +126,8 @@ class List_UI(QDialog):
     def removeEmploy(self):
          global timer
          current_row = self.ui_4.listWidget.currentRow()
-         nameDelete = self.ui_4.listWidget.item(current_row).text()
          if current_row>=0:
+            nameDelete = self.ui_4.listWidget.item(current_row).text()
             body = "Are you sure to remove "+ nameDelete
             choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
             if choose ==1:
