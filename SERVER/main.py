@@ -26,7 +26,6 @@ import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-waitBox=5
 timer = QtCore.QTimer()
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
@@ -57,9 +56,12 @@ def updateWidget(note,name,unicode_name,time,date,empty):
         elif i == 2:
             Form_2.updateGlove(1)
 
-
+#Hàm xử lí hình ảnh
+timerActive = False
 def processImage():
-    print("1")
+    global timerActive
+    if not timerActive:
+        return
     timer.stop()
     global waitBox    
     waitBox.close()
@@ -77,10 +79,12 @@ def processImage():
         name = util.recognize(frame, './db')
     except:
         msg.ShowMsg("Warning","No person found!")
+        timerActive = False
         Form_1.video.block = 0
         return
     if name == "no_persons_found":
         msg.ShowMsg("Warning","No person found!")
+        timerActive = False
         Form_1.video.block = 0
         return
     full_name = text.findFullName(name)
@@ -103,32 +107,31 @@ def processImage():
     unicode_name = unidecode.unidecode(full_name)
     updateWidget(note,full_name,unicode_name,time_str,date_str,empty)
     Form_1.video.block = 0
+    timerActive = False
     widget_2.show()  
     #ts.start_sound(string,full_name+" ")    
 
-#Thread
+#Họp thoại tạm dừng
 def waitingCapture():
     global waitBox
-    waitBox = QMessageBox()
-    waitBox.setIcon(QMessageBox.Information)
-    waitBox.setWindowTitle("Warning")
-    waitBox.setText("Wait 5 second")
-    waitBox.show()
-    timer.setSingleShot(True)
-    timer.timeout.connect(processImage)
-    timer.start(5000)
+    global timerActive
+    if not timerActive:
+        timerActive = True
+        waitBox = QMessageBox()
+        waitBox.setIcon(QMessageBox.Information)
+        waitBox.setWindowTitle("Warning")
+        waitBox.setText("Wait 5 second")
+        waitBox.show()
+        timer.timeout.connect(processImage)
+        timer.start(5000)
 def get_ip_address():
     # Tạo một socket để kết nối với một địa chỉ IP không tồn tại
-    # Điều này giúp lấy địa chỉ IP cục bộ của máy tính
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("10.255.255.255", 1))
-
     # Lấy địa chỉ IP được gán cho socket
     ip_address = sock.getsockname()[0]
-
     # Đóng socket
     sock.close()
-
     return ip_address
 
 # Gọi hàm để lấy địa chỉ IP và in ra màn hình
