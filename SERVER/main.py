@@ -26,13 +26,13 @@ import cv2
 
 classes_vn = ["Mũ bảo hiểm", "Áo bảo hộ", "Găng tay bảo hộ"]
 classes = []
-ddd=5
+waitBox=5
 timer = QtCore.QTimer()
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
 
 yolo = yolo_detection.Yolo(classes)
-yolo.loadWeight("weight/yolov4_training_best.weights","weight/yolov4_testing.cfg")
+yolo.loadWeight("weight/yolov4_training_last.weights","weight/yolov4_testing.cfg")
 
 def closeWidget():
     Form_1.video.block = 0
@@ -59,9 +59,10 @@ def updateWidget(note,name,unicode_name,time,date,empty):
 
 
 def processImage():
-    global ddd
+    print("1")
     timer.stop()
-    ddd.close()
+    global waitBox    
+    waitBox.close()
     Form_1.video.block = 1
     file_path = Form_1.video.file_path
     date_str = Form_1.video.date_str
@@ -72,18 +73,17 @@ def processImage():
     width = Form_1.video.width
     yolo.setVar(frame,height,width)
     empty = yolo.objectDetect()
-    # try:
-    #     name = util.recognize(frame, './db')
-        
-    # except:
-    #     msg.ShowMsg("Warning","No person found!")
-    #     Form_1.video.block = 0
-    #     return
-    # if name == "no_persons_found":
-    #     msg.ShowMsg("Warning","No person found!")
-    #     Form_1.video.block = 0
-    #     return
-    full_name = text.findFullName("Ngo Trung Nguyen")
+    try:
+        name = util.recognize(frame, './db')
+    except:
+        msg.ShowMsg("Warning","No person found!")
+        Form_1.video.block = 0
+        return
+    if name == "no_persons_found":
+        msg.ShowMsg("Warning","No person found!")
+        Form_1.video.block = 0
+        return
+    full_name = text.findFullName(name)
     find =0
     try:
         find,note = report.edit_report(file_path,full_name,time_str,empty)
@@ -107,17 +107,16 @@ def processImage():
     #ts.start_sound(string,full_name+" ")    
 
 #Thread
-def function():
-    global ddd
-    ddd = QMessageBox()
-    ddd.setIcon(QMessageBox.Information)
-    ddd.setWindowTitle("Warning")
-    ddd.setText("Wait 5 second")
-    ddd.show()
+def waitingCapture():
+    global waitBox
+    waitBox = QMessageBox()
+    waitBox.setIcon(QMessageBox.Information)
+    waitBox.setWindowTitle("Warning")
+    waitBox.setText("Wait 5 second")
+    waitBox.show()
     timer.setSingleShot(True)
     timer.timeout.connect(processImage)
     timer.start(5000)
-
 def get_ip_address():
     # Tạo một socket để kết nối với một địa chỉ IP không tồn tại
     # Điều này giúp lấy địa chỉ IP cục bộ của máy tính
@@ -189,7 +188,7 @@ app = QtWidgets.QApplication(sys.argv)
 widget_1 = QtWidgets.QWidget()
 Form_1 = worker.Ui_Form()
 Form_1.setupUi(widget_1)
-Form_1.ButtonActivation(function)
+Form_1.ButtonActivation(waitingCapture)
 Form_1.ButtonClose(closeMain)
 widget_1.show()
 
