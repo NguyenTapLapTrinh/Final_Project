@@ -34,10 +34,8 @@ import socket
 import time
 import threading
 sys.setrecursionlimit(5000)
-now = datetime.now()
 import image_main
-import datetime
-now = datetime.datetime.now()
+now = datetime.now()
 timer = QtCore.QTimer()
 class CenteredHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
@@ -410,19 +408,21 @@ class Ui_Form(object):
     def load_CSV(self):
         time_str = self.timeEdit.text()
         time_array = time_str.split("-")
+        if len(time_array) != 3:
+            msg.ShowMsg("Warning","Please write the time\nin correct format dd-MM-YYYY!")
+            return
+        try:
+            now.strptime(time_array[1] + "-" + time_array[0] + "-" + time_array[2],"%d-%m-%Y")
+        except:
+            msg.ShowMsg("Warning","Invalid datetime")
+            return
         print(time_array)
-        current_date = now.strftime("%d-%m-%Y")
-        current_time_array = current_date.split("-")
-        print(current_time_array)
-        if int(time_array[2]) > int(current_time_array[2]):
-             msg.ShowMsg("Warning","Not suitable time!")
+        current_date = datetime.now().date()
+        current_day_check = datetime(current_date.year, current_date.month, current_date.day).date()
+        day_check = datetime(int(time_array[2]), int(time_array[1]), int(time_array[0])).date()
+        if ((day_check-current_day_check).days) > 0:
+             msg.ShowMsg("Info","Not suitable time!")
              return
-        elif int(time_array[1]) > int(current_time_array[1]):
-             msg.ShowMsg("Warning","Not suitable time!")
-             return 
-        elif int(time_array[1]) == int(current_time_array[1]) and int(time_array[0]) > int(current_time_array[0]):
-             msg.ShowMsg("Warning","Not suitable time!")
-             return 
         if time_str =="":
              msg.ShowMsg("Info","Please check again!")
              return

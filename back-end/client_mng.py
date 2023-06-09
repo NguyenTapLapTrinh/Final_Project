@@ -11,25 +11,16 @@ sys.path.append("./front-end")
 import msg 
 import subprocess
 
-BUFFER = 1024
+BUFFER = 8192
 PORT = 5000
-IPADRESS = "192.168.1.8"
+DEBUG = True
+if DEBUG:
+        IPADRESS = "localhost"
+else:
+        IPADRESS = "192.168.1.6"
 TIMEOUT  = 1
 folder = "temp/"
 
-def get_ip_address():
-    global IPADRESS
-    # Execute the 'arp -a' command to get the ARP cache entries
-    cmd = 'arp -a | findstr "40-1c-83-80-e1-ca" '
-    returned_output = subprocess.check_output((cmd),shell=True,stderr=subprocess.STDOUT).decode()
-    lines = returned_output.strip().split("\n")
-    for line in lines:
-        if "40-1c-83-80-e1-ca" in line.lower():
-            parse=str(returned_output).split(' ',1)
-            ip=parse[1].split(' ')
-            IPADRESS = ip[1]
-            return ip[1]
-    return None
 
 class CMD(enum.Enum):
     ADD = 1

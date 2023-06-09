@@ -5,11 +5,26 @@ import text
 from datetime import datetime
 import time
 import pickle
-BUFFER = 1024
+BUFFER = 8192
 PORT = 5000
-IPADRESS = "127.0.0.1"
+DEBUG = True
+IPADRESS = ""
+if DEBUG:
+        IPADRESS = "localhost"
+else:
+        IPADRESS = "192.168.1.6"
 folder = "temp/"
 now = datetime.now()
+def createSocket():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #server_socket.setblocking(1)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    ip = IPADRESS
+    print(ip)
+    server_socket.bind((ip, 5000))
+    server_socket.listen(1)
+    client_socket,a = server_socket.accept()
+    return client_socket, server_socket
 def setData(client_socket,check_name):
     full_name = check_name
     check_name = unidecode.unidecode(check_name)

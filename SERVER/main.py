@@ -138,16 +138,9 @@ def get_ip_address():
 def ThreadServer():
     sleep(2)
     while True:
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #server_socket.setblocking(1)
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        ip = get_ip_address()
-        print(ip)
-        server_socket.bind((ip, 5000))
-        server_socket.listen(1)
-        client_socket,a = server_socket.accept()
+        client_socket, server_socket = server_mng.createSocket()
         #server_socket.settimeout(3)
-        message = client_socket.recv(1024)
+        message = client_socket.recv(8192)
         message = message.decode()
         request = message.split("-")
         if request[0] == "Send":
