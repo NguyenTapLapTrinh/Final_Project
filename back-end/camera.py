@@ -27,6 +27,7 @@ class Video(QThread):
             display_time = 2
             fc = 0
             FPS = 0
+            self.cap = cv2.VideoCapture(0)
             while True:
                 _, frame = self.cap.read()
                 try: 
