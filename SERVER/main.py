@@ -20,7 +20,7 @@ import server_mng
 import unidecode
 import msg
 import init
-from define import Time
+from define import Time, Item
 
 # global variable
 timer = QtCore.QTimer()
@@ -35,7 +35,7 @@ def closeMain():
     Form_1.video.block = True
     os.system('killall -9 python3.8')
 
-def updateWidget(note,name,unicode_name,time,date,empty):
+def updateWidget(note,name,unicode_name,time,date,emptyList):
     Form_2.updateResult(note)
     Form_2.updateName(name)
     Form_2.updateTime(time)
@@ -44,12 +44,12 @@ def updateWidget(note,name,unicode_name,time,date,empty):
     Form_2.updateVest(False)
     Form_2.updateGlove(False)
     Form_2.updateWorkerPhoto(unicode_name)
-    for i in empty:
-        if i == 0:
+    for item in emptyList:
+        if item == Item.HELMET.value:
             Form_2.updateHelmet(True)
-        elif i == 1:
+        elif item == Item.VEST.value:
             Form_2.updateVest(True)
-        elif i == 2:
+        elif item == Item.GLOVE.value:
             Form_2.updateGlove(True)
 
 #Hàm xử lí hình ảnh

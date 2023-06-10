@@ -19,3 +19,8 @@ class Time(enum.Enum):
     TIME_SLEEP_10MS = 0.01
     TIME_SLEEP_2S = 2
     TIME_SLEEP_5S = 5000
+
+class Item(enum.Enum):
+    HELMET = 0
+    VEST = 1
+    GLOVE = 2

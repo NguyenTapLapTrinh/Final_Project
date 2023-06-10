@@ -127,7 +127,7 @@ class List_UI(QDialog):
     def removeEmploy(self):
          global timer
          current_row = self.ui_4.listWidget.currentRow()
-         if current_row>=0:
+         if current_row >= 0:
             nameDelete = self.ui_4.listWidget.item(current_row).text()
             body = "Are you sure to remove "+ nameDelete
             choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
@@ -170,28 +170,27 @@ class Edit_UI(QDialog):
 
     def editPhoto(self):
         self.ui_2.input_employ = self.ui_2.input_name.text()
-        if self.ui_2.input_employ == "" or self.ui_2.file_path=="":
-                msg.ShowMsg("Info","Please check again!")
-                return 
+        if self.ui_2.input_employ == "" or self.ui_2.file_path == "":
+            msg.ShowMsg("Info","Please check again!")
+            return 
         else:
-                #input_employ = input_employ.replace(" ","_")
-                self.UpdateInfo(self.ui_2.input_employ, client_mng.CMD.EDITPHOTO)
+            self.UpdateInfo(self.ui_2.input_employ, client_mng.CMD.EDITPHOTO)
 
     def editName(self):
         self.ui_2.input_employ = self.ui_2.input_name.text()
         if self.ui_2.input_employ == "":
-                msg.ShowMsg("Info","Please check again!")
-                return 
+            msg.ShowMsg("Info","Please check again!")
+            return 
         else:
-                self.ui_2.edit.old_name = self.ui_2.input_employ
-                self.ui_2.edit.show()
+            self.ui_2.edit.old_name = self.ui_2.input_employ
+            self.ui_2.edit.show()
 
     def UpdateInfo(self, input_employ, request):
         global timer
         if request == client_mng.CMD.EDITPHOTO:
-                timer.stop()
-                client_mng.editPhoto(self.ui_2.file_path, input_employ)
-                timer.start()
+            timer.stop()
+            client_mng.editPhoto(self.ui_2.file_path, input_employ)
+            timer.start()
 
 class Ui_Form(object):
     global timer
@@ -379,7 +378,7 @@ class Ui_Form(object):
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
         self.ui_4 = List_UI()
-        self.lock = 0
+        self.lock = False
         self.DisplayNewestCSV()
         timer.timeout.connect(self.DisplayNewestCSV)
         timer.start(10000)
@@ -469,7 +468,7 @@ class Ui_Form(object):
             os.remove("CLIENT/csv_file/current_csv.csv")
 
     def DisplayNewestCSV(self):
-        self.lock = 1
+        self.lock = True
         check = client_mng.UpdateCSV()
         if check == 0:
              return
@@ -494,10 +493,10 @@ class Ui_Form(object):
         self.tableView.resizeColumnsToContents()
         self.tableView.setModel(self.model)
         os.remove("CLIENT/csv_file/now_csv.csv")
-        self.lock = 0
+        self.lock = False
 
     def openAdd(self):
-        if self.lock == 1:
+        if self.lock:
               msg.ShowMsg("Warning","Server is busy, try again!")
               return
         img = cv2.imread("./Img/Icon/Unknown_person.jpg")
@@ -509,7 +508,7 @@ class Ui_Form(object):
         self.ui_1.show()
 
     def openEdit(self):
-        if self.lock == 1:
+        if self.lock:
               msg.ShowMsg("Warning","Server is busy, try again!")
               return
         img = cv2.imread("./Img/Icon/Unknown_person.jpg")
