@@ -63,9 +63,7 @@ class Video(QThread):
                     self.file_path = file_path
 
                     # Check if the file exists
-                    if os.path.exists(file_path):
-                        pass
-                    else:
+                    if not os.path.exists(file_path):
                         report.create_report(file_path)
 
                     # Add FPS count on frame
