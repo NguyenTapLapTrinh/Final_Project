@@ -7,39 +7,27 @@ import sys
 import unidecode
 import os
 import pickle
-sys.path.append("./front-end")
 import msg 
-import subprocess
 
-BUFFER = 8192
-PORT = 5000
-DEBUG = True
-if DEBUG:
-        IPADRESS = "localhost"
-else:
-        IPADRESS = "192.168.1.6"
-TIMEOUT  = 1
+from define import Socket, Time
+sys.path.append("./front-end")
 folder = "temp/"
 
-
-class CMD(enum.Enum):
-    ADD = 1
-    DEL = 2
-    EDITPHOTO = 3
-    EDITNAME = 4
 def checkResponding(client_socket):
         try:
-                client_socket.connect((IPADRESS, PORT))
+                client_socket.connect((Socket.IPADRESS.value, Socket.PORT.value))
         except socket.error:
                 msg.ShowMsg("Warning","Server not responding")
                 return 0
+        
 def ReceiveData(client_socket):
         try:
-                data = client_socket.recv(BUFFER)
+                data = client_socket.recv(Socket.BUFFER.value)
                 return data
         except socket.error:
                 msg.ShowMsg("Warning","Lost connection with server")
                 return 0
+        
 def setData(file_path, input_employ):
         frame = cv2.imread(file_path)
         try:
@@ -49,14 +37,14 @@ def setData(file_path, input_employ):
                 return
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
         if check==0:
                 return 0
         Trans = "Send"
         message = Trans + "-" + input_employ
         client_socket.send(message.encode())
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         fileExist = ReceiveData(client_socket)
         if fileExist == 0:
                 return
@@ -75,13 +63,14 @@ def setData(file_path, input_employ):
                 os.system(cmd)
 
                 filetosend = open("temp/data.tar", "rb")
-                data1 = filetosend.read(BUFFER)
+                data1 = filetosend.read(Socket.BUFFER.value)
                 while data1:
                         client_socket.send(data1)
-                        time.sleep(0.01)
-                        data1 = filetosend.read(BUFFER)
+                        time.sleep(Time.TIME_SLEEP_10MS.value)
+                        data1 = filetosend.read(Socket.BUFFER.value)
                 filetosend.close()
-                time.sleep(0.5)
+
+                time.sleep(Time.TIME_SLEEP_10MS.value)
                 string = "Done"
                 client_socket.send(string.encode())
                 # os.remove(img_path_temp)
@@ -90,11 +79,12 @@ def setData(file_path, input_employ):
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
         return 1
+
 def deleteData(input_employ):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
-        if check==0:
+        if check == 0:
                 return 0
         Trans = "Remove"
         input_employ = unidecode.unidecode(input_employ)
@@ -117,9 +107,9 @@ def editPhoto(file_path, input_employ):
                 return
 
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
-        if check==0:
+        if check == 0:
                 return 0
         filetosend = open(file_path, "rb")
         Trans = "EditImage"
@@ -131,29 +121,28 @@ def editPhoto(file_path, input_employ):
         if fileExist == b"No":
                 msg.ShowMsg("Info","This employee is not existing!")
         elif fileExist == b"Yes":
-                data1 = filetosend.read(BUFFER)
+                data1 = filetosend.read(Socket.BUFFER.value)
                 while data1:
                         client_socket.send(data1)
-                        time.sleep(0.01)
-                        data1 = filetosend.read(BUFFER)
+                        time.sleep(Time.TIME_SLEEP_10MS.value)
+                        data1 = filetosend.read(Socket.BUFFER.value)
                 filetosend.close()
                 string = "Done"
                 client_socket.send(string.encode())
-                time.sleep(0.01)
                 msg.ShowMsg("Info","Sucessfully")
         client_socket.close()
         return 1
 
 def editName(input_employ, new_name):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
         if check==0:
                 return 0
         Trans = "EditName"
         message = Trans + "-" + input_employ + "-" + new_name
         client_socket.send(message.encode())
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         fileExist = ReceiveData(client_socket)
         if fileExist == 0:
                 return
@@ -168,14 +157,14 @@ def editName(input_employ, new_name):
 
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
         if check==0:
                 return 0
         Trans = "UpdateCSV"
         message = Trans + "-" 
         client_socket.send(message.encode())
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         filetodown = open("CLIENT/csv_file/now_csv.csv", "wb")
         while True:
                 data = ReceiveData(client_socket)
@@ -190,7 +179,7 @@ def UpdateCSV():
 
 def RequestEmployee():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
         if check==0:
                 return -1
@@ -198,7 +187,7 @@ def RequestEmployee():
         message = Trans + "-" 
         list_data = ""
         client_socket.send(message.encode())
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         list_data = ReceiveData(client_socket)
         if list_data == 0:
                 return
@@ -210,20 +199,20 @@ def RequestEmployee():
 
 def receiveCSV(time_csv):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(TIMEOUT)
+        client_socket.settimeout(Socket.TIMEOUT.value)
         check = checkResponding(client_socket)
-        if check==0:
+        if check == 0:
                 return -1
         Trans = "LoadCSV"
         message = Trans + "-" + time_csv
         client_socket.send(message.encode())
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         fileExist = ReceiveData(client_socket)
         if fileExist == 0:
                 return
         fileExist = fileExist.decode()
         fileExist = fileExist.split("-")
-        time.sleep(0.01)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         if fileExist[0] == "No":
                 msg.ShowMsg("Warning","This CSV not exits")
                 return 1

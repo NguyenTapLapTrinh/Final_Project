@@ -4,14 +4,17 @@ import cv2
 class Yolo():
     def __init__(self,classes):
         self.classes = classes
+
     def setVar(self,frame,width,height):
         self.frame = frame
         self.width = width
         self.height = height
+
     def loadWeight(self,weight,cfg):
         self.net = cv2.dnn.readNet(weight, cfg)
         layer_names = self.net.getLayerNames()
         self.output_layers = [layer_names[i - 1] for i in self.net.getUnconnectedOutLayers()]
+
     def objectDetect(self):
         blob = cv2.dnn.blobFromImage(self.frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
 

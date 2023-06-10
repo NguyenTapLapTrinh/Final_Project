@@ -103,6 +103,7 @@ class Ui_Form(object):
         self.video.start()
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+
     def ImageUpdateShot(self, Image):
         self.camera.setPixmap(QPixmap.fromImage(Image))
     def ButtonActivation(self,function):

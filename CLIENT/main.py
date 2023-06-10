@@ -26,25 +26,23 @@ from list_name import *
 import client_mng
 import msg
 import os
-import socket
 from tkinter import filedialog
-import face_recognition
 import cv2
-import socket
-import time
-import threading
 sys.setrecursionlimit(5000)
 import image_main
+
 now = datetime.now()
 timer = QtCore.QTimer()
 class CenteredHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
         super().__init__(orientation, parent)
         self.setDefaultAlignment(Qt.AlignCenter)
+
 class CenteredItemDelegate(QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super().initStyleOption(option, index)
         option.displayAlignment = Qt.AlignCenter
+
 class Widget_1(QDialog):
     def __init__(self, parent=None):
         super(Widget_1, self).__init__(parent)
@@ -60,7 +58,8 @@ class Widget_1(QDialog):
                 msg.ShowMsg("Info","Please check again!")
         else:
                 client_mng.editName(self.old_name, self.name)
-                self.close()                 
+                self.close()    
+             
 class Admin_UI(QDialog):
     def __init__(self, parent=None):
         super(Admin_UI, self).__init__(parent)
@@ -70,6 +69,7 @@ class Admin_UI(QDialog):
         self.ui_1.add_employ.clicked.connect(self.addEmploy)
         self.ui_1.close_btn.clicked.connect(self.close)
         self.ui_1.file_path=""
+
     def addImage(self):
         self.ui_1.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
         if self.ui_1.file_path == "":
@@ -88,6 +88,7 @@ class Admin_UI(QDialog):
         elif request == client_mng.CMD.DEL:
                 client_mng.deleteData(input_employ)
         timer.start()
+
     def addEmploy(self):
         input_employ = self.ui_1.input_name.text()
         if input_employ == "" or self.ui_1.file_path=="":
@@ -96,6 +97,7 @@ class Admin_UI(QDialog):
         else:
                 #input_employ = input_employ.replace(" ","_")
                 self.EditInfo(input_employ, client_mng.CMD.ADD)
+
 class List_UI(QDialog):
     def __init__(self, parent=None):
         super(List_UI, self).__init__(parent)
@@ -121,6 +123,7 @@ class List_UI(QDialog):
             item.setFont(font)
             self.ui_4.listWidget.addItem(item)
         timer.start()
+
     def removeEmploy(self):
          global timer
          current_row = self.ui_4.listWidget.currentRow()
@@ -139,6 +142,7 @@ class List_UI(QDialog):
          if check == 0:
             return
          self.load_employee()
+
 class Edit_UI(QDialog):
     def __init__(self, parent=None):
         super(Edit_UI, self).__init__(parent)
@@ -153,6 +157,7 @@ class Edit_UI(QDialog):
         self.ui_2.new_name = ""
         self.ui_2.selection = 0
         self.ui_2.edit = Widget_1()
+
     def addImage(self):
         self.ui_2.file_path = filedialog.askopenfilename(title="Chọn ảnh", filetypes=(("JPEG files", "*.jpg"), ("PNG files", "*.png"), ("All files", "*.*")))
         if self.ui_2.file_path == "":
@@ -162,6 +167,7 @@ class Edit_UI(QDialog):
         ConvertToQTFormat = QImage(Image.data, Image.shape[1], Image.shape[0], QImage.Format_RGB888)
         Pic = ConvertToQTFormat.scaled(491, 531)
         self.ui_2.photo.setPixmap(QPixmap.fromImage(Pic))
+
     def editPhoto(self):
         self.ui_2.input_employ = self.ui_2.input_name.text()
         if self.ui_2.input_employ == "" or self.ui_2.file_path=="":
@@ -170,6 +176,7 @@ class Edit_UI(QDialog):
         else:
                 #input_employ = input_employ.replace(" ","_")
                 self.UpdateInfo(self.ui_2.input_employ, client_mng.CMD.EDITPHOTO)
+
     def editName(self):
         self.ui_2.input_employ = self.ui_2.input_name.text()
         if self.ui_2.input_employ == "":
@@ -178,6 +185,7 @@ class Edit_UI(QDialog):
         else:
                 self.ui_2.edit.old_name = self.ui_2.input_employ
                 self.ui_2.edit.show()
+
     def UpdateInfo(self, input_employ, request):
         global timer
         if request == client_mng.CMD.EDITPHOTO:
@@ -399,12 +407,14 @@ class Ui_Form(object):
         self.label_9.setText(_translate("Form", "LIST EMPLOYEE"))
         self.label_10.setText(_translate("Form", "ADD EMPLOYEE"))
         self.label_11.setText(_translate("Form", "UPDATE INFO"))
+
     def loadEmploy(self):
         timer.stop()
         check = self.ui_4.load_employee()
         if check == -1:
              return
         self.ui_4.show()
+
     def load_CSV(self):
         time_str = self.timeEdit.text()
         time_array = time_str.split("-")
@@ -457,6 +467,7 @@ class Ui_Form(object):
             self.tableView.resizeColumnsToContents()
             self.tableView.setModel(self.model)
             os.remove("CLIENT/csv_file/current_csv.csv")
+
     def DisplayNewestCSV(self):
         self.lock = 1
         check = client_mng.UpdateCSV()
@@ -484,6 +495,7 @@ class Ui_Form(object):
         self.tableView.setModel(self.model)
         os.remove("CLIENT/csv_file/now_csv.csv")
         self.lock = 0
+
     def openAdd(self):
         if self.lock == 1:
               msg.ShowMsg("Warning","Server is busy, try again!")
@@ -495,6 +507,7 @@ class Ui_Form(object):
         self.ui_1.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
         self.ui_1.ui_1.input_name.setText("")
         self.ui_1.show()
+
     def openEdit(self):
         if self.lock == 1:
               msg.ShowMsg("Warning","Server is busy, try again!")
@@ -506,17 +519,9 @@ class Ui_Form(object):
         self.ui_2.ui_2.photo.setPixmap(QPixmap.fromImage(Pic))
         self.ui_2.ui_2.input_name.setText("")
         self.ui_2.show()
-#     def openRM(self):
-#         if self.lock == 1:
-#               msg.ShowMsg("Warning","Server is busy, try again!")
-#               return
-#         self.ui_3.show()
 
 if __name__ == "__main__":
-    import sys
-    if os.path.exists("CLIENT/csv_file"):
-        pass
-    else:
+    if not os.path.exists("CLIENT/csv_file"):
         os.mkdir("CLIENT/csv_file")
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()

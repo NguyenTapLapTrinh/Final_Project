@@ -19,9 +19,7 @@ class Video(QThread):
     width = 0
     date_str = ""
     file_path = ""
-    block = 0
-    change = 0
-    init = 1
+    block = False
     def run(self):
             font = cv2.FONT_HERSHEY_COMPLEX_SMALL
             #FPS
@@ -30,14 +28,6 @@ class Video(QThread):
             fc = 0
             FPS = 0
             while True:
-                if not self.change:
-                    if self.init:
-                        self.cap = cv2.VideoCapture(0)
-                        self.init = 0
-                else:
-                    if self.init:
-                        self.cap = cv2.VideoCapture("Img/loading/loading.mp4")
-                        self.init = 0
                 _, frame = self.cap.read()
                 try: 
                     height, width, channels = frame.shape
@@ -50,7 +40,7 @@ class Video(QThread):
                     self.width = width
                     self.height = height
 
-                    fc+=1
+                    fc += 1
                     TIME = time.time() - start_time
                     if (TIME) >= display_time :
                         FPS = fc / (TIME)

@@ -106,6 +106,7 @@ class Ui_Form(object):
         self.label.setObjectName("label")
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+
     def ButtonActivation(self,function):
         self.pushButton.clicked.connect(function)
 
@@ -120,19 +121,19 @@ class Ui_Form(object):
 
     def updateHelmet(self,isempty):
         color = "green"
-        if isempty == 1:
+        if isempty:
             color = "red"
         self.helmet.setStyleSheet("image: url(Img/Icon/helmet.png);\n""background: "+ color+ ";")
 
     def updateVest(self,isempty):
         color = "green"
-        if isempty == 1:
+        if isempty:
             color = "red"
         self.vest.setStyleSheet("image: url(Img/Icon/vest.png);\n""background: "+ color+ ";")
 
     def updateGlove(self,isempty):
         color = "green"
-        if isempty == 1:
+        if isempty:
             color = "red"
         self.glove.setStyleSheet("image: url(Img/Icon/gloves.png);\n""background: "+ color+ ";")
 
@@ -158,8 +159,6 @@ class Ui_Form(object):
         self.label_16.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">RESULT:</span></p></body></html>"))
         self.pushButton.setText(_translate("Form", "OK"))
         self.label.setText(_translate("Form", "PHOTO"))
-
-
 
 
 if __name__ == "__main__":
