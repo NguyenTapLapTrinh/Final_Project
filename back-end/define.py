@@ -1,4 +1,5 @@
 import enum
+import platform
 
 class CMD(enum.Enum):
     ADD = 1
@@ -11,8 +12,8 @@ class Socket(enum.Enum):
     PORT = 5000
     WAITLIST = 1
     TIMEOUT  = 1
-    IPADRESS = "localhost"
-    # IPADRESS = "192.168.1.6"
+    # IPADRESS = "localhost"
+    IPADRESS = "192.168.2.103"
 
 class Time(enum.Enum):
     TIME_SLEEP_500MS = 0.5
@@ -24,3 +25,6 @@ class Item(enum.Enum):
     HELMET = 0
     VEST = 1
     GLOVE = 2
+
+class Platform(enum.Enum):
+    SYSTEM = platform.system()

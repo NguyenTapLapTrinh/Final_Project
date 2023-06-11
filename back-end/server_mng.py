@@ -3,7 +3,7 @@ import unidecode
 import os
 import text
 import time
-from define import Socket, Time
+from define import Socket, Time, Platform
 
 
 def createSocket():
@@ -36,19 +36,21 @@ def setData(client_socket,check_name):
         filetodown.close()
         print("Done Reciving...")
         text.writeLine(full_name,check_name)
-        cmd = "tar -xvf temp/data.tar"
-        #cmd = "tar -xvzf temp/data.tar"
-        os.system(cmd)
-        # Linux
-        img_path = 'temp/"{}"'.format(check_name + ".jpg")
-        pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
-        #Window
-        # img_path = '\'.\\temp\\{}\''.format(check_name + ".jpg")
-        # pickle_path = './temp/"{}"'.format(check_name + ".pickle")
-        # print(img_path)
-        os.system("cp " + img_path + " Img/worker_img")
-        os.system("cp " + pickle_path + " db")
-        os.system("rm temp/*")
+        if  Platform.SYSTEM.value == 'Linux':
+            cmd = "tar -xvf temp/data.tar"
+            os.system(cmd)
+            img_path = 'temp/"{}"'.format(check_name + ".jpg")
+            pickle_path = 'temp/"{}"'.format(check_name + ".pickle")
+            os.system("cp " + img_path + " Img/worker_img")
+            os.system("cp " + pickle_path + " db")
+            os.system("rm temp/*")
+        else:
+            cmd = "tar -xvzf temp/data.tar"
+            os.system(cmd)
+            img_path = '\'.\\temp\\{}\''.format(check_name + ".jpg")
+            pickle_path = './temp/"{}"'.format(check_name + ".pickle")
+            # print(img_path)
+
 
 def deleteData(client_socket,file_name):
     file_remove = file_name
@@ -105,14 +107,14 @@ def editPhoto(client_socket,check_name):
     else:
         client_socket.send(b"No")
 
-def sendCSV(client_socket, file_path):            
+def sendCSV(client_socket, file_path):           
     filetosend = open(file_path, "rb")
     data1 = filetosend.read(Socket.BUFFER.value)
     while data1:
             client_socket.send(data1)
             data1 = filetosend.read(Socket.BUFFER.value)
     filetosend.close()
-    time.sleep(Time.TIME_SLEEP_500MS.value)
+    time.sleep(Time.TIME_SLEEP_10MS.value)
     string = "Done"
     client_socket.send(string.encode())
     client_socket.close()
@@ -142,7 +144,7 @@ def sendCurrentCSV(client_socket,time_csv, file_path):
             client_socket.send(data1)
             data1 = filetosend.read(Socket.BUFFER.value)
         filetosend.close()
-        time.sleep(Time.TIME_SLEEP_500MS.value)
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         string = "Done"
         client_socket.send(string.encode())
         client_socket.close()
@@ -151,25 +153,23 @@ def sendCurrentCSV(client_socket,time_csv, file_path):
         client_socket.send(b"No")
 
 def mainServer(file_path):
-    while True:
-        client_socket, server_socket = createSocket()
+    client_socket, server_socket = createSocket()
+    message = client_socket.recv(Socket.BUFFER.value)
+    message = message.decode()
+    request = message.split("-")
 
-        message = client_socket.recv(Socket.BUFFER.value)
-        message = message.decode()
-        request = message.split("-")
-
-        if request[0] == "Send":
-            setData(client_socket,request[1])
-        elif request[0] == "Remove":
-            deleteData(client_socket,request[1])
-        elif request[0] == "EditImage":
-            editPhoto(client_socket,request[1])
-        elif request[0] == "EditName":
-            editName(client_socket,request[1],request[2])
-        elif request[0] == "UpdateCSV":
-            sendCSV(client_socket, file_path)
-        elif request[0] == "LoadCSV":
-            sendCurrentCSV(client_socket,request[1]+ "-" +request[2]+ "-" +request[3], file_path)
-        elif request[0] == "ListEmployee":
-            sendEmployee(client_socket)
-        server_socket.close()
+    if request[0] == "Send":
+        setData(client_socket,request[1])
+    elif request[0] == "Remove":
+        deleteData(client_socket,request[1])
+    elif request[0] == "EditImage":
+        editPhoto(client_socket,request[1])
+    elif request[0] == "EditName":
+        editName(client_socket,request[1],request[2])
+    elif request[0] == "UpdateCSV":
+        sendCSV(client_socket, file_path)
+    elif request[0] == "LoadCSV":
+        sendCurrentCSV(client_socket,request[1]+ "-" +request[2]+ "-" +request[3], file_path)
+    elif request[0] == "ListEmployee":
+        sendEmployee(client_socket)
+    server_socket.close()

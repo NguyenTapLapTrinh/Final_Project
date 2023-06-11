@@ -114,7 +114,9 @@ def waitingCapture():
 
 def ThreadServer():
     sleep(Time.TIME_SLEEP_2S.value)
-    server_mng.mainServer(Form_1.video.file_path)
+    while True:
+        if Form_1.video.file_path != "":
+            server_mng.mainServer(Form_1.video.file_path)
 
 if __name__ == "__main__":
     init.ServerInit()
