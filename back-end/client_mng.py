@@ -66,11 +66,10 @@ def setData(file_path, input_employ):
                 data1 = filetosend.read(Socket.BUFFER.value)
                 while data1:
                         client_socket.send(data1)
-                        time.sleep(Time.TIME_SLEEP_10MS.value)
                         data1 = filetosend.read(Socket.BUFFER.value)
                 filetosend.close()
 
-                time.sleep(Time.TIME_SLEEP_10MS.value)
+                time.sleep(Time.TIME_SLEEP_500MS.value)
                 string = "Done"
                 client_socket.send(string.encode())
                 # os.remove(img_path_temp)
@@ -124,9 +123,9 @@ def editPhoto(file_path, input_employ):
                 data1 = filetosend.read(Socket.BUFFER.value)
                 while data1:
                         client_socket.send(data1)
-                        time.sleep(Time.TIME_SLEEP_10MS.value)
                         data1 = filetosend.read(Socket.BUFFER.value)
                 filetosend.close()
+                time.sleep(Time.TIME_SLEEP_500MS.value)
                 string = "Done"
                 client_socket.send(string.encode())
                 msg.ShowMsg("Info","Sucessfully")
