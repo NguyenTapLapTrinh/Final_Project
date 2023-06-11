@@ -13,9 +13,9 @@ from define import Socket, Time, CMD
 sys.path.append("./front-end")
 folder = "temp/"
 
-def checkResponding(client_socket):
+def checkResponding(client_socket,ip = Socket.IPADRESS.value,port = Socket.PORT.value):
         try:
-                client_socket.connect((Socket.IPADRESS.value, Socket.PORT.value))
+                client_socket.connect((ip, port))
         except socket.error:
                 msg.ShowMsg("Warning","Server not responding")
                 return 0
@@ -146,7 +146,6 @@ def editName(input_employ, new_name):
         fileExist = ReceiveData(client_socket)
         if fileExist == 0:
                 return
-        print(fileExist)
         if fileExist == b"No":
                 msg.ShowMsg("Info","This employee is not existing!")
         elif fileExist == b"Yes":

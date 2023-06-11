@@ -10,10 +10,11 @@ class CMD(enum.Enum):
 class Socket(enum.Enum):
     BUFFER = 8192
     PORT = 5000
+    UPDATE_PORT = 8000
     WAITLIST = 1
     TIMEOUT  = 1
-    # IPADRESS = "localhost"
-    IPADRESS = "192.168.2.103"
+    IPADRESS = "localhost"
+    # IPADRESS = "192.168.2.103"
 
 class Time(enum.Enum):
     TIME_SLEEP_500MS = 0.5

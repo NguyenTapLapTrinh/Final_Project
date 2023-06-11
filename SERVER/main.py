@@ -20,7 +20,7 @@ import server_mng
 import unidecode
 import msg
 import init
-from define import Time, Item
+from define import Time, Item, Socket
 
 # global variable
 timer = QtCore.QTimer()
@@ -113,14 +113,24 @@ def waitingCapture():
         timer.start(Time.TIME_SLEEP_5S.value)
 
 def ThreadServer():
-    sleep(Time.TIME_SLEEP_2S.value)
+    server_socket = server_mng.createSocket(Socket.IPADRESS.value,Socket.PORT.value)
     while True:
-        if Form_1.video.file_path != "":
-            server_mng.mainServer(Form_1.video.file_path)
+        try:
+            if (Form_1.video.file_path == ""):
+                continue
+        except:
+            pass
+        else:
+            server_mng.mainServer(Form_1.video.file_path,server_socket)
+
 
 if __name__ == "__main__":
     init.ServerInit()
     yolo = init.YoloInit()
+
+    # Start Thread Server
+    thread = threading.Thread(target=ThreadServer)
+    thread.start()
 
     #Show Gui
     app = QtWidgets.QApplication(sys.argv)
@@ -129,15 +139,13 @@ if __name__ == "__main__":
     Form_1.setupUi(widget_1)
     Form_1.ButtonActivation(waitingCapture)
     Form_1.ButtonClose(closeMain)
-    widget_1.show()
+
 
     widget_2 = QtWidgets.QWidget()
     Form_2 = info.Ui_Form()
     Form_2.setupUi(widget_2)
     Form_2.ButtonActivation(closeWidget)
 
-    # Start Thread Server
-    thread = threading.Thread(target=ThreadServer)
-    thread.start()
+    widget_1.show()
 
     sys.exit(app.exec_())

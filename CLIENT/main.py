@@ -523,6 +523,7 @@ class Ui_Form(object):
 if __name__ == "__main__":
     if not os.path.exists("CLIENT/csv_file"):
         os.mkdir("CLIENT/csv_file")
+
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()

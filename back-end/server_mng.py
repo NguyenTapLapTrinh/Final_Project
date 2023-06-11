@@ -6,16 +6,15 @@ import time
 from define import Socket, Time, Platform
 
 
-def createSocket():
+def createSocket(ip_adress,port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #server_socket.setblocking(1)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    ip = Socket.IPADRESS.value
-    print(ip)
-    server_socket.bind((ip, Socket.PORT.value))
-    server_socket.listen(Socket.WAITLIST.value)
-    client_socket,a = server_socket.accept()
-    return client_socket, server_socket
+    ip = ip_adress
+    print(ip + "     "+ str(port))
+    server_socket.bind((ip, port))
+    return server_socket
+
 def setData(client_socket,check_name):
     full_name = check_name
     check_name = unidecode.unidecode(check_name)
@@ -114,7 +113,7 @@ def sendCSV(client_socket, file_path):
             client_socket.send(data1)
             data1 = filetosend.read(Socket.BUFFER.value)
     filetosend.close()
-    time.sleep(Time.TIME_SLEEP_10MS.value)
+    time.sleep(Time.TIME_SLEEP_500MS.value)
     string = "Done"
     client_socket.send(string.encode())
     client_socket.close()
@@ -138,13 +137,15 @@ def sendCurrentCSV(client_socket,time_csv, file_path):
         if file_path != check_file:
             msg = "Yes-Yes"
         client_socket.send(msg.encode())
+        time.sleep(Time.TIME_SLEEP_10MS.value)
         filetosend = open("report/report_"+ time_csv + ".csv", "rb")
         data1 = filetosend.read(Socket.BUFFER.value)
         while data1:
             client_socket.send(data1)
+            time.sleep(Time.TIME_SLEEP_10MS.value)
             data1 = filetosend.read(Socket.BUFFER.value)
         filetosend.close()
-        time.sleep(Time.TIME_SLEEP_10MS.value)
+        time.sleep(Time.TIME_SLEEP_500MS.value)
         string = "Done"
         client_socket.send(string.encode())
         client_socket.close()
@@ -152,8 +153,9 @@ def sendCurrentCSV(client_socket,time_csv, file_path):
     else:
         client_socket.send(b"No")
 
-def mainServer(file_path):
-    client_socket, server_socket = createSocket()
+def mainServer(file_path,server_socket):
+    server_socket.listen(Socket.WAITLIST.value)
+    client_socket,a = server_socket.accept()
     message = client_socket.recv(Socket.BUFFER.value)
     message = message.decode()
     request = message.split("-")
@@ -172,4 +174,5 @@ def mainServer(file_path):
         sendCurrentCSV(client_socket,request[1]+ "-" +request[2]+ "-" +request[3], file_path)
     elif request[0] == "ListEmployee":
         sendEmployee(client_socket)
-    server_socket.close()
+
+
