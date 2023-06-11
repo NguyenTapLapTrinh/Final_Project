@@ -30,6 +30,7 @@ from tkinter import filedialog
 import cv2
 sys.setrecursionlimit(5000)
 import image_main
+from define import CMD
 
 now = datetime.now()
 timer = QtCore.QTimer()
