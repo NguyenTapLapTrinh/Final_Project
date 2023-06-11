@@ -9,7 +9,7 @@ import os
 import pickle
 import msg 
 
-from define import Socket, Time
+from define import Socket, Time, CMD
 sys.path.append("./front-end")
 folder = "temp/"
 
