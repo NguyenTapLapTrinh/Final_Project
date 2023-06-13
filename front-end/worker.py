@@ -15,7 +15,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel
-from PyQt5.QtCore import Qt, QModelIndex, QTimer
+from PyQt5.QtCore import Qt, QModelIndex, QTimer, QThread
 from time import sleep
 import camera
 

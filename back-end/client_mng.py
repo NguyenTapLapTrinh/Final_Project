@@ -17,7 +17,8 @@ def checkResponding(client_socket,ip = Socket.IPADRESS.value,port = Socket.PORT.
         try:
                 client_socket.connect((ip, port))
         except socket.error:
-                msg.ShowMsg("Warning","Server not responding")
+                if port == Socket.PORT.value:
+                        msg.ShowMsg("Warning","Server not responding")
                 return 0
         
 def ReceiveData(client_socket):
@@ -156,8 +157,8 @@ def editName(input_employ, new_name):
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.settimeout(Socket.TIMEOUT.value)
-        check = checkResponding(client_socket)
-        if check==0:
+        check = checkResponding(client_socket,port=Socket.UPDATE_PORT.value)
+        if check == 0:
                 return 0
         Trans = "UpdateCSV"
         message = Trans + "-" 

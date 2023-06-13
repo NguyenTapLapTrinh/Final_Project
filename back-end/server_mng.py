@@ -168,11 +168,17 @@ def mainServer(file_path,server_socket):
         editPhoto(client_socket,request[1])
     elif request[0] == "EditName":
         editName(client_socket,request[1],request[2])
-    elif request[0] == "UpdateCSV":
-        sendCSV(client_socket, file_path)
     elif request[0] == "LoadCSV":
         sendCurrentCSV(client_socket,request[1]+ "-" +request[2]+ "-" +request[3], file_path)
     elif request[0] == "ListEmployee":
         sendEmployee(client_socket)
 
+def mainUpdateServer(file_path,server_socket):
+    server_socket.listen(Socket.WAITLIST.value)
+    client_socket,a = server_socket.accept()
+    message = client_socket.recv(Socket.BUFFER.value)
+    message = message.decode()
+    request = message.split("-")
 
+    if request[0] == "UpdateCSV":
+        sendCSV(client_socket, file_path)

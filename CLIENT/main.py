@@ -9,12 +9,12 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
+import sys, signal
 sys.path.append("./back-end")
 sys.path.append("./front-end")
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt, QModelIndex, QTimer
+from PyQt5.QtCore import Qt, QModelIndex, QTimer, QThread
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont, QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView
 import csv
@@ -28,6 +28,7 @@ import msg
 import os
 from tkinter import filedialog
 import cv2
+import threading, time
 sys.setrecursionlimit(5000)
 import image_main
 from define import CMD
@@ -82,13 +83,10 @@ class Admin_UI(QDialog):
         self.ui_1.photo.setPixmap(QPixmap.fromImage(Pic))
 
     def EditInfo(self, input_employ, request):
-        global timer
-        timer.stop()
         if request == client_mng.CMD.ADD: 
                 client_mng.setData(self.ui_1.file_path,input_employ)
         elif request == client_mng.CMD.DEL:
                 client_mng.deleteData(input_employ)
-        timer.start()
 
     def addEmploy(self):
         input_employ = self.ui_1.input_name.text()
@@ -108,8 +106,6 @@ class List_UI(QDialog):
         self.ui_4.rm_btn.clicked.connect(self.removeEmploy)
         self.array_employee = []
     def load_employee(self):
-        global timer
-        timer.stop()
         self.ui_4.listWidget.clear() 
         self.array_employee = client_mng.RequestEmployee()
         if self.array_employee == -1:
@@ -123,19 +119,15 @@ class List_UI(QDialog):
             item = QListWidgetItem(str(item))
             item.setFont(font)
             self.ui_4.listWidget.addItem(item)
-        timer.start()
 
     def removeEmploy(self):
-         global timer
          current_row = self.ui_4.listWidget.currentRow()
          if current_row >= 0:
             nameDelete = self.ui_4.listWidget.item(current_row).text()
             body = "Are you sure to remove "+ nameDelete
             choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
             if choose ==1:
-                timer.stop()
                 check = client_mng.deleteData(nameDelete)
-                timer.start()
             else:
                  return
          else: 
@@ -187,11 +179,8 @@ class Edit_UI(QDialog):
             self.ui_2.edit.show()
 
     def UpdateInfo(self, input_employ, request):
-        global timer
         if request == client_mng.CMD.EDITPHOTO:
-            timer.stop()
             client_mng.editPhoto(self.ui_2.file_path, input_employ)
-            timer.start()
 
 class Ui_Form(object):
     global timer
@@ -380,9 +369,8 @@ class Ui_Form(object):
         self.ui_2 = Edit_UI()
         self.ui_4 = List_UI()
         self.lock = False
-        self.DisplayNewestCSV()
-        timer.timeout.connect(self.DisplayNewestCSV)
-        timer.start(10000)
+        # timer.timeout.connect(self.DisplayNewestCSV)
+        # timer.start(10000)
         self.array_employ = []
         self.ui_4 = List_UI()
         self.timeCSV.setText(self.current_date)
@@ -409,7 +397,6 @@ class Ui_Form(object):
         self.label_11.setText(_translate("Form", "UPDATE INFO"))
 
     def loadEmploy(self):
-        timer.stop()
         check = self.ui_4.load_employee()
         if check == -1:
              return
@@ -520,13 +507,28 @@ class Ui_Form(object):
         self.ui_2.ui_2.input_name.setText("")
         self.ui_2.show()
 
+def receive_signal(signum, stack):
+    print ('Received:')
+    ui.DisplayNewestCSV()
+
+class UpdateServer(QThread):
+        def run(self):
+            while True:
+                signal.raise_signal(signal.SIGINT)
+                time.sleep(10)
+        def stop(self):
+                self.quit()
+
 if __name__ == "__main__":
     if not os.path.exists("CLIENT/csv_file"):
         os.mkdir("CLIENT/csv_file")
 
+    signal.signal(signal.SIGINT, receive_signal)
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
     Form.show()
+    updateServer = UpdateServer()
+    updateServer.start()
     sys.exit(app.exec_())

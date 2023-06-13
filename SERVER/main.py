@@ -19,6 +19,7 @@ import text
 import server_mng
 import unidecode
 import msg
+from multiprocessing import Process, Pipe
 import init
 from define import Time, Item, Socket
 
@@ -34,6 +35,7 @@ def closeWidget():
 def closeMain():
     Form_1.video.block = True
     os.system('killall -9 python3.8')
+    widget_1.close()
 
 def updateWidget(note,name,unicode_name,time,date,emptyList):
     Form_2.updateResult(note)
@@ -123,15 +125,46 @@ def ThreadServer():
         else:
             server_mng.mainServer(Form_1.video.file_path,server_socket)
 
+class Server(QThread):
+        def run(self):
+            server_socket = server_mng.createSocket(Socket.IPADRESS.value,Socket.PORT.value)
+            while True:
+                try:
+                    if (Form_1.video.file_path == ""):
+                        continue
+                except:
+                    pass
+                else:
+                    server_mng.mainServer(Form_1.video.file_path,server_socket)
+        def stop(self):
+                self.quit()
+
+class UpdateServer(QThread):
+        def run(self):
+            server_socket = server_mng.createSocket(Socket.IPADRESS.value,Socket.UPDATE_PORT.value)
+            while True:
+                try:
+                    if (Form_1.video.file_path == ""):
+                        continue
+                except:
+                    pass
+                else:
+                    server_mng.mainUpdateServer(Form_1.video.file_path,server_socket)
+        def stop(self):
+                self.quit()
 
 if __name__ == "__main__":
     init.ServerInit()
     yolo = init.YoloInit()
 
     # Start Thread Server
-    thread = threading.Thread(target=ThreadServer)
-    thread.start()
+    # thread = threading.Thread(target=ThreadServer)
+    # thread.start()
+    server = Server()
+    server.start()
 
+    updateserver = UpdateServer()
+    updateserver.start()
     #Show Gui
     app = QtWidgets.QApplication(sys.argv)
     widget_1 = QtWidgets.QWidget()
