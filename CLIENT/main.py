@@ -16,7 +16,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QModelIndex, QTimer, QThread
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QStandardItemModel, QFont, QImage, QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView,  QStyledItemDelegate, QHeaderView, QAbstractItemView, QMessageBox
 import csv
 from datetime import datetime
 from admin import *
@@ -34,7 +34,6 @@ import image_main
 from define import CMD
 
 now = datetime.now()
-timer = QtCore.QTimer()
 class CenteredHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
         super().__init__(orientation, parent)
@@ -183,7 +182,6 @@ class Edit_UI(QDialog):
             client_mng.editPhoto(self.ui_2.file_path, input_employ)
 
 class Ui_Form(object):
-    global timer
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1022, 703)
@@ -369,8 +367,9 @@ class Ui_Form(object):
         self.ui_2 = Edit_UI()
         self.ui_4 = List_UI()
         self.lock = False
-        # timer.timeout.connect(self.DisplayNewestCSV)
-        # timer.start(10000)
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.DisplayNewestCSV)
+        self.timer.start(10000)
         self.array_employ = []
         self.ui_4 = List_UI()
         self.timeCSV.setText(self.current_date)
@@ -427,10 +426,10 @@ class Ui_Form(object):
         if stop_timer == -1:
             return
         if stop_timer == 1:
-            timer.stop()
+            self.timer.stop()
         else:
-            timer.stop()
-            timer.start()
+            self.timer.stop()
+            self.timer.start()
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
         if os.path.exists("CLIENT/csv_file/current_csv.csv"):
@@ -456,30 +455,36 @@ class Ui_Form(object):
             os.remove("CLIENT/csv_file/current_csv.csv")
 
     def DisplayNewestCSV(self):
+        if not os.path.exists("CLIENT/csv_file/now_csv.csv"):
+            print("File not found")
+            return
         self.lock = True
-        check = client_mng.UpdateCSV()
-        if check == 0:
-             return
-        self.model = QStandardItemModel()
-        # Đọc dữ liệu từ file csv và thêm vào model
-        with open('CLIENT/csv_file/now_csv.csv', newline='', encoding='utf8') as csvfile:
-            reader = csv.reader(csvfile)
-            for row_data in reader:
-                row = []
-                for item_data in row_data:
-                    item = QStandardItem(item_data)
-                    row.append(item)
-                self.model.appendRow(row)
-        for i in range(self.model.columnCount()):
-            for j in range(self.model.rowCount()):
-                item = self.model.item(j, i)
-                if item is not None:
-                    font = QFont()
-                    font.setBold(True)
-                    item.setFont(font)
-        self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tableView.resizeColumnsToContents()
-        self.tableView.setModel(self.model)
+        while True:
+            try:
+                self.model = QStandardItemModel()
+                # Đọc dữ liệu từ file csv và thêm vào model
+                with open('CLIENT/csv_file/now_csv.csv', newline='', encoding='utf8') as csvfile:
+                    reader = csv.reader(csvfile)
+                    for row_data in reader:
+                        row = []
+                        for item_data in row_data:
+                            item = QStandardItem(item_data)
+                            row.append(item)
+                        self.model.appendRow(row)
+                for i in range(self.model.columnCount()):
+                    for j in range(self.model.rowCount()):
+                        item = self.model.item(j, i)
+                        if item is not None:
+                            font = QFont()
+                            font.setBold(True)
+                            item.setFont(font)
+                self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+                self.tableView.resizeColumnsToContents()
+                self.tableView.setModel(self.model)
+            except:
+                time.sleep(1)
+            else:
+                break
         os.remove("CLIENT/csv_file/now_csv.csv")
         self.lock = False
 
@@ -508,13 +513,13 @@ class Ui_Form(object):
         self.ui_2.show()
 
 def receive_signal(signum, stack):
-    print ('Received:')
     ui.DisplayNewestCSV()
 
 class UpdateServer(QThread):
         def run(self):
             while True:
-                signal.raise_signal(signal.SIGINT)
+                print ('Request new file')
+                client_mng.UpdateCSV()
                 time.sleep(10)
         def stop(self):
                 self.quit()
@@ -523,7 +528,7 @@ if __name__ == "__main__":
     if not os.path.exists("CLIENT/csv_file"):
         os.mkdir("CLIENT/csv_file")
 
-    signal.signal(signal.SIGINT, receive_signal)
+    # signal.signal(signal.SIGINT, receive_signal)
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
