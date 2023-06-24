@@ -34,7 +34,7 @@ def closeWidget():
 
 def closeMain():
     Form_1.video.block = True
-    os.system('killall -9 python3.8')
+    # os.system('killall -9 python3.8')
     widget_1.close()
 
 def updateWidget(note,name,unicode_name,time,date,emptyList):

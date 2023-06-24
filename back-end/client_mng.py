@@ -21,12 +21,13 @@ def checkResponding(client_socket,ip = Socket.IPADRESS.value,port = Socket.PORT.
                         msg.ShowMsg("Warning","Server not responding")
                 return 0
         
-def ReceiveData(client_socket):
+def ReceiveData(client_socket,port = Socket.PORT.value):
         try:
                 data = client_socket.recv(Socket.BUFFER.value)
                 return data
         except socket.error:
-                msg.ShowMsg("Warning","Lost connection with server")
+                if port == Socket.PORT.value:
+                        msg.ShowMsg("Warning","Lost connection with server")
                 return 0
         
 def setData(file_path, input_employ):
@@ -166,7 +167,7 @@ def UpdateCSV():
         time.sleep(Time.TIME_SLEEP_10MS.value)
         filetodown = open("CLIENT/csv_file/now_csv.csv", "wb")
         while True:
-                data = ReceiveData(client_socket)
+                data = ReceiveData(client_socket,port=Socket.UPDATE_PORT.value)
                 if data == 0:
                         return
                 if data == b"Done":

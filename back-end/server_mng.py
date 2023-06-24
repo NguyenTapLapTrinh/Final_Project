@@ -3,6 +3,7 @@ import unidecode
 import os
 import text
 import time
+import report
 from define import Socket, Time, Platform
 
 
@@ -64,6 +65,7 @@ def deleteData(client_socket,file_name):
         os.remove("Img/worker_img/" + file_remove + ".jpg")
 
 def editName(client_socket,check_name,new_name):
+    name = check_name
     check_name = unidecode.unidecode(check_name)
     check_img = "Img/worker_img/" + check_name
     existFile = os.path.exists(check_img + ".jpg")
@@ -71,7 +73,7 @@ def editName(client_socket,check_name,new_name):
     if existFile:
         client_socket.send(b"Yes")
         unidecode_name = unidecode.unidecode(new_name)
-        imgPath = "Img/worker_img/"
+        imgPath = "Img/worker_img/"         
         picklePath = "db/"
         #Chuyen ten img
         old_name = check_name + ".jpg"
@@ -82,6 +84,7 @@ def editName(client_socket,check_name,new_name):
         new_pickle_name = unidecode_name + ".pickle"
         os.rename(os.path.join(picklePath, old_pickle), os.path.join(picklePath, new_pickle_name))
         text.editUser(check_name, new_name, unidecode_name)
+        report.update_report(name,new_name)
     else:
         client_socket.send(b"No")
 

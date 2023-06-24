@@ -31,9 +31,11 @@ import cv2
 import threading, time
 sys.setrecursionlimit(5000)
 import image_main
-from define import CMD
+from define import CMD, Time
 
 now = datetime.now()
+thread_stop = False
+timer = 0
 class CenteredHeaderView(QHeaderView):
     def __init__(self, orientation, parent=None):
         super().__init__(orientation, parent)
@@ -53,13 +55,19 @@ class Widget_1(QDialog):
         self.name = ""
         self.old_name = ""
     def create(self):
+        global thread_stop
+        global timer
         self.name =  self.edit.line.text()
         self.edit.line.clear()
         if self.name == "":
                 msg.ShowMsg("Info","Please check again!")
         else:
-                client_mng.editName(self.old_name, self.name)
-                self.close()    
+            thread_stop = True
+            timer.stop()
+            client_mng.editName(self.old_name, self.name)
+            thread_stop = False
+            timer.start()
+            self.close()    
              
 class Admin_UI(QDialog):
     def __init__(self, parent=None):
@@ -183,6 +191,7 @@ class Edit_UI(QDialog):
 
 class Ui_Form(object):
     def setupUi(self, Form):
+        global timer
         Form.setObjectName("Form")
         Form.resize(1022, 703)
         Form.setStyleSheet("background-color: #bed9bd\n"
@@ -367,9 +376,9 @@ class Ui_Form(object):
         self.ui_2 = Edit_UI()
         self.ui_4 = List_UI()
         self.lock = False
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.DisplayNewestCSV)
-        self.timer.start(10000)
+        timer = QtCore.QTimer()
+        timer.timeout.connect(self.DisplayNewestCSV)
+        timer.start(10000)
         self.array_employ = []
         self.ui_4 = List_UI()
         self.timeCSV.setText(self.current_date)
@@ -426,10 +435,10 @@ class Ui_Form(object):
         if stop_timer == -1:
             return
         if stop_timer == 1:
-            self.timer.stop()
+            timer.stop()
         else:
-            self.timer.stop()
-            self.timer.start()
+            timer.stop()
+            timer.start()
         self.model = QStandardItemModel()
         # Đọc dữ liệu từ file csv và thêm vào model
         if os.path.exists("CLIENT/csv_file/current_csv.csv"):
@@ -452,7 +461,6 @@ class Ui_Form(object):
             self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self.tableView.resizeColumnsToContents()
             self.tableView.setModel(self.model)
-            os.remove("CLIENT/csv_file/current_csv.csv")
 
     def DisplayNewestCSV(self):
         if not os.path.exists("CLIENT/csv_file/now_csv.csv"):
@@ -482,10 +490,9 @@ class Ui_Form(object):
                 self.tableView.resizeColumnsToContents()
                 self.tableView.setModel(self.model)
             except:
-                time.sleep(1)
+                time.sleep(Time.TIME_SLEEP_500MS.value)
             else:
                 break
-        os.remove("CLIENT/csv_file/now_csv.csv")
         self.lock = False
 
     def openAdd(self):
@@ -516,11 +523,13 @@ def receive_signal(signum, stack):
     ui.DisplayNewestCSV()
 
 class UpdateServer(QThread):
+        global thread_stop
         def run(self):
             while True:
-                print ('Request new file')
-                client_mng.UpdateCSV()
-                time.sleep(10)
+                if not thread_stop:
+                    print ('Request new file')
+                    client_mng.UpdateCSV()
+                time.sleep(Time.TIME_SLEEP_10S.value)
         def stop(self):
                 self.quit()
 

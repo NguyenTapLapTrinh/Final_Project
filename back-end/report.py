@@ -78,4 +78,19 @@ def parse_list(list):
 
     return helmet,vest,glove,note
 
+def update_report(old_name, new_name):
+    import glob
+    path = glob.glob(r"report\*.csv")
+    for csv_path in path:
+        list_data = []
+        with open(csv_path, 'r', encoding='utf8', errors='ignore') as csv_file:
+            reader = csv.reader(csv_file) 
+            for row in reader:
+                if row[0] == old_name:
+                    row[0] = new_name
+                list_data.append(row)
+        with open(csv_path, 'w', newline='', encoding='utf8') as csv_file:
+            writer = csv.writer(csv_file)
+            for line in list_data:
+                writer.writerow(line)
     
