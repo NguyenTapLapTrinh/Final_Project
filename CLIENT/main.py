@@ -417,7 +417,7 @@ class Ui_Form(object):
             msg.ShowMsg("Warning","Please write the time\nin correct format dd-MM-YYYY!")
             return
         try:
-            now.strptime(time_array[1] + "-" + time_array[0] + "-" + time_array[2],"%d-%m-%Y")
+            now.strptime(time_array[0] + "-" + time_array[1] + "-" + time_array[2],"%d-%m-%Y")
         except:
             msg.ShowMsg("Warning","Invalid datetime")
             return
