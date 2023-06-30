@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
-
+from PyQt5.QtGui import QIcon
 def ShowMsg(title,testMsg):
     dlg = QMessageBox()
     dlg.setIcon(QMessageBox.Information)
@@ -8,7 +8,10 @@ def ShowMsg(title,testMsg):
     dlg.setStandardButtons(QMessageBox.Ok)
     dlg.exec()
 def ShowChoose(title, body, textYes, textNo):
+    icon_path = "Img/Icon/camera.png"
+    icon = QIcon(icon_path)
     msg = QMessageBox()
+    msg.setIconPixmap(icon.pixmap(64, 64))
     msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     buttonY = msg.button(QMessageBox.Yes)
     buttonY.setText(textYes)

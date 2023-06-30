@@ -131,7 +131,7 @@ class List_UI(QDialog):
          current_row = self.ui_4.listWidget.currentRow()
          if current_row >= 0:
             nameDelete = self.ui_4.listWidget.item(current_row).text()
-            body = "Are you sure to remove "+ nameDelete
+            body = "Are you sure to remove "+ nameDelete + " ?"
             choose = msg.ShowChoose("Remove Employee",body, "Yes", "No")
             if choose ==1:
                 check = client_mng.deleteData(nameDelete)
