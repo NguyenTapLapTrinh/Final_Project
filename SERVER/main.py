@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QTimer, Qt, QEventLoop
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QCoreApplication
-from PyQt5.QtGui import QMovie, QPixmap
+from PyQt5.QtGui import QMovie, QPixmap, QIcon
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from time import *
 import os
@@ -107,6 +107,9 @@ def waitingCapture():
     if not timerActive:
         timerActive = True
         waitBox = QMessageBox()
+        icon_path = "Img/Icon/info.png"
+        icon = QIcon(icon_path)
+        waitBox.setWindowIcon(icon)
         waitBox.setIcon(QMessageBox.Information)
         waitBox.setWindowTitle("Warning")
         waitBox.setText("Wait 5 second")

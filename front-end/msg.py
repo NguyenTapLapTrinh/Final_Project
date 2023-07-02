@@ -1,17 +1,23 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
 def ShowMsg(title,testMsg):
+    if title == "Warning":
+         icon_path = "Img/Icon/cross.png"
+    elif type == 'Info':
+         icon_path = "Img/Icon/info.png"
+    icon = QIcon(icon_path)
     dlg = QMessageBox()
+    dlg.setWindowIcon(icon)
     dlg.setIcon(QMessageBox.Information)
     dlg.setText(testMsg + "              ")
     dlg.setWindowTitle(title)
     dlg.setStandardButtons(QMessageBox.Ok)
     dlg.exec()
 def ShowChoose(title, body, textYes, textNo):
-    icon_path = "Img/Icon/camera.png"
+    icon_path = "Img/Icon/trash.png"
     icon = QIcon(icon_path)
     msg = QMessageBox()
-    msg.setIconPixmap(icon.pixmap(64, 64))
+    msg.setWindowIcon(icon)
     msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     buttonY = msg.button(QMessageBox.Yes)
     buttonY.setText(textYes)
