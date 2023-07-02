@@ -157,7 +157,7 @@ def editName(input_employ, new_name):
 
 def UpdateCSV():
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(Socket.TIMEOUT.value)
+        client_socket.settimeout(Socket.TIMEOUT.value + 5)
         check = checkResponding(client_socket,port=Socket.UPDATE_PORT.value)
         if check == 0:
                 return 0

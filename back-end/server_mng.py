@@ -109,13 +109,19 @@ def editPhoto(client_socket,check_name):
     else:
         client_socket.send(b"No")
 
-def sendCSV(client_socket, file_path):           
-    filetosend = open(file_path, "rb")
-    data1 = filetosend.read(Socket.BUFFER.value)
-    while data1:
-            client_socket.send(data1)
+def sendCSV(client_socket, file_path):  
+    while True:
+        try:         
+            filetosend = open(file_path, "rb")
             data1 = filetosend.read(Socket.BUFFER.value)
-    filetosend.close()
+            while data1:
+                    client_socket.send(data1)
+                    data1 = filetosend.read(Socket.BUFFER.value)
+            filetosend.close()
+        except:
+            time.sleep(Time.TIME_SLEEP_500MS.value)
+        else:
+            break
     time.sleep(Time.TIME_SLEEP_500MS.value)
     string = "Done"
     client_socket.send(string.encode())
@@ -141,13 +147,20 @@ def sendCurrentCSV(client_socket,time_csv, file_path):
             msg = "Yes-Yes"
         client_socket.send(msg.encode())
         time.sleep(Time.TIME_SLEEP_10MS.value)
-        filetosend = open("report/report_"+ time_csv + ".csv", "rb")
-        data1 = filetosend.read(Socket.BUFFER.value)
-        while data1:
-            client_socket.send(data1)
-            time.sleep(Time.TIME_SLEEP_10MS.value)
-            data1 = filetosend.read(Socket.BUFFER.value)
-        filetosend.close()
+        while True:
+            try:
+                filetosend = open("report/report_"+ time_csv + ".csv", "rb")
+                data1 = filetosend.read(Socket.BUFFER.value)
+                while data1:
+                    client_socket.send(data1)
+                    time.sleep(Time.TIME_SLEEP_10MS.value)
+                    data1 = filetosend.read(Socket.BUFFER.value)
+                filetosend.close()
+            except:
+                time.sleep(Time.TIME_SLEEP_500MS.value)
+            else:
+                break
+
         time.sleep(Time.TIME_SLEEP_500MS.value)
         string = "Done"
         client_socket.send(string.encode())
