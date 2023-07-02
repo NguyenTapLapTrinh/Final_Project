@@ -112,7 +112,7 @@ def waitingCapture():
         waitBox.setWindowIcon(icon)
         waitBox.setIcon(QMessageBox.Information)
         waitBox.setWindowTitle("Warning")
-        waitBox.setText("Wait 5 second")
+        waitBox.setText("Wait 5 seconds")
         waitBox.show()
         timer.timeout.connect(processImage)
         timer.start(Time.TIME_SLEEP_5S.value)

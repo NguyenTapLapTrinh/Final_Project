@@ -13,8 +13,8 @@ class Socket(enum.Enum):
     UPDATE_PORT = 8000
     WAITLIST = 1
     TIMEOUT  = 1
-    IPADRESS = "localhost"
-    # IPADRESS = "192.168.2.103"
+    # IPADRESS = "localhost"
+    IPADRESS = "192.168.43.80"
 
 class Time(enum.Enum):
     TIME_SLEEP_500MS = 0.5
@@ -30,3 +30,8 @@ class Item(enum.Enum):
 
 class Platform(enum.Enum):
     SYSTEM = platform.system()
+
+class Device(enum.Enum):
+    USER_NAME = "jetson-nano"
+    USER_PASSWD = "123456"
+    USER_IP = "192.168.43.80"

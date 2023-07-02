@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 def ShowMsg(title,testMsg):
     if title == "Warning":
          icon_path = "Img/Icon/cross.png"
-    elif type == 'Info':
+    elif title == 'Info':
          icon_path = "Img/Icon/info.png"
     icon = QIcon(icon_path)
     dlg = QMessageBox()
@@ -13,8 +13,11 @@ def ShowMsg(title,testMsg):
     dlg.setWindowTitle(title)
     dlg.setStandardButtons(QMessageBox.Ok)
     dlg.exec()
-def ShowChoose(title, body, textYes, textNo):
-    icon_path = "Img/Icon/trash.png"
+def ShowChoose(title, body, textYes, textNo, type = 'trash'):
+    if type == 'refresh':
+          icon_path = "Img/Icon/refresh.png"
+    else:
+         icon_path = "Img/Icon/trash.png"
     icon = QIcon(icon_path)
     msg = QMessageBox()
     msg.setWindowIcon(icon)

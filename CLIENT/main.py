@@ -26,12 +26,13 @@ from list_name import *
 import client_mng
 import msg
 import os
+import wexpect
 from tkinter import filedialog
 import cv2
 import threading, time
 sys.setrecursionlimit(5000)
 import image_main
-from define import CMD, Time
+from define import CMD, Time, Device
 
 now = datetime.now()
 thread_stop = False
@@ -277,7 +278,7 @@ class Ui_Form(object):
         self.label_6.setText("")
         self.label_6.setObjectName("label_6")
         self.listEmploy = QtWidgets.QPushButton(Form)
-        self.listEmploy.setGeometry(QtCore.QRect(910, 160, 71, 71))
+        self.listEmploy.setGeometry(QtCore.QRect(910, 140, 71, 71))
         self.listEmploy.setToolTip("")
         self.listEmploy.setStyleSheet("background-color: #cc66ff;\n"
 "border-radius: 20px;\n"
@@ -289,7 +290,7 @@ class Ui_Form(object):
         self.listEmploy.setIconSize(QtCore.QSize(55, 55))
         self.listEmploy.setObjectName("listEmploy")
         self.label_7 = QtWidgets.QLabel(Form)
-        self.label_7.setGeometry(QtCore.QRect(850, 80, 171, 631))
+        self.label_7.setGeometry(QtCore.QRect(850, 80, 161, 631))
         self.label_7.setStyleSheet("background-color: #575cff;\n"
 "border-top-left-radius: 50px;")
         self.label_7.setText("")
@@ -302,7 +303,7 @@ class Ui_Form(object):
 "font-weight: 600;")
         self.closeBtn.setObjectName("closeBtn")
         self.addEmploy = QtWidgets.QPushButton(Form)
-        self.addEmploy.setGeometry(QtCore.QRect(910, 300, 71, 71))
+        self.addEmploy.setGeometry(QtCore.QRect(910, 280, 71, 71))
         self.addEmploy.setStyleSheet("background-color: #b7f01a;\n"
 "border-radius: 20px;\n"
 "border: 2px solid #fff;")
@@ -314,7 +315,7 @@ class Ui_Form(object):
         self.addEmploy.setIconSize(QtCore.QSize(55, 55))
         self.addEmploy.setObjectName("addEmploy")
         self.updateEmploy = QtWidgets.QPushButton(Form)
-        self.updateEmploy.setGeometry(QtCore.QRect(910, 440, 71, 71))
+        self.updateEmploy.setGeometry(QtCore.QRect(910, 410, 71, 71))
         self.updateEmploy.setStyleSheet("background-color:#f7983e;\n"
 "border-radius: 20px;\n"
 "border: 2px solid #fff;")
@@ -324,6 +325,19 @@ class Ui_Form(object):
         self.updateEmploy.setIcon(icon2)
         self.updateEmploy.setIconSize(QtCore.QSize(55, 55))
         self.updateEmploy.setObjectName("updateEmploy")
+        # Reboot 
+        self.rebootBtn = QtWidgets.QPushButton(Form)
+        self.rebootBtn.setGeometry(QtCore.QRect(910, 540, 71, 71))
+        self.rebootBtn.setStyleSheet("background-color: #fff;\n"
+"border-radius: 20px;\n"
+"border: 2px solid #fff;")
+        self.rebootBtn.setText("")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("Img/icon/reload.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.rebootBtn.setIcon(icon3)
+        self.rebootBtn.setIconSize(QtCore.QSize(55, 55))
+        self.rebootBtn.setObjectName("rebootBtn")
+        # End 
         self.label_8 = QtWidgets.QLabel(Form)
         self.label_8.setGeometry(QtCore.QRect(920, 100, 61, 20))
         self.label_8.setStyleSheet("background-color: #575cff;\n"
@@ -332,26 +346,33 @@ class Ui_Form(object):
 "font-weight: 500;")
         self.label_8.setObjectName("label_8")
         self.label_9 = QtWidgets.QLabel(Form)
-        self.label_9.setGeometry(QtCore.QRect(890, 240, 111, 20))
+        self.label_9.setGeometry(QtCore.QRect(890, 220, 111, 20))
         self.label_9.setStyleSheet("color: white;\n"
 "font-size: 14px;\n"
 "font-weight: 500;\n"
 "background-color: #575cff;")
         self.label_9.setObjectName("label_9")
         self.label_10 = QtWidgets.QLabel(Form)
-        self.label_10.setGeometry(QtCore.QRect(890, 380, 111, 20))
+        self.label_10.setGeometry(QtCore.QRect(890, 360, 111, 20))
         self.label_10.setStyleSheet("background-color: #575cff;\n"
 "color: white;\n"
 "font-size: 14px;\n"
 "font-weight: 500;")
         self.label_10.setObjectName("label_10")
         self.label_11 = QtWidgets.QLabel(Form)
-        self.label_11.setGeometry(QtCore.QRect(890, 520, 100, 20))
+        self.label_11.setGeometry(QtCore.QRect(900, 490, 100, 20))
         self.label_11.setStyleSheet("color: white;\n"
 "font-size: 14px;\n"
 "font-weight: 500;\n"
 "background-color: #575cff;")
         self.label_11.setObjectName("label_11")
+        self.label_12 = QtWidgets.QLabel(Form)
+        self.label_12.setGeometry(QtCore.QRect(915, 620, 80, 20))
+        self.label_12.setStyleSheet("color: white;\n"
+"font-size: 14px;\n"
+"font-weight: 500;\n"
+"background-color: #575cff;")
+        self.label_12.setObjectName("label_12")
         self.label_7.raise_()
         self.label_3.raise_()
         self.tableView.raise_()
@@ -367,10 +388,12 @@ class Ui_Form(object):
         self.closeBtn.raise_()
         self.addEmploy.raise_()
         self.updateEmploy.raise_()
+        self.rebootBtn.raise_()
         self.label_8.raise_()
         self.label_9.raise_()
         self.label_10.raise_()
         self.label_11.raise_()
+        self.label_12.raise_()
         self.current_date = now.strftime("%d-%m-%Y")
         self.ui_1 = Admin_UI()
         self.ui_2 = Edit_UI()
@@ -383,6 +406,7 @@ class Ui_Form(object):
         self.ui_4 = List_UI()
         self.timeCSV.setText(self.current_date)
         self.closeBtn.clicked.connect(QCoreApplication.instance().quit)
+        self.rebootBtn.clicked.connect(self.rebootHW)
         self.listEmploy.clicked.connect(self.loadEmploy)
         self.loadCSV.clicked.connect(self.load_CSV)
         self.addEmploy.clicked.connect(self.openAdd)
@@ -403,6 +427,7 @@ class Ui_Form(object):
         self.label_9.setText(_translate("Form", "LIST EMPLOYEE"))
         self.label_10.setText(_translate("Form", "ADD EMPLOYEE"))
         self.label_11.setText(_translate("Form", "UPDATE INFO"))
+        self.label_12.setText(_translate("Form", "REBOOT"))
 
     def loadEmploy(self):
         check = self.ui_4.load_employee()
@@ -518,7 +543,20 @@ class Ui_Form(object):
         self.ui_2.ui_2.photo.setPixmap(QPixmap.fromImage(Pic))
         self.ui_2.ui_2.input_name.setText("")
         self.ui_2.show()
-
+    def rebootHW(self):
+        choose = msg.ShowChoose("Reboot Program","Do you want to reboot the device ?", "Yes", "No", 'refresh')
+        if choose ==1:
+            msg.ShowMsg("Info", "Please waiting 1 minute!")
+            child = wexpect.spawn(f'ssh {Device.USER_NAME.value}@{Device.USER_IP.value}')
+            child.expect(f"{Device.USER_NAME.value}@{Device.USER_IP.value}'s password:")
+            child.sendline(Device.USER_PASSWD.value)
+            child.sendline("sudo reboot")
+            child.expect(f"{Device.USER_NAME.value}@jetsonnano:~")
+            child.sendline(Device.USER_PASSWD.value)
+            child.sendline("whoami")
+            child.close()
+        else:
+                return
 def receive_signal(signum, stack):
     ui.DisplayNewestCSV()
 
