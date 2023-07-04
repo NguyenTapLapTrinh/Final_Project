@@ -267,7 +267,7 @@ class Ui_Form(object):
 "background-color: #8ffbff;")
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(Form)
-        self.label_5.setGeometry(QtCore.QRect(310, 20, 501, 41))
+        self.label_5.setGeometry(QtCore.QRect(340, 20, 501, 41))
         self.label_5.setStyleSheet("font-size: 24px;\n"
 "font-weight: 600;\n"
 "color: #fff;")
@@ -290,7 +290,7 @@ class Ui_Form(object):
         self.listEmploy.setIconSize(QtCore.QSize(55, 55))
         self.listEmploy.setObjectName("listEmploy")
         self.label_7 = QtWidgets.QLabel(Form)
-        self.label_7.setGeometry(QtCore.QRect(850, 80, 161, 631))
+        self.label_7.setGeometry(QtCore.QRect(860, 80, 161, 631))
         self.label_7.setStyleSheet("background-color: #575cff;\n"
 "border-top-left-radius: 50px;")
         self.label_7.setText("")

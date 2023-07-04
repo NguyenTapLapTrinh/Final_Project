@@ -13,8 +13,8 @@ class Socket(enum.Enum):
     UPDATE_PORT = 8000
     WAITLIST = 1
     TIMEOUT  = 1
-    # IPADRESS = "localhost"
-    IPADRESS = "192.168.43.80"
+    IPADRESS = "localhost"
+    #IPADRESS = "192.168.43.80"
 
 class Time(enum.Enum):
     TIME_SLEEP_500MS = 0.5
