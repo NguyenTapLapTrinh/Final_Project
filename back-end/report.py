@@ -94,7 +94,7 @@ def parse_list(list):
 
 def update_report(old_name, new_name):
     import glob
-    path = glob.glob(r"report\*.csv")
+    path = glob.glob(r"report/**.csv")
     for csv_path in path:
         list_data = []
         while True:

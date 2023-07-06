@@ -215,7 +215,7 @@ def receiveCSV(time_csv):
         time.sleep(Time.TIME_SLEEP_10MS.value)
         if fileExist[0] == "No":
                 msg.ShowMsg("Warning","This CSV not exits")
-                return 1
+                return -1
         elif fileExist[0] == "Yes":
                 filetodown = open("CLIENT/csv_file/current_csv.csv", "wb")
                 while True:
