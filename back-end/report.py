@@ -102,7 +102,7 @@ def update_report(old_name, new_name):
                 with open(csv_path, 'r', encoding='utf8', errors='ignore') as csv_file:
                     reader = csv.reader(csv_file) 
                     for row in reader:
-                        if row[0] == old_name and row[1] != "Time":
+                        if unidecode.unidecode(row[0]) == unidecode.unidecode(old_name) and row[1] != "Time":
                             row[0] = new_name
                         list_data.append(row)
                 with open(csv_path, 'w', newline='', encoding='utf8') as csv_file:
